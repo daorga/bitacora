@@ -479,7 +479,15 @@ async function extractINE(img) {
     document.getElementById('fCurp').value   = data.curp   || '';
     document.getElementById('fEntrada').value = new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
 
-    let msg = '✓ Datos extraídos correctamente. Completa los campos de visita y motivo.';
+    // build success message showing what was read
+    const leidos = [];
+    if (data.nombre) leidos.push('nombre');
+    if (data.curp) leidos.push('CURP');
+    if (data.claveElector) leidos.push('clave de elector');
+    if (data.fechaNac) leidos.push('fecha de nacimiento');
+    let msg = leidos.length
+      ? '✓ Datos leídos: ' + leidos.join(', ') + '. Completa visita y motivo.'
+      : '✓ INE detectada. Verifica los datos y completa los campos.';
     if (data.observaciones) msg += ' · ' + data.observaciones;
     setAlert('exStatus', msg, 'a-ok');
 
