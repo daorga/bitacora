@@ -283,13 +283,13 @@
     try {
       const blob = await (await fetch(dataUrl)).blob();
       const path = 'visitas/'+id+'.jpg';
-      const res = await fetch(SB_URL+'/storage/v1/object/fotos/'+path, {
+      const res = await fetch(SB_URL+'/storage/v1/object/Fotos/'+path, {
         method:'POST',
         headers:{ 'apikey':SB_KEY, 'Authorization':'Bearer '+SB_KEY, 'Content-Type':'image/jpeg', 'x-upsert':'true' },
         body: blob
       });
       if (!res.ok) return null;
-      return SB_URL+'/storage/v1/object/public/fotos/'+path;
+      return SB_URL+'/storage/v1/object/public/Fotos/'+path;
     } catch(e) { console.warn('No se pudo subir foto:', e); return null; }
   }
 
