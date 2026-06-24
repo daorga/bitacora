@@ -24,9 +24,23 @@ export default async function handler(req, res) {
           role: 'user',
           content: [
             { type: 'image', source: { type: 'base64', media_type: mediaType || 'image/jpeg', data: image } },
-            { type: 'text', text: `Eres un asistente de control de acceso. Analiza esta imagen de una INE (Credencial para Votar) mexicana y extrae la información. Responde SOLO con un objeto JSON válido, sin backticks ni texto adicional:
-{"nombre":"nombre completo como aparece","curp":"CURP si es visible","esINE":true,"observaciones":"nota breve si algo no es claro"}
-Si la imagen no es una INE: {"esINE":false,"nombre":"","curp":"","observaciones":"No se detectó una INE válida"}` }
+            { type: 'text', text: `Eres un sistema de lectura de credenciales de identificación mexicanas para control de acceso.
+
+Analiza la imagen e intenta extraer la información visible. La imagen puede ser de una INE/IFE (Credencial para Votar), o cualquier identificación oficial mexicana. Aunque la imagen tenga reflejos, esté un poco inclinada o no sea perfecta, haz tu mejor esfuerzo para leer los datos.
+
+En una INE mexicana encontrarás:
+- NOMBRE: apellido paterno, apellido materno, nombre(s) — puede estar en varias líneas
+- CURP: 18 caracteres alfanuméricos (ej: OECD900804HDFRRN03)
+- CLAVE DE ELECTOR: hasta 18 caracteres
+- FECHA DE NACIMIENTO: DD/MM/AAAA
+- SEXO: H o M
+
+Responde ÚNICAMENTE con un objeto JSON válido, sin backticks, sin texto adicional, sin explicaciones:
+{"esINE":true,"nombre":"nombre completo reconstruido en orden natural","curp":"CURP si es legible o vacío","claveElector":"clave si es legible o vacío","fechaNac":"fecha si es legible o vacío","observaciones":"nota solo si hay problema importante"}
+
+Si definitivamente no es ningún tipo de identificación: {"esINE":false,"nombre":"","curp":"","claveElector":"","fechaNac":"","observaciones":"La imagen no muestra una identificación"}
+
+Recuerda: aunque la imagen no sea perfecta, extrae lo que puedas leer. Prefiere devolver datos parciales a rechazar la imagen.` }
           ]
         }]
       })
