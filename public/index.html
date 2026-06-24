@@ -391,9 +391,17 @@ function setCookie(name, val, days) {
 
   async function guardarApiKeyEnSB(key) {
     try {
-      // upsert config row
-      await sbFetch('/config?clave=eq.' + CONFIG_KEY, 'DELETE');
-      await sbFetch('/config', 'POST', { clave: CONFIG_KEY, valor: key });
+      const res = await fetch(SB_URL + '/rest/v1/config', {
+        method: 'POST',
+        headers: {
+          'apikey': SB_KEY,
+          'Authorization': 'Bearer ' + SB_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify({ clave: CONFIG_KEY, valor: key })
+      });
+      if (!res.ok) console.warn('Error guardando key:', await res.text());
     } catch(e) { console.warn('No se pudo guardar key en SB:', e); }
   }
 
