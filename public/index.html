@@ -314,7 +314,7 @@
           </select>
           <input type="text" id="fMotivoOtro" placeholder="Especifica el motivo…" style="display:none;margin-top:6px">
         </div>
-        <div class="f"><label>Hora de entrada</label><input type="text" id="fEntrada" readonly placeholder="Se registra al guardar…"></div>
+
         <div class="f"><label>Número de gafete</label><input type="text" id="fGafete" placeholder="Ej. G-001"></div>
         <div class="f">
           <label>Lugar de ingreso</label>
@@ -368,6 +368,79 @@ function setCookie(name, val, days) {
   }
   let apiKey = getCookie('bita_key') || localStorage.getItem('bita_key') || '';
 
+  // ── SUPABASE ─────────────────────────────────────────────
+  const SB_URL = 'https://sdldzetnbmrbaniajjfi.supabase.co';
+  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkbGR6ZXRuYm1yYmFuaWFqamZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNjMyNTksImV4cCI6MjA5NzgzOTI1OX0.YrwFHELhR5N7u6bO32j3X9mOaitw1m-ozraiUchcTi0';
+
+  async function sbFetch(path, method='GET', body=null) {
+    const opts = {
+      method,
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': method === 'POST' ? 'return=representation' : ''
+      }
+    };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(SB_URL + '/rest/v1' + path, opts);
+    if (!res.ok) throw new Error('Supabase error ' + res.status);
+    return res.json();
+  }
+
+  async function guardarVisita(r) {
+    try {
+      const [h, m] = r.entrada.split(':');
+      const row = {
+        fecha: r.fecha.split('/').reverse().join('-'),
+        hora_entrada: r.entrada + ':00',
+        nombre: r.nombre,
+        curp: r.curp || null,
+        gafete: r.gafete || null,
+        lugar: r.lugar || null,
+        visita_a: r.visita,
+        area: r.area || null,
+        motivo: r.motivo,
+        status: 'active'
+      };
+      const data = await sbFetch('/visitas', 'POST', row);
+      return data[0]?.id || null;
+    } catch(e) { console.error('Error guardando en Supabase:', e); return null; }
+  }
+
+  async function registrarSalidaSB(sbId) {
+    if (!sbId) return;
+    try {
+      const hora = new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}) + ':00';
+      await sbFetch('/visitas?id=eq.' + sbId, 'PATCH', { hora_salida: hora, status: 'out' });
+    } catch(e) { console.error('Error registrando salida en Supabase:', e); }
+  }
+
+  async function cargarRegistrosHoy() {
+    try {
+      const hoy = new Date().toISOString().split('T')[0];
+      const data = await sbFetch('/visitas?fecha=eq.' + hoy + '&order=hora_entrada.asc');
+      records = data.map(r => ({
+        id: r.id,
+        sbId: r.id,
+        gafete: r.gafete || '',
+        lugar: r.lugar || '',
+        nombre: r.nombre,
+        curp: r.curp || '',
+        visita: r.visita_a,
+        area: r.area || '',
+        motivo: r.motivo,
+        entrada: r.hora_entrada?.slice(0,5) || '',
+        salida: r.hora_salida?.slice(0,5) || null,
+        foto: null,
+        fecha: new Date(r.fecha + 'T12:00:00').toLocaleDateString('es-MX'),
+        status: r.status
+      }));
+      renderLog();
+      updateStats();
+    } catch(e) { console.error('Error cargando registros:', e); }
+  }
+
 function actualizarDot() {
   document.getElementById('keyDot').className = 'dot' + (apiKey ? '' : ' off');
   document.getElementById('keyLbl').textContent = apiKey ? 'Key activa' : 'API Key';
@@ -407,6 +480,7 @@ window.addEventListener('load', () => {
   actualizarDot();
   if (!apiKey) abrirModal();
   initFields();
+  cargarRegistrosHoy();
 });
 
 // ── CLOCK ────────────────────────────────────────────────
@@ -566,8 +640,9 @@ function registrar() {
   const now = new Date();
   const horaEntrada = now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
   document.getElementById('fEntrada').value = horaEntrada;
-  records.push({
+  const record = {
     id: Date.now(),
+    sbId: null,
     gafete: document.getElementById('fGafete').value.trim(),
     lugar: document.getElementById('fLugar').value,
     nombre, curp: document.getElementById('fCurp').value,
@@ -575,9 +650,13 @@ function registrar() {
     entrada: horaEntrada,
     salida: null, foto: captured,
     fecha: now.toLocaleDateString('es-MX'), status:'active'
-  });
+  };
 
+  records.push(record);
   renderLog(); updateStats();
+
+  // save to Supabase in background
+  guardarVisita(record).then(id => { record.sbId = id; });
   toast('✓ Entrada registrada' + (document.getElementById('fGafete').value ? ' — Gafete '+document.getElementById('fGafete').value : ''));
   setTimeout(limpiar, 1400);
 }
@@ -589,6 +668,7 @@ function salida(id) {
   r.status = 'out';
   renderLog(); updateStats();
   toast('✓ Salida registrada — ' + r.nombre);
+  registrarSalidaSB(r.sbId);
 }
 
 function renderLog() {
