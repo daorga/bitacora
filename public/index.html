@@ -292,7 +292,13 @@
       const hoy = new Date().toISOString().split('T')[0];
       const data = await sbFetch('/visitas?fecha=eq.'+hoy+'&order=hora_entrada.asc');
       records = data.map(r => ({ id:r.id, sbId:r.id, gafete:r.gafete||'', lugar:r.lugar||'', nombre:r.nombre, curp:r.curp||'', visita:r.visita_a, area:r.area||'', motivo:r.motivo, entrada:r.hora_entrada?.slice(0,5)||'', salida:r.hora_salida?.slice(0,5)||null, foto:null, fecha:new Date(r.fecha+'T12:00:00').toLocaleDateString('es-MX'), status:r.status }));
-      renderLog(); updateStats();
+      renderLog();
+      // update stats after records are loaded
+      const hoy = new Date().toLocaleDateString('es-MX');
+      const h = records.filter(r => r.fecha === hoy);
+      document.getElementById('sTotal').textContent = h.length;
+      document.getElementById('sActivos').textContent = h.filter(r=>r.status==='active').length;
+      document.getElementById('sSalidos').textContent = h.filter(r=>r.status==='out').length;
     } catch(e) { console.error('Error SB cargar:',e); }
   }
 
@@ -376,11 +382,16 @@
       if(!data.esINE){setAlert('exStatus',`No se detectó una INE válida. ${data.observaciones||''} Puedes ingresar los datos manualmente.`,'a-warn');return;}
       document.getElementById('fNombre').value=data.nombre||'';
       document.getElementById('fCurp').value=data.curp||'';
+      const tipos={'INE':'INE / IFE','Licencia':'Licencia de conducir','Pasaporte':'Pasaporte','Otra':'Identificación oficial'};
+      const tipoLabel = tipos[data.tipoDoc] || 'Identificación';
       const leidos=[];
       if(data.nombre)leidos.push('nombre');
       if(data.curp)leidos.push('CURP');
       if(data.claveElector)leidos.push('clave de elector');
-      let msg=leidos.length?'✓ Datos leídos: '+leidos.join(', ')+'. Completa visita y motivo.':'✓ INE detectada. Verifica los datos.';
+      if(data.fechaNac)leidos.push('fecha de nac.');
+      let msg='✓ '+tipoLabel+' detectada';
+      if(leidos.length) msg+='. Datos leídos: '+leidos.join(', ')+'.';
+      msg+=' Completa visita y motivo.';
       if(data.observaciones)msg+=' · '+data.observaciones;
       setAlert('exStatus',msg,'a-ok');
     } catch(e){setAlert('exStatus','Error de conexión al servidor.','a-err');}
