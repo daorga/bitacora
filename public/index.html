@@ -239,17 +239,29 @@
     </div>
 
     <div class="panel" id="tab-bitacora">
-      <div class="ebar" style="flex-wrap:wrap;gap:10px">
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <input type="date" id="fechaPicker" onchange="cargarFecha(this.value)" style="padding:7px 10px;border-radius:6px;border:1.5px solid var(--gray-200);font-size:13px;font-family:inherit;color:var(--gray-800)">
           <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--gray-600);cursor:pointer;font-weight:500">
             <input type="checkbox" id="sinSalidaCheck" onchange="toggleSinSalida()" style="width:15px;height:15px;accent-color:var(--blue-600)">
-            Sin salida (días anteriores)
+            Sin salida anteriores
           </label>
         </div>
         <button onclick="exportCSV()"><i class="ti ti-download"></i>Exportar CSV</button>
       </div>
-      <div id="bitacoraLabel" style="font-size:12px;color:var(--gray-400);margin-bottom:10px"></div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
+        <div style="position:relative;flex:1;min-width:180px">
+          <i class="ti ti-search" style="position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--gray-400);pointer-events:none"></i>
+          <input type="text" id="searchInput" oninput="filtrarTabla()" placeholder="Buscar por nombre o gafete…" style="padding:7px 10px 7px 32px;border-radius:6px;border:1.5px solid var(--gray-200);font-size:13px;font-family:inherit;color:var(--gray-800);width:100%">
+        </div>
+        <button id="btnSoloEnSitio" onclick="toggleEnSitio(this)" style="font-size:12px;padding:6px 12px">
+          <i class="ti ti-circle-filled" style="font-size:9px;color:#15803D"></i>Solo en sitio
+        </button>
+        <button onclick="limpiarFiltros()" style="font-size:12px;padding:6px 12px">
+          <i class="ti ti-x" style="font-size:13px"></i>Limpiar
+        </button>
+      </div>
+      <div id="bitacoraLabel" style="font-size:12px;color:var(--gray-400);margin-bottom:8px"></div>
       <div class="tw">
         <table>
           <thead>
@@ -289,8 +301,24 @@
         body: blob
       });
       if (!res.ok) return null;
-      return SB_URL+'/storage/v1/object/public/Fotos/'+path;
+      // return only the path, not a public URL — bucket is private
+      return path;
     } catch(e) { console.warn('No se pudo subir foto:', e); return null; }
+  }
+
+  async function fotoUrl(path) {
+    if (!path) return null;
+    // generate a signed URL valid for 1 hour
+    try {
+      const res = await fetch(SB_URL+'/storage/v1/object/sign/Fotos/'+path, {
+        method:'POST',
+        headers:{ 'apikey':SB_KEY, 'Authorization':'Bearer '+SB_KEY, 'Content-Type':'application/json' },
+        body: JSON.stringify({ expiresIn: 3600 })
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return SB_URL+'/storage/v1'+data.signedURL;
+    } catch(e) { return null; }
   }
 
   async function guardarVisita(r) {
@@ -333,8 +361,10 @@
       ]);
       records = [...dataPendientes.map(mapRow), ...dataHoy.map(mapRow)];
       renderLog();
+      cargarFotosAsync(records);
       updateStatsFromRecords();
       updateBitacoraLabel();
+      filtrarTabla();
     } catch(e) { console.error('Error SB cargar:', e); }
   }
 
@@ -345,7 +375,9 @@
       const data = await sbFetch('/visitas?fecha=eq.'+fecha+'&order=hora_entrada.asc');
       records = data.map(mapRow);
       renderLog();
+      cargarFotosAsync(records);
       updateBitacoraLabel();
+      filtrarTabla();
     } catch(e) { console.error('Error SB fecha:', e); }
   }
 
@@ -549,12 +581,48 @@
     registrarSalidaSB(r.sbId);
   }
 
+  let soloEnSitio = false;
+
+  function filtrarTabla() {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
+    const filas = document.querySelectorAll('#logBody tr[data-id]');
+    let visibles = 0;
+    filas.forEach(tr => {
+      const nombre = (tr.dataset.nombre||'').toLowerCase();
+      const gafete = (tr.dataset.gafete||'').toLowerCase();
+      const status = tr.dataset.status;
+      const matchQ = !q || nombre.includes(q) || gafete.includes(q);
+      const matchSitio = !soloEnSitio || status === 'active';
+      tr.style.display = (matchQ && matchSitio) ? '' : 'none';
+      if (matchQ && matchSitio) visibles++;
+    });
+    document.getElementById('bitacoraLabel').textContent =
+      visibles + ' de ' + records.length + ' registro(s) mostrados';
+  }
+
+  function toggleEnSitio(btn) {
+    soloEnSitio = !soloEnSitio;
+    btn.style.background = soloEnSitio ? 'var(--success-bg)' : '';
+    btn.style.borderColor = soloEnSitio ? 'var(--success-bd)' : '';
+    btn.style.color = soloEnSitio ? 'var(--success-tx)' : '';
+    filtrarTabla();
+  }
+
+  function limpiarFiltros() {
+    document.getElementById('searchInput').value = '';
+    soloEnSitio = false;
+    const btn = document.getElementById('btnSoloEnSitio');
+    btn.style.background = '';btn.style.borderColor = '';btn.style.color = '';
+    filtrarTabla();
+  }
+
   function renderLog() {
     const tb=document.getElementById('logBody');
     if(!records.length){tb.innerHTML='<tr><td colspan="10"><div class="empty"><i class="ti ti-clipboard-list"></i><p>Sin registros aún.</p></div></td></tr>';return;}
-    tb.innerHTML=records.slice().reverse().map(r=>`
-      <tr>
-        <td>${r.foto?`<img src="${r.foto}" class="thumb" alt="foto">`:r.foto_url?`<img src="${r.foto_url}" class="thumb" alt="foto">`:`<div class="tph"><i class="ti ti-user"></i></div>`}</td>
+    const reversed = records.slice().reverse();
+    tb.innerHTML=reversed.map(r=>`
+      <tr data-id="${r.id}" data-nombre="${r.nombre}" data-gafete="${r.gafete}" data-status="${r.status}">
+        <td id="foto-${r.id}">${r.foto?`<img src="${r.foto}" class="thumb" alt="foto">`:`<div class="tph"><i class="ti ti-user"></i></div>`}</td>
         <td><div style="font-weight:500">${r.nombre}</div><div style="font-size:11px;color:var(--gray-400)">${r.curp||''}</div></td>
         <td style="font-weight:500;white-space:nowrap">${r.gafete||'—'}</td>
         <td style="font-size:12px;color:var(--gray-600);white-space:nowrap">${r.lugar||'—'}</td>
@@ -565,6 +633,17 @@
         <td>${r.status==='active'?'<span class="badge b-in"><i class="ti ti-circle-filled" style="font-size:8px"></i>En sitio</span>':'<span class="badge b-out"><i class="ti ti-check" style="font-size:11px"></i>Salió</span>'}</td>
         <td>${r.status==='active'?`<button class="btn-ok" onclick="salida(${r.id})" style="font-size:12px;padding:5px 10px"><i class="ti ti-logout"></i>Salida</button>`:''}</td>
       </tr>`).join('');
+  }
+
+  // Load signed URLs for photos in background
+  function cargarFotosAsync(recs) {
+    recs.forEach(async r => {
+      if (r.foto || !r.foto_url) return;
+      const url = await fotoUrl(r.foto_url);
+      if (!url) return;
+      const el = document.getElementById('foto-'+r.id);
+      if (el) el.innerHTML = `<img src="${url}" class="thumb" alt="foto">`;
+    });
   }
 
   function updateStats() {
