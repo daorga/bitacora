@@ -371,6 +371,7 @@ function setCookie(name, val, days) {
   // ── SUPABASE ─────────────────────────────────────────────
   const SB_URL = 'https://sdldzetnbmrbaniajjfi.supabase.co';
   const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkbGR6ZXRuYm1yYmFuaWFqamZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNjMyNTksImV4cCI6MjA5NzgzOTI1OX0.YrwFHELhR5N7u6bO32j3X9mOaitw1m-ozraiUchcTi0';
+  const CONFIG_KEY = 'anthropic_api_key';
 
   async function sbFetch(path, method='GET', body=null) {
     const opts = {
@@ -386,6 +387,22 @@ function setCookie(name, val, days) {
     const res = await fetch(SB_URL + '/rest/v1' + path, opts);
     if (!res.ok) throw new Error('Supabase error ' + res.status);
     return res.json();
+  }
+
+  async function guardarApiKeyEnSB(key) {
+    try {
+      // upsert config row
+      await sbFetch('/config?clave=eq.' + CONFIG_KEY, 'DELETE');
+      await sbFetch('/config', 'POST', { clave: CONFIG_KEY, valor: key });
+    } catch(e) { console.warn('No se pudo guardar key en SB:', e); }
+  }
+
+  async function cargarApiKeyDeSB() {
+    try {
+      const data = await sbFetch('/config?clave=eq.' + CONFIG_KEY);
+      if (data && data.length > 0) return data[0].valor;
+    } catch(e) { console.warn('No se pudo cargar key de SB:', e); }
+    return null;
   }
 
   async function guardarVisita(r) {
@@ -469,6 +486,7 @@ function guardarKey() {
   apiKey = val;
   localStorage.setItem('bita_key', apiKey);
   setCookie('bita_key', apiKey, 365);
+  guardarApiKeyEnSB(apiKey);
   actualizarDot();
   cerrarModal();
   toast('✓ API Key guardada correctamente');
@@ -476,7 +494,15 @@ function guardarKey() {
 
 document.getElementById('apiKeyInput').addEventListener('keydown', e => { if (e.key==='Enter') guardarKey(); });
 
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
+  if (!apiKey) {
+    const keyDeSB = await cargarApiKeyDeSB();
+    if (keyDeSB) {
+      apiKey = keyDeSB;
+      localStorage.setItem('bita_key', apiKey);
+      setCookie('bita_key', apiKey, 365);
+    }
+  }
   actualizarDot();
   if (!apiKey) abrirModal();
   initFields();
