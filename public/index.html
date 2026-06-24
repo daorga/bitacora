@@ -294,7 +294,7 @@
         <div class="f"><label>A quién visita</label><input type="text" id="fVisita" placeholder="Nombre del colaborador…"></div>
         <div class="f"><label>Área / Departamento</label><input type="text" id="fArea" placeholder="Ej. Recursos Humanos…"></div>
         <div class="f full"><label>Motivo de la visita</label><textarea id="fMotivo" placeholder="Describe brevemente el propósito…"></textarea></div>
-        <div class="f"><label>Hora de entrada</label><input type="text" id="fEntrada" readonly></div>
+        <div class="f"><label>Hora de entrada</label><input type="text" id="fEntrada" readonly placeholder="Se registra al guardar…"></div>
         <div class="f"><label>Número de gafete</label><input type="text" id="fGafete" placeholder="Ej. G-001"></div>
       </div>
       <div class="btn-row" style="margin-top:16px">
@@ -376,8 +376,7 @@ document.getElementById('fechaHoy').textContent =
   new Date().toLocaleDateString('es-MX', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
 function initFields() {
-  document.getElementById('fEntrada').value =
-    new Date().toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
+  document.getElementById('fEntrada').value = '';
   document.getElementById('fGafete').value = '';
 }
 
@@ -477,7 +476,6 @@ async function extractINE(img) {
 
     document.getElementById('fNombre').value = data.nombre || '';
     document.getElementById('fCurp').value   = data.curp   || '';
-    document.getElementById('fEntrada').value = new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
 
     // build success message showing what was read
     const leidos = [];
@@ -514,13 +512,14 @@ function registrar() {
   if (!motivo) { setAlert('formErr','Indica el motivo de la visita.','a-err'); return; }
 
   const now = new Date();
+  const horaEntrada = now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('fEntrada').value = horaEntrada;
   records.push({
     id: Date.now(),
     gafete: document.getElementById('fGafete').value.trim(),
     nombre, curp: document.getElementById('fCurp').value,
     visita, area: document.getElementById('fArea').value, motivo,
-    entrada: document.getElementById('fEntrada').value ||
-      now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}),
+    entrada: horaEntrada,
     salida: null, foto: captured,
     fecha: now.toLocaleDateString('es-MX'), status:'active'
   });
