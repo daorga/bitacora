@@ -489,7 +489,6 @@ document.getElementById('fechaHoy').textContent =
   new Date().toLocaleDateString('es-MX', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
 function initFields() {
-  document.getElementById('fEntrada').value = '';
   document.getElementById('fGafete').value = '';
 }
 
@@ -639,7 +638,6 @@ function registrar() {
 
   const now = new Date();
   const horaEntrada = now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('fEntrada').value = horaEntrada;
   const record = {
     id: Date.now(),
     sbId: null,
