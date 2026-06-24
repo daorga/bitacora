@@ -145,6 +145,8 @@
   .f input, .f textarea { padding:8px 10px; border-radius:var(--radius-sm); border:1.5px solid var(--gray-200); background:var(--white); color:var(--gray-800); font-size:13px; font-family:inherit; width:100%; transition:border-color .15s,box-shadow .15s; }
   .f input:focus, .f textarea:focus { outline:none; border-color:var(--blue-400); box-shadow:0 0 0 3px rgba(55,138,221,.12); }
   .f input[readonly] { background:var(--gray-50); color:var(--gray-500); }
+  .f select { padding:8px 10px; border-radius:var(--radius-sm); border:1.5px solid var(--gray-200); background:var(--white); color:var(--gray-800); font-size:13px; font-family:inherit; width:100%; transition:border-color .15s,box-shadow .15s; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238FA8C0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 10px center; padding-right:28px; }
+  .f select:focus { outline:none; border-color:var(--blue-400); box-shadow:0 0 0 3px rgba(55,138,221,.12); }
   .f textarea { resize:vertical; min-height:65px; }
   .divider { display:flex; align-items:center; gap:8px; margin:1.1rem 0; color:var(--gray-400); font-size:12px; }
   .divider::before, .divider::after { content:''; flex:1; height:1px; background:var(--gray-100); }
@@ -293,7 +295,25 @@
         <div class="f"><label>CURP</label><input type="text" id="fCurp" placeholder="Extraído de INE…"></div>
         <div class="f"><label>A quién visita</label><input type="text" id="fVisita" placeholder="Nombre del colaborador…"></div>
         <div class="f"><label>Área / Departamento</label><input type="text" id="fArea" placeholder="Ej. Recursos Humanos…"></div>
-        <div class="f full"><label>Motivo de la visita</label><textarea id="fMotivo" placeholder="Describe brevemente el propósito…"></textarea></div>
+        <div class="f full">
+          <label>Motivo de la visita</label>
+          <select id="fMotivoSel" onchange="toggleMotivo(this)">
+            <option value="">— Selecciona el motivo —</option>
+            <option>Reunión</option>
+            <option>Consulta</option>
+            <option>Compra</option>
+            <option>Pago</option>
+            <option>Clase</option>
+            <option>Exposición / presentación</option>
+            <option>Entrevista</option>
+            <option>Trámite</option>
+            <option>Entrega de documentos</option>
+            <option>Mantenimiento / servicio técnico</option>
+            <option>Visita de auditoría</option>
+            <option>Otro</option>
+          </select>
+          <input type="text" id="fMotivoOtro" placeholder="Especifica el motivo…" style="display:none;margin-top:6px">
+        </div>
         <div class="f"><label>Hora de entrada</label><input type="text" id="fEntrada" readonly placeholder="Se registra al guardar…"></div>
         <div class="f"><label>Número de gafete</label><input type="text" id="fGafete" placeholder="Ej. G-001"></div>
       </div>
@@ -512,10 +532,23 @@ function setAlert(id, msg, cls) {
 
 function alert(id, msg, type) { setAlert(id, msg, 'a-'+type); }
 
+function toggleMotivo(sel) {
+  const otro = document.getElementById('fMotivoOtro');
+  otro.style.display = sel.value === 'Otro' ? 'block' : 'none';
+  if (sel.value !== 'Otro') otro.value = '';
+}
+
+function getMotivo() {
+  const sel = document.getElementById('fMotivoSel').value;
+  if (!sel) return '';
+  if (sel === 'Otro') return document.getElementById('fMotivoOtro').value.trim();
+  return sel;
+}
+
 function registrar() {
   const nombre = document.getElementById('fNombre').value.trim();
   const visita = document.getElementById('fVisita').value.trim();
-  const motivo = document.getElementById('fMotivo').value.trim();
+  const motivo = getMotivo();
   if (!nombre) { setAlert('formErr','Ingresa el nombre del visitante.','a-err'); return; }
   if (!visita) { setAlert('formErr','Especifica a quién visita.','a-err'); return; }
   if (!motivo) { setAlert('formErr','Indica el motivo de la visita.','a-err'); return; }
@@ -580,7 +613,9 @@ function updateStats() {
 }
 
 function limpiar() {
-  ['fNombre','fCurp','fVisita','fArea','fMotivo','fGafete'].forEach(id=>document.getElementById(id).value='');
+  ['fNombre','fCurp','fVisita','fArea','fGafete','fMotivoOtro'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fMotivoSel').value='';
+  document.getElementById('fMotivoOtro').style.display='none';
   document.getElementById('previewImg').style.display='none';
   document.getElementById('camPh').style.display='block';
   document.getElementById('video').style.display='none';
