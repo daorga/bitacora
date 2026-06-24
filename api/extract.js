@@ -26,22 +26,23 @@ export default async function handler(req, res) {
           role: 'user',
           content: [
             { type: 'image', source: { type: 'base64', media_type: mediaType || 'image/jpeg', data: image } },
-            { type: 'text', text: `Eres un sistema de lectura de credenciales de identificación mexicanas para control de acceso.
+            { type: 'text', text: `Eres un sistema de lectura de identificaciones oficiales para control de acceso en México.
 
-Analiza la imagen e intenta extraer la información visible. La imagen puede ser de una INE/IFE (Credencial para Votar), o cualquier identificación oficial mexicana. Aunque la imagen tenga reflejos, esté un poco inclinada o no sea perfecta, haz tu mejor esfuerzo para leer los datos.
+Analiza la imagen y detecta automáticamente qué tipo de documento es, luego extrae la información visible. Acepta cualquiera de estos documentos:
 
-En una INE mexicana encontrarás:
-- NOMBRE: apellido paterno, apellido materno, nombre(s) — puede estar en varias líneas
-- CURP: 18 caracteres alfanuméricos (ej: OECD900804HDFRRN03)
-- CLAVE DE ELECTOR: hasta 18 caracteres
-- FECHA DE NACIMIENTO: DD/MM/AAAA
+- INE / IFE (Credencial para Votar): contiene NOMBRE, CURP, CLAVE DE ELECTOR, FECHA DE NACIMIENTO
+- Licencia de conducir: contiene NOMBRE, fecha de nacimiento, número de licencia, vigencia
+- Pasaporte mexicano: contiene NOMBRE, fecha de nacimiento, número de pasaporte, nacionalidad
+- Cualquier otra identificación oficial mexicana
+
+Aunque la imagen tenga reflejos, esté inclinada o no sea perfecta, haz tu mejor esfuerzo para leer los datos. Prefiere devolver datos parciales a rechazar el documento.
 
 Responde ÚNICAMENTE con un objeto JSON válido, sin backticks, sin texto adicional:
-{"esINE":true,"nombre":"nombre completo en orden natural","curp":"CURP si es legible","claveElector":"clave si es legible","fechaNac":"fecha si es legible","observaciones":"nota solo si hay problema importante"}
+{"esINE":true,"tipoDoc":"INE","nombre":"nombre completo en orden natural","curp":"CURP si aplica y es legible","claveElector":"si aplica","fechaNac":"fecha de nacimiento si es legible","observaciones":"nota breve solo si hay problema importante"}
 
-Si definitivamente no es una identificación: {"esINE":false,"nombre":"","curp":"","claveElector":"","fechaNac":"","observaciones":"La imagen no muestra una identificación"}
+Valores válidos para tipoDoc: "INE", "Licencia", "Pasaporte", "Otra"
 
-Extrae lo que puedas leer aunque la imagen no sea perfecta. Prefiere datos parciales a rechazar.` }
+Si definitivamente no es ninguna identificación oficial: {"esINE":false,"tipoDoc":"","nombre":"","curp":"","claveElector":"","fechaNac":"","observaciones":"La imagen no muestra una identificación oficial"}` }
           ]
         }]
       })
