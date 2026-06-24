@@ -294,8 +294,8 @@
       records = data.map(r => ({ id:r.id, sbId:r.id, gafete:r.gafete||'', lugar:r.lugar||'', nombre:r.nombre, curp:r.curp||'', visita:r.visita_a, area:r.area||'', motivo:r.motivo, entrada:r.hora_entrada?.slice(0,5)||'', salida:r.hora_salida?.slice(0,5)||null, foto:null, fecha:new Date(r.fecha+'T12:00:00').toLocaleDateString('es-MX'), status:r.status }));
       renderLog();
       // update stats after records are loaded
-      const hoy = new Date().toLocaleDateString('es-MX');
-      const h = records.filter(r => r.fecha === hoy);
+      const hoyLocal = new Date().toLocaleDateString('es-MX');
+      const h = records.filter(r => r.fecha === hoyLocal);
       document.getElementById('sTotal').textContent = h.length;
       document.getElementById('sActivos').textContent = h.filter(r=>r.status==='active').length;
       document.getElementById('sSalidos').textContent = h.filter(r=>r.status==='out').length;
@@ -320,8 +320,12 @@
   let stream=null, captured=null, records=[];
 
   async function startCam() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setAlert('exStatus','Tu navegador no soporta cámara. Usa "Subir imagen".','a-err');
+      return;
+    }
     try {
-      stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}}});
+      stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}}});
       document.getElementById('video').srcObject=stream;
       document.getElementById('video').style.display='block';
       document.getElementById('camPh').style.display='none';
@@ -329,7 +333,14 @@
       document.getElementById('btnSnap').style.display='inline-flex';
       document.getElementById('btnRetake').style.display='none';
       document.getElementById('viewfinder').classList.add('active');
-    } catch { setAlert('exStatus','No se pudo acceder a la cámara. Usa "Subir imagen".','a-err'); }
+    } catch(e) {
+      const msg = e.name==='NotAllowedError'
+        ? 'Permiso de cámara denegado. Actívalo en Ajustes del navegador.'
+        : e.name==='NotFoundError'
+        ? 'No se encontró una cámara en este dispositivo.'
+        : 'No se pudo acceder a la cámara: '+e.message;
+      setAlert('exStatus', msg, 'a-err');
+    }
   }
 
   function snapPhoto() {
