@@ -239,10 +239,17 @@
     </div>
 
     <div class="panel" id="tab-bitacora">
-      <div class="ebar">
-        <h2>Registro del día — <span id="fechaHoy"></span></h2>
+      <div class="ebar" style="flex-wrap:wrap;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <input type="date" id="fechaPicker" onchange="cargarFecha(this.value)" style="padding:7px 10px;border-radius:6px;border:1.5px solid var(--gray-200);font-size:13px;font-family:inherit;color:var(--gray-800)">
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--gray-600);cursor:pointer;font-weight:500">
+            <input type="checkbox" id="sinSalidaCheck" onchange="toggleSinSalida()" style="width:15px;height:15px;accent-color:var(--blue-600)">
+            Sin salida (días anteriores)
+          </label>
+        </div>
         <button onclick="exportCSV()"><i class="ti ti-download"></i>Exportar CSV</button>
       </div>
+      <div id="bitacoraLabel" style="font-size:12px;color:var(--gray-400);margin-bottom:10px"></div>
       <div class="tw">
         <table>
           <thead>
@@ -271,11 +278,31 @@
     return res.json();
   }
 
+  async function subirFoto(id, dataUrl) {
+    if (!dataUrl) return null;
+    try {
+      const blob = await (await fetch(dataUrl)).blob();
+      const path = 'visitas/'+id+'.jpg';
+      const res = await fetch(SB_URL+'/storage/v1/object/fotos/'+path, {
+        method:'POST',
+        headers:{ 'apikey':SB_KEY, 'Authorization':'Bearer '+SB_KEY, 'Content-Type':'image/jpeg', 'x-upsert':'true' },
+        body: blob
+      });
+      if (!res.ok) return null;
+      return SB_URL+'/storage/v1/object/public/fotos/'+path;
+    } catch(e) { console.warn('No se pudo subir foto:', e); return null; }
+  }
+
   async function guardarVisita(r) {
     try {
       const row = { fecha: new Date().toISOString().split('T')[0], hora_entrada: r.entrada+':00', nombre:r.nombre, curp:r.curp||null, gafete:r.gafete||null, lugar:r.lugar||null, visita_a:r.visita, area:r.area||null, motivo:r.motivo, status:'active' };
       const data = await sbFetch('/visitas','POST',row);
-      return data[0]?.id || null;
+      const sbId = data[0]?.id || null;
+      if (sbId && r.foto) {
+        const url = await subirFoto(sbId, r.foto);
+        if (url) await sbFetch('/visitas?id=eq.'+sbId,'PATCH',{foto_url:url});
+      }
+      return sbId;
     } catch(e) { console.error('Error SB guardar:',e); return null; }
   }
 
@@ -287,25 +314,85 @@
     } catch(e) { console.error('Error SB salida:',e); }
   }
 
+  let vistaFecha = null; // null = hoy
+
+  function mapRow(r) {
+    return { id:r.id, sbId:r.id, gafete:r.gafete||'', lugar:r.lugar||'', nombre:r.nombre, curp:r.curp||'', visita:r.visita_a, area:r.area||'', motivo:r.motivo, entrada:r.hora_entrada?.slice(0,5)||'', salida:r.hora_salida?.slice(0,5)||null, foto_url:r.foto_url||null, foto:null, fecha:new Date(r.fecha+'T12:00:00').toLocaleDateString('es-MX'), fechaISO:r.fecha, status:r.status };
+  }
+
   async function cargarRegistrosHoy() {
+    const hoy = new Date().toISOString().split('T')[0];
+    vistaFecha = hoy;
+    const picker = document.getElementById('fechaPicker');
+    if (picker) picker.value = hoy;
     try {
-      const hoy = new Date().toISOString().split('T')[0];
-      const data = await sbFetch('/visitas?fecha=eq.'+hoy+'&order=hora_entrada.asc');
-      records = data.map(r => ({ id:r.id, sbId:r.id, gafete:r.gafete||'', lugar:r.lugar||'', nombre:r.nombre, curp:r.curp||'', visita:r.visita_a, area:r.area||'', motivo:r.motivo, entrada:r.hora_entrada?.slice(0,5)||'', salida:r.hora_salida?.slice(0,5)||null, foto:null, fecha:new Date(r.fecha+'T12:00:00').toLocaleDateString('es-MX'), status:r.status }));
+      // today's records + active from previous days
+      const [dataHoy, dataPendientes] = await Promise.all([
+        sbFetch('/visitas?fecha=eq.'+hoy+'&order=hora_entrada.asc'),
+        sbFetch('/visitas?fecha=lt.'+hoy+'&status=eq.active&order=fecha.asc,hora_entrada.asc')
+      ]);
+      records = [...dataPendientes.map(mapRow), ...dataHoy.map(mapRow)];
       renderLog();
-      // update stats after records are loaded
-      const hoyLocal = new Date().toLocaleDateString('es-MX');
-      const h = records.filter(r => r.fecha === hoyLocal);
-      document.getElementById('sTotal').textContent = h.length;
-      document.getElementById('sActivos').textContent = h.filter(r=>r.status==='active').length;
-      document.getElementById('sSalidos').textContent = h.filter(r=>r.status==='out').length;
-    } catch(e) { console.error('Error SB cargar:',e); }
+      updateStatsFromRecords();
+      updateBitacoraLabel();
+    } catch(e) { console.error('Error SB cargar:', e); }
+  }
+
+  async function cargarFecha(fecha) {
+    if (!fecha) return;
+    vistaFecha = fecha;
+    try {
+      const data = await sbFetch('/visitas?fecha=eq.'+fecha+'&order=hora_entrada.asc');
+      records = data.map(mapRow);
+      renderLog();
+      updateBitacoraLabel();
+    } catch(e) { console.error('Error SB fecha:', e); }
+  }
+
+  async function toggleSinSalida() {
+    const checked = document.getElementById('sinSalidaCheck').checked;
+    if (checked) {
+      try {
+        const hoy = new Date().toISOString().split('T')[0];
+        const data = await sbFetch('/visitas?fecha=lt.'+hoy+'&status=eq.active&order=fecha.asc,hora_entrada.asc');
+        records = data.map(mapRow);
+        renderLog();
+        updateBitacoraLabel();
+      } catch(e) { console.error('Error SB sin salida:', e); }
+    } else {
+      cargarRegistrosHoy();
+    }
+  }
+
+  function updateBitacoraLabel() {
+    const el = document.getElementById('bitacoraLabel');
+    if (!el) return;
+    const sinSalida = document.getElementById('sinSalidaCheck')?.checked;
+    if (sinSalida) {
+      el.textContent = records.length + ' visitante(s) sin salida de días anteriores';
+    } else {
+      const d = new Date(vistaFecha+'T12:00:00');
+      el.textContent = d.toLocaleDateString('es-MX',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) + ' · ' + records.length + ' registro(s)';
+    }
+  }
+
+  function updateStatsFromRecords() {
+    const hoy = new Date().toLocaleDateString('es-MX');
+    const h = records.filter(r => r.fechaISO === new Date().toISOString().split('T')[0]);
+    document.getElementById('sTotal').textContent = h.length;
+    document.getElementById('sActivos').textContent = records.filter(r=>r.status==='active').length;
+    document.getElementById('sSalidos').textContent = h.filter(r=>r.status==='out').length;
   }
 
   setInterval(()=>document.getElementById('clock').textContent=new Date().toLocaleTimeString('es-MX'),1000);
-  document.getElementById('fechaHoy').textContent = new Date().toLocaleDateString('es-MX',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  
 
-  window.addEventListener('load', () => { initFields(); cargarRegistrosHoy(); });
+  window.addEventListener('load', () => {
+    initFields();
+    // set today as default in date picker
+    document.getElementById('fechaPicker').value = new Date().toISOString().split('T')[0];
+    cargarRegistrosHoy();
+  });
 
   function initFields() { document.getElementById('fGafete').value=''; }
 
@@ -467,7 +554,7 @@
     if(!records.length){tb.innerHTML='<tr><td colspan="10"><div class="empty"><i class="ti ti-clipboard-list"></i><p>Sin registros aún.</p></div></td></tr>';return;}
     tb.innerHTML=records.slice().reverse().map(r=>`
       <tr>
-        <td>${r.foto?`<img src="${r.foto}" class="thumb" alt="foto">`:`<div class="tph"><i class="ti ti-user"></i></div>`}</td>
+        <td>${r.foto?`<img src="${r.foto}" class="thumb" alt="foto">`:r.foto_url?`<img src="${r.foto_url}" class="thumb" alt="foto">`:`<div class="tph"><i class="ti ti-user"></i></div>`}</td>
         <td><div style="font-weight:500">${r.nombre}</div><div style="font-size:11px;color:var(--gray-400)">${r.curp||''}</div></td>
         <td style="font-weight:500;white-space:nowrap">${r.gafete||'—'}</td>
         <td style="font-size:12px;color:var(--gray-600);white-space:nowrap">${r.lugar||'—'}</td>
