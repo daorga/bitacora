@@ -299,16 +299,16 @@
           <label>Motivo de la visita</label>
           <select id="fMotivoSel" onchange="toggleMotivo(this)">
             <option value="">— Selecciona el motivo —</option>
-            <option>Reunión</option>
-            <option>Consulta</option>
-            <option>Compra</option>
-            <option>Pago</option>
             <option>Clase</option>
-            <option>Exposición / presentación</option>
-            <option>Entrevista</option>
-            <option>Trámite</option>
+            <option>Compra</option>
+            <option>Consulta</option>
             <option>Entrega de documentos</option>
+            <option>Entrevista</option>
+            <option>Exposición / presentación</option>
             <option>Mantenimiento / servicio técnico</option>
+            <option>Pago</option>
+            <option>Reunión</option>
+            <option>Trámite</option>
             <option>Visita de auditoría</option>
             <option>Otro</option>
           </select>
@@ -316,6 +316,16 @@
         </div>
         <div class="f"><label>Hora de entrada</label><input type="text" id="fEntrada" readonly placeholder="Se registra al guardar…"></div>
         <div class="f"><label>Número de gafete</label><input type="text" id="fGafete" placeholder="Ej. G-001"></div>
+        <div class="f">
+          <label>Lugar de ingreso</label>
+          <select id="fLugar">
+            <option value="">— Selecciona —</option>
+            <option>Puerta 1</option>
+            <option>Puerta 2</option>
+            <option>Puerta 3</option>
+            <option>Estacionamiento</option>
+          </select>
+        </div>
       </div>
       <div class="btn-row" style="margin-top:16px">
         <button class="btn-p" onclick="registrar()"><i class="ti ti-check"></i>Registrar entrada</button>
@@ -333,10 +343,10 @@
       <div class="tw">
         <table>
           <thead>
-            <tr><th>Foto</th><th>Visitante</th><th>Gafete</th><th>Visita a</th><th>Motivo</th><th>Entrada</th><th>Salida</th><th>Estado</th><th></th></tr>
+            <tr><th>Foto</th><th>Visitante</th><th>Gafete</th><th>Ingreso</th><th>Visita a</th><th>Motivo</th><th>Entrada</th><th>Salida</th><th>Estado</th><th></th></tr>
           </thead>
           <tbody id="logBody">
-            <tr><td colspan="9"><div class="empty"><i class="ti ti-clipboard-list"></i><p>Sin registros aún.</p></div></td></tr>
+            <tr><td colspan="10"><div class="empty"><i class="ti ti-clipboard-list"></i><p>Sin registros aún.</p></div></td></tr>
           </tbody>
         </table>
       </div>
@@ -559,6 +569,7 @@ function registrar() {
   records.push({
     id: Date.now(),
     gafete: document.getElementById('fGafete').value.trim(),
+    lugar: document.getElementById('fLugar').value,
     nombre, curp: document.getElementById('fCurp').value,
     visita, area: document.getElementById('fArea').value, motivo,
     entrada: horaEntrada,
@@ -583,7 +594,7 @@ function salida(id) {
 function renderLog() {
   const tb = document.getElementById('logBody');
   if (!records.length) {
-    tb.innerHTML = '<tr><td colspan="9"><div class="empty"><i class="ti ti-clipboard-list"></i><p>Sin registros aún.</p></div></td></tr>';
+    tb.innerHTML = '<tr><td colspan="10"><div class="empty"><i class="ti ti-clipboard-list"></i><p>Sin registros aún.</p></div></td></tr>';
     return;
   }
   tb.innerHTML = records.slice().reverse().map(r => `
@@ -591,6 +602,7 @@ function renderLog() {
       <td>${r.foto?`<img src="${r.foto}" class="thumb" alt="foto">`:`<div class="tph"><i class="ti ti-user"></i></div>`}</td>
       <td><div style="font-weight:500">${r.nombre}</div><div style="font-size:11px;color:var(--gray-400)">${r.curp||''}</div></td>
       <td style="font-weight:500;white-space:nowrap">${r.gafete||'—'}</td>
+      <td style="font-size:12px;color:var(--gray-600);white-space:nowrap">${r.lugar||'—'}</td>
       <td><div style="font-weight:500">${r.visita}</div>${r.area?`<div style="font-size:11px;color:var(--gray-400)">${r.area}</div>`:''}</td>
       <td style="max-width:140px;color:var(--gray-600);font-size:12px">${r.motivo}</td>
       <td style="font-variant-numeric:tabular-nums;white-space:nowrap">${r.entrada}</td>
@@ -615,6 +627,7 @@ function updateStats() {
 function limpiar() {
   ['fNombre','fCurp','fVisita','fArea','fGafete','fMotivoOtro'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('fMotivoSel').value='';
+  document.getElementById('fLugar').value='';
   document.getElementById('fMotivoOtro').style.display='none';
   document.getElementById('previewImg').style.display='none';
   document.getElementById('camPh').style.display='block';
@@ -631,8 +644,8 @@ function limpiar() {
 
 function exportCSV() {
   if (!records.length) { toast('Sin registros para exportar'); return; }
-  const cols = ['Gafete','Nombre','CURP','Visita a','Área','Motivo','Entrada','Salida','Estado','Fecha'];
-  const rows = records.map(r=>[r.gafete,r.nombre,r.curp,r.visita,r.area,r.motivo,r.entrada,r.salida||'',r.status==='active'?'En sitio':'Salió',r.fecha].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(','));
+  const cols = ['Gafete','Ingreso','Nombre','CURP','Visita a','Área','Motivo','Entrada','Salida','Estado','Fecha'];
+  const rows = records.map(r=>[r.gafete,r.lugar||'',r.nombre,r.curp,r.visita,r.area,r.motivo,r.entrada,r.salida||'',r.status==='active'?'En sitio':'Salió',r.fecha].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(','));
   const blob = new Blob(['\uFEFF'+[cols.join(','),...rows].join('\n')],{type:'text/csv;charset=utf-8;'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
