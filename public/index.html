@@ -75,12 +75,42 @@
   .sec-lbl i { font-size:13px; }
 
   /* CAMERA */
-  .cam-box { background:var(--gray-50); border:1.5px dashed var(--gray-200); border-radius:var(--radius-md); min-height:200px; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .cam-box { background:#000; border-radius:var(--radius-md); min-height:220px; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; }
   .cam-ph { text-align:center; padding:2rem; }
-  .cam-ph i { font-size:42px; color:var(--gray-300); display:block; margin-bottom:8px; }
-  .cam-ph p { font-size:13px; color:var(--gray-500); }
+  .cam-ph i { font-size:42px; color:var(--gray-400); display:block; margin-bottom:8px; }
+  .cam-ph p { font-size:13px; color:var(--gray-400); }
   video { width:100%; display:block; }
-  #previewImg { width:100%; max-height:220px; object-fit:cover; border-radius:var(--radius-md); display:none; }
+  #previewImg { width:100%; max-height:260px; object-fit:cover; border-radius:var(--radius-md); display:none; }
+  /* VIEWFINDER */
+  .viewfinder { position:absolute; inset:0; pointer-events:none; display:none; flex-direction:column; align-items:center; justify-content:center; }
+  .viewfinder.active { display:flex; }
+  .vf-inner { position:relative; width:86%; max-width:340px; }
+  .vf-card {
+    width:100%; aspect-ratio:85.6/54;
+    border:2px solid rgba(255,255,255,0.9);
+    border-radius:8px; position:relative;
+    background:transparent;
+  }
+  /* dark bands above and below the card */
+  .vf-top, .vf-bot {
+    width:100%; background:rgba(0,0,0,0.55);
+    position:absolute; left:0;
+  }
+  .vf-top { bottom:100%; top:0; height:calc(50% - 27%); }
+  /* corner accents */
+  .vf-card::before,.vf-card::after,.vf-card .c::before,.vf-card .c::after {
+    content:''; position:absolute; width:20px; height:20px;
+    border-color:#378ADD; border-style:solid;
+  }
+  .vf-card::before { top:-2px; left:-2px; border-width:3px 0 0 3px; border-radius:5px 0 0 0; }
+  .vf-card::after  { top:-2px; right:-2px; border-width:3px 3px 0 0; border-radius:0 5px 0 0; }
+  .vf-card .c::before { bottom:-2px; left:-2px; border-width:0 0 3px 3px; border-radius:0 0 0 5px; }
+  .vf-card .c::after  { bottom:-2px; right:-2px; border-width:0 3px 3px 0; border-radius:0 0 5px 0; }
+  .vf-hint {
+    margin-top:10px; font-size:12px; font-weight:500;
+    color:rgba(255,255,255,0.85); text-align:center; letter-spacing:0.03em;
+    text-shadow:0 1px 3px rgba(0,0,0,0.6);
+  }
 
   /* BUTTONS */
   .btn-row { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; align-items:center; }
@@ -231,12 +261,19 @@
       <div class="sec-lbl"><i class="ti ti-camera"></i>Paso 1 — Capturar INE del visitante</div>
       <div class="cam-box" id="camBox">
         <div class="cam-ph" id="camPh">
-          <i class="ti ti-id"></i>
-          <p>Activa la cámara o sube una foto de la INE</p>
+          <i class="ti ti-id" style="color:var(--gray-500)"></i>
+          <p style="color:var(--gray-400)">Activa la cámara o sube una foto de la INE</p>
         </div>
         <video id="video" autoplay playsinline style="display:none"></video>
         <canvas id="snap" style="display:none"></canvas>
         <img id="previewImg" alt="Vista previa INE">
+        <!-- VIEWFINDER overlay -->
+        <div class="viewfinder" id="viewfinder">
+          <div class="vf-inner">
+            <div class="vf-card"><div class="c"></div></div>
+            <div class="vf-hint">Centra la INE dentro del recuadro</div>
+          </div>
+        </div>
       </div>
       <div class="btn-row">
         <button onclick="startCam()"><i class="ti ti-camera"></i>Activar cámara</button>
@@ -358,14 +395,15 @@ let stream = null, captured = null, records = [];
 
 async function startCam() {
   try {
-    stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment' } });
+    stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:{ ideal:'environment' }, width:{ideal:1920}, height:{ideal:1080} } });
     document.getElementById('video').srcObject = stream;
     document.getElementById('video').style.display = 'block';
     document.getElementById('camPh').style.display = 'none';
     document.getElementById('previewImg').style.display = 'none';
     document.getElementById('btnSnap').style.display = 'inline-flex';
     document.getElementById('btnRetake').style.display = 'none';
-  } catch { alert('extractionStatus', 'No se pudo acceder a la cámara. Usa "Subir imagen".', 'err'); }
+    document.getElementById('viewfinder').classList.add('active');
+  } catch { setAlert('exStatus', 'No se pudo acceder a la cámara. Usa "Subir imagen".', 'a-err'); }
 }
 
 function snapPhoto() {
@@ -388,6 +426,7 @@ function stopCam() {
   document.getElementById('video').style.display = 'none';
   document.getElementById('btnSnap').style.display = 'none';
   document.getElementById('btnRetake').style.display = 'inline-flex';
+  document.getElementById('viewfinder').classList.remove('active');
 }
 
 function retake() {
