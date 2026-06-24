@@ -5,9 +5,11 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido' });
 
-  const { image, mediaType, apiKey } = req.body;
-  if (!image)   return res.status(400).json({ error: 'Imagen requerida' });
-  if (!apiKey)  return res.status(400).json({ error: 'API Key requerida' });
+  const { image, mediaType } = req.body;
+  if (!image) return res.status(400).json({ error: 'Imagen requerida' });
+
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(500).json({ error: 'API Key no configurada en el servidor' });
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -33,32 +35,26 @@ En una INE mexicana encontrarás:
 - CURP: 18 caracteres alfanuméricos (ej: OECD900804HDFRRN03)
 - CLAVE DE ELECTOR: hasta 18 caracteres
 - FECHA DE NACIMIENTO: DD/MM/AAAA
-- SEXO: H o M
 
-Responde ÚNICAMENTE con un objeto JSON válido, sin backticks, sin texto adicional, sin explicaciones:
-{"esINE":true,"nombre":"nombre completo reconstruido en orden natural","curp":"CURP si es legible o vacío","claveElector":"clave si es legible o vacío","fechaNac":"fecha si es legible o vacío","observaciones":"nota solo si hay problema importante"}
+Responde ÚNICAMENTE con un objeto JSON válido, sin backticks, sin texto adicional:
+{"esINE":true,"nombre":"nombre completo en orden natural","curp":"CURP si es legible","claveElector":"clave si es legible","fechaNac":"fecha si es legible","observaciones":"nota solo si hay problema importante"}
 
-Si definitivamente no es ningún tipo de identificación: {"esINE":false,"nombre":"","curp":"","claveElector":"","fechaNac":"","observaciones":"La imagen no muestra una identificación"}
+Si definitivamente no es una identificación: {"esINE":false,"nombre":"","curp":"","claveElector":"","fechaNac":"","observaciones":"La imagen no muestra una identificación"}
 
-Recuerda: aunque la imagen no sea perfecta, extrae lo que puedas leer. Prefiere devolver datos parciales a rechazar la imagen.` }
+Extrae lo que puedas leer aunque la imagen no sea perfecta. Prefiere datos parciales a rechazar.` }
           ]
         }]
       })
     });
 
-    if (response.status === 401) {
-      return res.status(401).json({ error: 'API Key inválida' });
-    }
+    if (response.status === 401) return res.status(401).json({ error: 'API Key inválida' });
 
     const data = await response.json();
     const text = data.content?.filter(b => b.type === 'text').map(b => b.text).join('') || '';
 
     let parsed;
-    try {
-      parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
-    } catch {
-      parsed = { esINE: false, observaciones: 'No se pudo interpretar la respuesta' };
-    }
+    try { parsed = JSON.parse(text.replace(/```json|```/g, '').trim()); }
+    catch { parsed = { esINE: false, observaciones: 'No se pudo interpretar la respuesta' }; }
 
     return res.status(200).json(parsed);
   } catch (err) {
