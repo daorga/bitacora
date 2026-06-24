@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bitácora de Acceso</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --blue-50:#E6F1FB; --blue-100:#B5D4F4; --blue-200:#85B7EB; --blue-400:#378ADD;
+    --blue-600:#185FA5; --blue-800:#0C447C; --blue-900:#042C53; --navy:#06193A;
+    --white:#ffffff; --gray-50:#F6F8FB; --gray-100:#EAF0F7; --gray-200:#D0DCE9;
+    --gray-400:#8FA8C0; --gray-600:#4A6480; --gray-800:#1E3048;
+    --success-bg:#EAF7F0; --success-tx:#166534; --success-bd:#A7DFBE;
+    --warn-bg:#FEF9EC; --warn-tx:#854F0B; --warn-bd:#FAC775;
+    --danger-bg:#FEF2F2; --danger-tx:#A32D2D; --danger-bd:#F7C1C1;
+    --radius-sm:6px; --radius-md:10px; --radius-lg:14px;
+    --shadow-md:0 4px 16px rgba(4,44,83,0.10);
+  }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif; background:var(--navy); min-height:100vh; color:var(--gray-800); font-size:14px; line-height:1.5; }
+
+  /* MODAL */
+  .modal-overlay { position:fixed; inset:0; background:rgba(4,44,83,0.9); display:flex; align-items:center; justify-content:center; z-index:1000; padding:1rem; }
+  .modal-overlay.hidden { display:none; }
+  .modal { background:var(--white); border-radius:var(--radius-lg); padding:2rem; max-width:420px; width:100%; box-shadow:var(--shadow-md); }
+  .modal-logo { display:flex; align-items:center; gap:10px; margin-bottom:1.25rem; }
+  .modal-logo-icon { width:40px; height:40px; background:var(--blue-600); border-radius:var(--radius-md); display:flex; align-items:center; justify-content:center; }
+  .modal-logo-icon i { font-size:20px; color:#fff; }
+  .modal-title { font-size:17px; font-weight:600; color:var(--gray-800); }
+  .modal-sub   { font-size:12px; color:var(--gray-400); }
+  .modal-desc  { font-size:13px; color:var(--gray-600); line-height:1.6; margin-bottom:1.25rem; }
+  .modal-field { display:flex; flex-direction:column; gap:5px; margin-bottom:1rem; }
+  .modal-field label { font-size:12px; font-weight:600; color:var(--gray-600); }
+  .modal-field input { padding:9px 12px; border:1.5px solid var(--gray-200); border-radius:var(--radius-sm); font-size:13px; font-family:inherit; color:var(--gray-800); transition:border-color .15s,box-shadow .15s; width:100%; }
+  .modal-field input:focus { outline:none; border-color:var(--blue-400); box-shadow:0 0 0 3px rgba(55,138,221,.12); }
+  .modal-hint { font-size:11px; color:var(--gray-400); margin-top:5px; }
+  .modal-hint a { color:var(--blue-600); text-decoration:none; }
+  .modal-actions { display:flex; gap:8px; margin-top:1.25rem; }
+
+  /* TOP BAR */
+  .topbar { background:var(--navy); padding:0 1.25rem; height:54px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,.07); position:sticky; top:0; z-index:100; }
+  .brand { display:flex; align-items:center; gap:9px; }
+  .brand-icon { width:30px; height:30px; background:var(--blue-600); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; }
+  .brand-icon i { font-size:16px; color:#fff; }
+  .brand-name { font-size:15px; font-weight:600; color:#fff; }
+  .brand-sub  { font-size:11px; color:var(--gray-400); }
+  .topbar-right { display:flex; align-items:center; gap:10px; }
+  .topbar-time { font-size:13px; color:var(--blue-100); font-variant-numeric:tabular-nums; }
+  .btn-key { display:flex; align-items:center; gap:5px; padding:5px 10px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,.12); background:transparent; color:var(--blue-100); font-size:12px; cursor:pointer; font-family:inherit; transition:background .15s; }
+  .btn-key:hover { background:rgba(255,255,255,.07); }
+  .btn-key i { font-size:14px; }
+  .dot { width:7px; height:7px; border-radius:50%; background:#4ADE80; }
+  .dot.off { background:var(--gray-400); }
+
+  /* PAGE */
+  .page { max-width:900px; margin:0 auto; padding:1.25rem; }
+  .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:1.25rem; }
+  .stat { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.09); border-radius:var(--radius-md); padding:12px 16px; }
+  .stat.hi { border-color:var(--blue-400); background:rgba(55,138,221,.14); }
+  .stat-val { font-size:24px; font-weight:700; color:#fff; }
+  .stat.hi .stat-val { color:var(--blue-200); }
+  .stat-lbl { font-size:12px; color:var(--blue-100); margin-top:2px; }
+
+  /* CARD */
+  .card { background:var(--white); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); overflow:hidden; }
+  .tabs { display:flex; border-bottom:1px solid var(--gray-100); background:var(--gray-50); }
+  .tab { padding:12px 18px; font-size:13px; font-weight:500; cursor:pointer; border-bottom:2px solid transparent; color:var(--gray-600); display:flex; align-items:center; gap:6px; transition:color .15s; user-select:none; }
+  .tab:hover { color:var(--blue-600); }
+  .tab.active { color:var(--blue-600); border-bottom-color:var(--blue-400); background:var(--white); }
+  .tab i { font-size:15px; }
+  .panel { display:none; padding:1.25rem; }
+  .panel.active { display:block; }
+  .sec-lbl { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.07em; color:var(--blue-600); margin-bottom:9px; display:flex; align-items:center; gap:5px; }
+  .sec-lbl i { font-size:13px; }
+
+  /* CAMERA */
+  .cam-box { background:#000; border-radius:var(--radius-md); min-height:220px; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; }
+  .cam-ph { text-align:center; padding:2rem; }
+  .cam-ph i { font-size:42px; color:var(--gray-400); display:block; margin-bottom:8px; }
+  .cam-ph p { font-size:13px; color:var(--gray-400); }
+  video { width:100%; display:block; }
+  #previewImg { width:100%; max-height:260px; object-fit:cover; border-radius:var(--radius-md); display:none; }
+  /* VIEWFINDER */
+  .viewfinder { position:absolute; inset:0; pointer-events:none; display:none; align-items:center; justify-content:center; }
+  .viewfinder.active { display:flex; }
+  .vf-frame { width:88%; max-width:360px; aspect-ratio:85.6/54; border:2px solid rgba(255,255,255,0.85); border-radius:8px; position:relative; box-shadow:0 0 0 9999px rgba(0,0,0,0.42); }
+  .vf-frame::before,.vf-frame::after,.vf-corners::before,.vf-corners::after { content:''; position:absolute; width:22px; height:22px; border-color:#378ADD; border-style:solid; }
+  .vf-frame::before { top:-2px; left:-2px; border-width:3px 0 0 3px; border-radius:6px 0 0 0; }
+  .vf-frame::after  { top:-2px; right:-2px; border-width:3px 3px 0 0; border-radius:0 6px 0 0; }
+  .vf-corners::before { bottom:-2px; left:-2px; border-width:0 0 3px 3px; border-radius:0 0 0 6px; }
+  .vf-corners::after  { bottom:-2px; right:-2px; border-width:0 3px 3px 0; border-radius:0 0 6px 0; }
+  .vf-label { position:absolute; bottom:-26px; left:50%; transform:translateX(-50%); white-space:nowrap; font-size:11px; font-weight:500; color:rgba(255,255,255,0.8); letter-spacing:0.04em; }
+
+  /* BUTTONS */
+  .btn-row { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; align-items:center; }
+  button { display:inline-flex; align-items:center; gap:5px; padding:8px 15px; border-radius:var(--radius-sm); border:1.5px solid var(--gray-200); background:var(--white); cursor:pointer; font-size:13px; font-weight:500; color:var(--gray-800); transition:all .15s; font-family:inherit; }
+  button:hover { background:var(--gray-50); border-color:var(--gray-400); }
+  button i { font-size:15px; }
+  .btn-p { background:var(--blue-600)!important; color:#fff!important; border-color:var(--blue-600)!important; }
+  .btn-p:hover { background:var(--blue-800)!important; }
+  .btn-ok { background:var(--success-bg)!important; color:var(--success-tx)!important; border-color:var(--success-bd)!important; }
+  .btn-ok:hover { background:#D1F0E0!important; }
+  .file-wrap { position:relative; display:inline-block; }
+  .file-wrap input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; }
+  .file-lbl { display:inline-flex; align-items:center; gap:5px; padding:8px 15px; border-radius:var(--radius-sm); border:1.5px dashed var(--gray-200); font-size:13px; font-weight:500; color:var(--gray-600); cursor:pointer; background:var(--gray-50); transition:all .15s; }
+  .file-lbl:hover { border-color:var(--blue-400); color:var(--blue-600); background:var(--blue-50); }
+  .file-lbl i { font-size:15px; }
+
+  /* ALERTS */
+  .alert { padding:10px 13px; border-radius:var(--radius-sm); font-size:13px; margin-top:10px; border:1px solid transparent; display:flex; align-items:flex-start; gap:8px; }
+  .alert i { font-size:15px; flex-shrink:0; margin-top:1px; }
+  .a-info { background:var(--blue-50);    color:var(--blue-800);   border-color:var(--blue-100); }
+  .a-ok   { background:var(--success-bg); color:var(--success-tx); border-color:var(--success-bd); }
+  .a-warn { background:var(--warn-bg);    color:var(--warn-tx);    border-color:var(--warn-bd); }
+  .a-err  { background:var(--danger-bg);  color:var(--danger-tx);  border-color:var(--danger-bd); }
+  .spin { width:14px; height:14px; border:2px solid var(--blue-100); border-top-color:var(--blue-600); border-radius:50%; animation:spin .7s linear infinite; flex-shrink:0; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  /* FORM */
+  .fgrid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+  .f { display:flex; flex-direction:column; gap:4px; }
+  .f.full { grid-column:1/-1; }
+  .f label { font-size:12px; font-weight:600; color:var(--gray-600); }
+  .f input, .f textarea { padding:8px 10px; border-radius:var(--radius-sm); border:1.5px solid var(--gray-200); background:var(--white); color:var(--gray-800); font-size:13px; font-family:inherit; width:100%; transition:border-color .15s,box-shadow .15s; }
+  .f input:focus, .f textarea:focus { outline:none; border-color:var(--blue-400); box-shadow:0 0 0 3px rgba(55,138,221,.12); }
+  .f input[readonly] { background:var(--gray-50); color:var(--gray-500); }
+  .f textarea { resize:vertical; min-height:65px; }
+  .divider { display:flex; align-items:center; gap:8px; margin:1.1rem 0; color:var(--gray-400); font-size:12px; }
+  .divider::before, .divider::after { content:''; flex:1; height:1px; background:var(--gray-100); }
+
+  /* TABLE */
+  .tw { overflow-x:auto; border-radius:var(--radius-md); border:1px solid var(--gray-100); }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { text-align:left; padding:9px 11px; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--blue-600); background:var(--blue-50); border-bottom:1px solid var(--gray-100); white-space:nowrap; }
+  td { padding:10px 11px; border-bottom:1px solid var(--gray-50); color:var(--gray-800); vertical-align:middle; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:var(--gray-50); }
+  .badge { display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; }
+  .b-in  { background:#DCFCE7; color:#15803D; }
+  .b-out { background:var(--gray-100); color:var(--gray-600); }
+  .thumb { width:36px; height:36px; border-radius:var(--radius-sm); object-fit:cover; border:1.5px solid var(--gray-200); display:block; }
+  .tph { width:36px; height:36px; border-radius:var(--radius-sm); background:var(--gray-100); display:flex; align-items:center; justify-content:center; border:1.5px solid var(--gray-200); }
+  .tph i { font-size:17px; color:var(--gray-400); }
+  .empty { text-align:center; padding:2.5rem 1rem; }
+  .empty i { font-size:38px; display:block; margin-bottom:8px; color:var(--gray-200); }
+  .empty p { font-size:13px; color:var(--gray-400); }
+  .ebar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+  .ebar h2 { font-size:14px; font-weight:600; color:var(--gray-800); }
+
+  /* TOAST */
+  #toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(16px); background:var(--blue-800); color:#fff; padding:9px 18px; border-radius:30px; font-size:13px; font-weight:500; opacity:0; transition:all .25s; pointer-events:none; z-index:999; display:flex; align-items:center; gap:6px; white-space:nowrap; }
+  #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+  @media(max-width:580px) {
+    .page { padding:1rem; }
+    .fgrid { grid-template-columns:1fr; }
+    .stats { grid-template-columns:1fr 1fr; }
+    .stats .stat:last-child { grid-column:1/-1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MODAL API KEY -->
+<div class="modal-overlay" id="apiModal">
+  <div class="modal">
+    <div class="modal-logo">
+      <div class="modal-logo-icon"><i class="ti ti-key"></i></div>
+      <div>
+        <div class="modal-title">API Key de Anthropic</div>
+        <div class="modal-sub">Bitácora de Acceso — configuración</div>
+      </div>
+    </div>
+    <p class="modal-desc">
+      Para extraer datos de la INE automáticamente necesitas una API Key de Anthropic.
+      Se guarda solo en este navegador y nunca se comparte con nadie.
+    </p>
+    <div class="modal-field">
+      <label for="apiKeyInput">Tu API Key</label>
+      <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-…" autocomplete="off" spellcheck="false">
+      <div class="modal-hint">
+        Obtén tu key en <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-p" onclick="guardarKey()" style="flex:1;justify-content:center">
+        <i class="ti ti-check"></i>Guardar y continuar
+      </button>
+      <button id="btnCancelar" onclick="cerrarModal()" style="display:none">Cancelar</button>
+    </div>
+    <div id="modalErr"></div>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-icon"><i class="ti ti-id"></i></div>
+    <div>
+      <div class="brand-name">Bitácora de Acceso</div>
+      <div class="brand-sub">Control de visitas con INE</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="topbar-time" id="clock"></div>
+    <button class="btn-key" onclick="abrirModal()">
+      <span class="dot off" id="keyDot"></span>
+      <i class="ti ti-key"></i>
+      <span id="keyLbl">API Key</span>
+    </button>
+  </div>
+</div>
+
+<div class="page">
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-val" id="sTotal">0</div>
+      <div class="stat-lbl"><i class="ti ti-users" style="font-size:12px"></i> Total hoy</div>
+    </div>
+    <div class="stat hi">
+      <div class="stat-val" id="sActivos">0</div>
+      <div class="stat-lbl"><i class="ti ti-circle-filled" style="font-size:9px"></i> En sitio</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="sSalidos">0</div>
+      <div class="stat-lbl"><i class="ti ti-logout" style="font-size:12px"></i> Salieron</div>
+    </div>
+  </div>
+
+  <!-- CARD -->
+  <div class="card">
+    <div class="tabs">
+      <div class="tab active" onclick="goTab('registro',this)"><i class="ti ti-user-plus"></i>Nuevo registro</div>
+      <div class="tab" onclick="goTab('bitacora',this)"><i class="ti ti-list-details"></i>Bitácora del día</div>
+    </div>
+
+    <!-- REGISTRO -->
+    <div class="panel active" id="tab-registro">
+      <div class="sec-lbl"><i class="ti ti-camera"></i>Paso 1 — Capturar INE del visitante</div>
+      <div class="cam-box" id="camBox">
+        <div class="cam-ph" id="camPh">
+          <i class="ti ti-id" style="color:var(--gray-500)"></i>
+          <p style="color:var(--gray-400)">Activa la cámara o sube una foto de la INE</p>
+        </div>
+        <video id="video" autoplay playsinline style="display:none"></video>
+        <canvas id="snap" style="display:none"></canvas>
+        <img id="previewImg" alt="Vista previa INE">
+        <!-- VIEWFINDER overlay — visible only while camera is active -->
+        <div class="viewfinder" id="viewfinder">
+          <div class="vf-frame">
+            <div class="vf-corners"></div>
+            <div class="vf-label">Centra la INE dentro del recuadro</div>
+          </div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button onclick="startCam()"><i class="ti ti-camera"></i>Activar cámara</button>
+        <button id="btnSnap" onclick="snapPhoto()" class="btn-p" style="display:none"><i class="ti ti-camera-selfie"></i>Tomar foto</button>
+        <div class="file-wrap">
+          <div class="file-lbl"><i class="ti ti-upload"></i>Subir imagen de INE</div>
+          <input type="file" id="fileIn" accept="image/*" onchange="loadFile(event)">
+        </div>
+        <button id="btnRetake" onclick="retake()" style="display:none"><i class="ti ti-refresh"></i>Retomar</button>
+      </div>
+      <div id="exStatus"></div>
+
+      <div class="divider">Datos del visitante</div>
+      <div class="sec-lbl"><i class="ti ti-forms"></i>Paso 2 — Completar información</div>
+      <div class="fgrid">
+        <div class="f full"><label>Nombre completo</label><input type="text" id="fNombre" placeholder="Extraído de INE automáticamente…"></div>
+        <div class="f"><label>CURP</label><input type="text" id="fCurp" placeholder="Extraído de INE…"></div>
+        <div class="f"><label>A quién visita</label><input type="text" id="fVisita" placeholder="Nombre del colaborador…"></div>
+        <div class="f"><label>Área / Departamento</label><input type="text" id="fArea" placeholder="Ej. Recursos Humanos…"></div>
+        <div class="f full"><label>Motivo de la visita</label><textarea id="fMotivo" placeholder="Describe brevemente el propósito…"></textarea></div>
+        <div class="f"><label>Hora de entrada</label><input type="text" id="fEntrada" readonly></div>
+        <div class="f"><label>Número de gafete</label><input type="text" id="fGafete" placeholder="Ej. G-001"></div>
+      </div>
+      <div class="btn-row" style="margin-top:16px">
+        <button class="btn-p" onclick="registrar()"><i class="ti ti-check"></i>Registrar entrada</button>
+        <button onclick="limpiar()"><i class="ti ti-trash"></i>Limpiar formulario</button>
+      </div>
+      <div id="formErr"></div>
+    </div>
+
+    <!-- BITÁCORA -->
+    <div class="panel" id="tab-bitacora">
+      <div class="ebar">
+        <h2>Registro del día — <span id="fechaHoy"></span></h2>
+        <button onclick="exportCSV()"><i class="ti ti-download"></i>Exportar CSV</button>
+      </div>
+      <div class="tw">
+        <table>
+          <thead>
+            <tr><th>Foto</th><th>Visitante</th><th>Gafete</th><th>Visita a</th><th>Motivo</th><th>Entrada</th><th>Salida</th><th>Estado</th><th></th></tr>
+          </thead>
+          <tbody id="logBody">
+            <tr><td colspan="9"><div class="empty"><i class="ti ti-clipboard-list"></i><p>Sin registros aún.</p></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── API KEY ──────────────────────────────────────────────
+let apiKey = localStorage.getItem('bita_key') || '';
+
+function actualizarDot() {
+  document.getElementById('keyDot').className = 'dot' + (apiKey ? '' : ' off');
+  document.getElementById('keyLbl').textContent = apiKey ? 'Key activa' : 'API Key';
+}
+
+function abrirModal() {
+  document.getElementById('apiKeyInput').value = '';
+  document.getElementById('apiKeyInput').style.borderColor = '';
+  document.getElementById('modalErr').innerHTML = '';
+  document.getElementById('btnCancelar').style.display = apiKey ? 'inline-flex' : 'none';
+  document.getElementById('apiModal').classList.remove('hidden');
+  setTimeout(() => document.getElementById('apiKeyInput').focus(), 100);
+}
+
+function cerrarModal() { document.getElementById('apiModal').classList.add('hidden'); }
+
+function guardarKey() {
+  const val = document.getElementById('apiKeyInput').value.trim();
+  if (!val) return;
+  if (!val.startsWith('sk-ant-')) {
+    document.getElementById('apiKeyInput').style.borderColor = '#E24B4A';
+    document.getElementById('modalErr').innerHTML =
+      '<div style="font-size:12px;color:#A32D2D;margin-top:8px"><i class="ti ti-alert-circle" style="font-size:13px"></i> La key debe empezar con sk-ant-…</div>';
+    return;
+  }
+  apiKey = val;
+  localStorage.setItem('bita_key', apiKey);
+  actualizarDot();
+  cerrarModal();
+  toast('✓ API Key guardada correctamente');
+}
+
+document.getElementById('apiKeyInput').addEventListener('keydown', e => { if (e.key==='Enter') guardarKey(); });
+
+window.addEventListener('load', () => {
+  actualizarDot();
+  if (!apiKey) abrirModal();
+  initFields();
+});
+
+// ── CLOCK ────────────────────────────────────────────────
+setInterval(() => document.getElementById('clock').textContent = new Date().toLocaleTimeString('es-MX'), 1000);
+document.getElementById('fechaHoy').textContent =
+  new Date().toLocaleDateString('es-MX', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+function initFields() {
+  document.getElementById('fEntrada').value =
+    new Date().toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
+  document.getElementById('fGafete').value = '';
+}
+
+// ── TABS ─────────────────────────────────────────────────
+function goTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  el.classList.add('active');
+  if (id==='bitacora') updateStats();
+}
+
+// ── CAMERA ───────────────────────────────────────────────
+let stream = null, captured = null, records = [];
+
+async function startCam() {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment', width:{ideal:1280}, height:{ideal:720} } });
+    document.getElementById('video').srcObject = stream;
+    document.getElementById('video').style.display = 'block';
+    document.getElementById('camPh').style.display = 'none';
+    document.getElementById('previewImg').style.display = 'none';
+    document.getElementById('btnSnap').style.display = 'inline-flex';
+    document.getElementById('btnRetake').style.display = 'none';
+    document.getElementById('viewfinder').classList.add('active');
+  } catch { setAlert('exStatus', 'No se pudo acceder a la cámara. Usa "Subir imagen".', 'a-err'); }
+}
+
+function snapPhoto() {
+  const v = document.getElementById('video'), c = document.getElementById('snap');
+  c.width = v.videoWidth; c.height = v.videoHeight;
+  c.getContext('2d').drawImage(v, 0, 0);
+  captured = c.toDataURL('image/jpeg', 0.85);
+  showPreview(captured); stopCam(); extractINE(captured);
+}
+
+function loadFile(e) {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => { captured = ev.target.result; showPreview(captured); stopCam(); extractINE(captured); };
+  r.readAsDataURL(f);
+}
+
+function stopCam() {
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  document.getElementById('video').style.display = 'none';
+  document.getElementById('btnSnap').style.display = 'none';
+  document.getElementById('btnRetake').style.display = 'inline-flex';
+  document.getElementById('viewfinder').classList.remove('active');
+}
+
+function retake() {
+  document.getElementById('previewImg').style.display = 'none';
+  document.getElementById('camPh').style.display = 'block';
+  document.getElementById('btnRetake').style.display = 'none';
+  document.getElementById('exStatus').innerHTML = '';
+  document.getElementById('fileIn').value = '';
+  captured = null; startCam();
+}
+
+function showPreview(src) {
+  const img = document.getElementById('previewImg');
+  img.src = src; img.style.display = 'block';
+  document.getElementById('camPh').style.display = 'none';
+}
+
+// ── EXTRACT INE ──────────────────────────────────────────
+async function extractINE(img) {
+  if (!apiKey) { alert('exStatus','Configura tu API Key primero.','warn'); abrirModal(); return; }
+
+  setAlert('exStatus','<div class="spin"></div>Analizando INE con IA…','a-info');
+
+  const base64 = img.split(',')[1];
+  const mt = img.startsWith('data:image/png') ? 'image/png' : 'image/jpeg';
+
+  try {
+    // Llama al backend de Vercel — sin CORS, sin exponer la key
+    const res = await fetch('/api/extract', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({ image: base64, mediaType: mt, apiKey })
+    });
+
+    if (res.status === 401) {
+      setAlert('exStatus','API Key inválida. Verifica que sea correcta.','a-err');
+      apiKey=''; localStorage.removeItem('bita_key'); actualizarDot();
+      return;
+    }
+
+    const data = await res.json();
+    if (data.error) { setAlert('exStatus', data.error, 'a-err'); return; }
+
+    if (!data.esINE) {
+      setAlert('exStatus', `No se detectó una INE válida. ${data.observaciones||''} Puedes ingresar los datos manualmente.`, 'a-warn');
+      return;
+    }
+
+    document.getElementById('fNombre').value = data.nombre || '';
+    document.getElementById('fCurp').value   = data.curp   || '';
+    document.getElementById('fEntrada').value = new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+
+    let msg = '✓ Datos extraídos correctamente. Completa los campos de visita y motivo.';
+    if (data.observaciones) msg += ' · ' + data.observaciones;
+    setAlert('exStatus', msg, 'a-ok');
+
+  } catch(err) {
+    setAlert('exStatus','Error de conexión al servidor. Verifica tu internet.','a-err');
+  }
+}
+
+// ── FORM ─────────────────────────────────────────────────
+function setAlert(id, msg, cls) {
+  const icons = {'a-info':'ti-info-circle','a-ok':'ti-circle-check','a-warn':'ti-alert-triangle','a-err':'ti-alert-circle'};
+  document.getElementById(id).innerHTML =
+    `<div class="alert ${cls}"><i class="ti ${icons[cls]||'ti-info-circle'}"></i><span>${msg}</span></div>`;
+}
+
+function alert(id, msg, type) { setAlert(id, msg, 'a-'+type); }
+
+function registrar() {
+  const nombre = document.getElementById('fNombre').value.trim();
+  const visita = document.getElementById('fVisita').value.trim();
+  const motivo = document.getElementById('fMotivo').value.trim();
+  if (!nombre) { setAlert('formErr','Ingresa el nombre del visitante.','a-err'); return; }
+  if (!visita) { setAlert('formErr','Especifica a quién visita.','a-err'); return; }
+  if (!motivo) { setAlert('formErr','Indica el motivo de la visita.','a-err'); return; }
+
+  const now = new Date();
+  records.push({
+    id: Date.now(),
+    gafete: document.getElementById('fGafete').value.trim(),
+    nombre, curp: document.getElementById('fCurp').value,
+    visita, area: document.getElementById('fArea').value, motivo,
+    entrada: document.getElementById('fEntrada').value ||
+      now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}),
+    salida: null, foto: captured,
+    fecha: now.toLocaleDateString('es-MX'), status:'active'
+  });
+
+  renderLog(); updateStats();
+  toast('✓ Entrada registrada' + (document.getElementById('fGafete').value ? ' — Gafete '+document.getElementById('fGafete').value : ''));
+  setTimeout(limpiar, 1400);
+}
+
+function salida(id) {
+  const r = records.find(x => x.id===id);
+  if (!r||r.status!=='active') return;
+  r.salida = new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  r.status = 'out';
+  renderLog(); updateStats();
+  toast('✓ Salida registrada — ' + r.nombre);
+}
+
+function renderLog() {
+  const tb = document.getElementById('logBody');
+  if (!records.length) {
+    tb.innerHTML = '<tr><td colspan="9"><div class="empty"><i class="ti ti-clipboard-list"></i><p>Sin registros aún.</p></div></td></tr>';
+    return;
+  }
+  tb.innerHTML = records.slice().reverse().map(r => `
+    <tr>
+      <td>${r.foto?`<img src="${r.foto}" class="thumb" alt="foto">`:`<div class="tph"><i class="ti ti-user"></i></div>`}</td>
+      <td><div style="font-weight:500">${r.nombre}</div><div style="font-size:11px;color:var(--gray-400)">${r.curp||''}</div></td>
+      <td style="font-weight:500;white-space:nowrap">${r.gafete||'—'}</td>
+      <td><div style="font-weight:500">${r.visita}</div>${r.area?`<div style="font-size:11px;color:var(--gray-400)">${r.area}</div>`:''}</td>
+      <td style="max-width:140px;color:var(--gray-600);font-size:12px">${r.motivo}</td>
+      <td style="font-variant-numeric:tabular-nums;white-space:nowrap">${r.entrada}</td>
+      <td style="font-variant-numeric:tabular-nums;white-space:nowrap">${r.salida||'—'}</td>
+      <td>${r.status==='active'
+        ?'<span class="badge b-in"><i class="ti ti-circle-filled" style="font-size:8px"></i>En sitio</span>'
+        :'<span class="badge b-out"><i class="ti ti-check" style="font-size:11px"></i>Salió</span>'}</td>
+      <td>${r.status==='active'
+        ?`<button class="btn-ok" onclick="salida(${r.id})" style="font-size:12px;padding:5px 10px"><i class="ti ti-logout"></i>Salida</button>`
+        :''}</td>
+    </tr>`).join('');
+}
+
+function updateStats() {
+  const hoy = new Date().toLocaleDateString('es-MX');
+  const h = records.filter(r => r.fecha===hoy);
+  document.getElementById('sTotal').textContent   = h.length;
+  document.getElementById('sActivos').textContent = h.filter(r=>r.status==='active').length;
+  document.getElementById('sSalidos').textContent = h.filter(r=>r.status==='out').length;
+}
+
+function limpiar() {
+  ['fNombre','fCurp','fVisita','fArea','fMotivo','fGafete'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('previewImg').style.display='none';
+  document.getElementById('camPh').style.display='block';
+  document.getElementById('video').style.display='none';
+  document.getElementById('btnSnap').style.display='none';
+  document.getElementById('btnRetake').style.display='none';
+  document.getElementById('exStatus').innerHTML='';
+  document.getElementById('formErr').innerHTML='';
+  document.getElementById('fileIn').value='';
+  captured=null;
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
+  initFields();
+}
+
+function exportCSV() {
+  if (!records.length) { toast('Sin registros para exportar'); return; }
+  const cols = ['Gafete','Nombre','CURP','Visita a','Área','Motivo','Entrada','Salida','Estado','Fecha'];
+  const rows = records.map(r=>[r.gafete,r.nombre,r.curp,r.visita,r.area,r.motivo,r.entrada,r.salida||'',r.status==='active'?'En sitio':'Salió',r.fecha].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(','));
+  const blob = new Blob(['\uFEFF'+[cols.join(','),...rows].join('\n')],{type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'bitacora_'+new Date().toLocaleDateString('es-MX').replace(/\//g,'-')+'.csv';
+  a.click(); toast('✓ CSV exportado');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.innerHTML = `<i class="ti ti-check" style="font-size:14px"></i>${msg}`;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>
