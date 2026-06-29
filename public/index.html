@@ -6,249 +6,220 @@
 <title>Bitácora de Acceso</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --blue-50:#E6F1FB;--blue-100:#B5D4F4;--blue-200:#85B7EB;--blue-400:#378ADD;
-    --blue-600:#185FA5;--blue-800:#0C447C;--blue-900:#042C53;--navy:#06193A;
-    --white:#fff;--gray-50:#F6F8FB;--gray-100:#EAF0F7;--gray-200:#D0DCE9;
-    --gray-400:#8FA8C0;--gray-600:#4A6480;--gray-800:#1E3048;
-    --success-bg:#EAF7F0;--success-tx:#166534;--success-bd:#A7DFBE;
-    --warn-bg:#FEF9EC;--warn-tx:#854F0B;--warn-bd:#FAC775;
-    --danger-bg:#FEF2F2;--danger-tx:#A32D2D;--danger-bd:#F7C1C1;
-    --r-sm:6px;--r-md:10px;--r-lg:14px;--shadow:0 4px 16px rgba(4,44,83,.10);
-  }
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--navy);min-height:100vh;color:var(--gray-800);font-size:14px;line-height:1.5}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue-50:#E6F1FB;--blue-100:#B5D4F4;--blue-200:#85B7EB;--blue-400:#378ADD;
+  --blue-600:#185FA5;--blue-800:#0C447C;--blue-900:#042C53;--navy:#06193A;
+  --white:#fff;--gray-50:#F6F8FB;--gray-100:#EAF0F7;--gray-200:#D0DCE9;
+  --gray-400:#8FA8C0;--gray-600:#4A6480;--gray-800:#1E3048;
+  --success-bg:#EAF7F0;--success-tx:#166534;--success-bd:#A7DFBE;
+  --warn-bg:#FEF9EC;--warn-tx:#854F0B;--warn-bd:#FAC775;
+  --danger-bg:#FEF2F2;--danger-tx:#A32D2D;--danger-bd:#F7C1C1;
+  --r-sm:6px;--r-md:10px;--r-lg:14px;--shadow:0 4px 16px rgba(4,44,83,.10);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--navy);min-height:100vh;color:var(--gray-800);font-size:14px;line-height:1.5}
+.screen{display:none;min-height:100vh}.screen.active{display:block}
 
-  /* ── SCREENS ── */
-  .screen{display:none;min-height:100vh}
-  .screen.active{display:block}
+/* HOME */
+.home-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:2rem}
+.home-logo-icon{width:64px;height:64px;background:var(--blue-600);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.home-logo-icon i{font-size:32px;color:#fff}
+.home-title{font-size:26px;font-weight:700;color:#fff;margin-bottom:6px;text-align:center}
+.home-sub{font-size:14px;color:var(--blue-100);text-align:center}
+.home-btns{display:flex;flex-direction:column;gap:14px;width:100%;max-width:320px}
+.home-btn{display:flex;align-items:center;gap:14px;padding:18px 20px;border-radius:var(--r-md);border:none;cursor:pointer;font-family:inherit;font-size:15px;font-weight:600;transition:all .15s;text-align:left;width:100%}
+.home-btn i{font-size:24px;flex-shrink:0}
+.home-btn-guard{background:var(--blue-600);color:#fff}
+.home-btn-guard:hover{background:var(--blue-800)}
+.home-btn-admin{background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.15)}
+.home-btn-admin:hover{background:rgba(255,255,255,.14)}
+.home-btn-sub{font-size:12px;font-weight:400;opacity:.75;display:block;margin-top:2px}
 
-  /* ── HOME ── */
-  .home-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:2rem}
-  .home-logo{text-align:center}
-  .home-logo-icon{width:64px;height:64px;background:var(--blue-600);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
-  .home-logo-icon i{font-size:32px;color:#fff}
-  .home-title{font-size:26px;font-weight:700;color:#fff;margin-bottom:6px}
-  .home-sub{font-size:14px;color:var(--blue-100)}
-  .home-btns{display:flex;flex-direction:column;gap:14px;width:100%;max-width:320px}
-  .home-btn{display:flex;align-items:center;gap:14px;padding:18px 20px;border-radius:var(--r-md);border:none;cursor:pointer;font-family:inherit;font-size:15px;font-weight:600;transition:all .15s;text-align:left}
-  .home-btn i{font-size:24px;flex-shrink:0}
-  .home-btn-guard{background:var(--blue-600);color:#fff}
-  .home-btn-guard:hover{background:var(--blue-800)}
-  .home-btn-admin{background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.15)}
-  .home-btn-admin:hover{background:rgba(255,255,255,.14)}
-  .home-btn-sub{font-size:12px;font-weight:400;opacity:.75;display:block;margin-top:2px}
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.login-card{background:var(--white);border-radius:var(--r-lg);padding:2rem;max-width:380px;width:100%;box-shadow:var(--shadow)}
 
-  /* ── LOGIN ── */
-  .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
-  .login-card{background:var(--white);border-radius:var(--r-lg);padding:2rem;max-width:380px;width:100%;box-shadow:var(--shadow)}
-  .login-logo{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem}
-  .login-logo-icon{width:38px;height:38px;background:var(--blue-600);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center}
-  .login-logo-icon i{font-size:18px;color:#fff}
-  .login-title{font-size:17px;font-weight:600;color:var(--gray-800)}
-  .login-sub{font-size:12px;color:var(--gray-400)}
+/* TOPBAR */
+.topbar{background:var(--navy);padding:0 1.25rem;height:54px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:9px}
+.brand-icon{width:30px;height:30px;background:var(--blue-600);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center}
+.brand-icon i{font-size:16px;color:#fff}
+.brand-name{font-size:15px;font-weight:600;color:#fff}
+.brand-sub{font-size:11px;color:var(--gray-400)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.topbar-time{font-size:13px;color:var(--blue-100);font-variant-numeric:tabular-nums}
+.btn-nav{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:var(--r-sm);border:1px solid rgba(255,255,255,.12);background:transparent;color:var(--blue-100);font-size:12px;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn-nav:hover{background:rgba(255,255,255,.07)}
 
-  /* ── TOP BAR ── */
-  .topbar{background:var(--navy);padding:0 1.25rem;height:54px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);position:sticky;top:0;z-index:100}
-  .brand{display:flex;align-items:center;gap:9px}
-  .brand-icon{width:30px;height:30px;background:var(--blue-600);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center}
-  .brand-icon i{font-size:16px;color:#fff}
-  .brand-name{font-size:15px;font-weight:600;color:#fff}
-  .brand-sub{font-size:11px;color:var(--gray-400)}
-  .topbar-right{display:flex;align-items:center;gap:10px}
-  .topbar-time{font-size:13px;color:var(--blue-100);font-variant-numeric:tabular-nums}
-  .btn-salir{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:var(--r-sm);border:1px solid rgba(255,255,255,.12);background:transparent;color:var(--blue-100);font-size:12px;cursor:pointer;font-family:inherit}
-  .btn-salir:hover{background:rgba(255,255,255,.07)}
+/* PAGE */
+.page{max-width:900px;margin:0 auto;padding:1.25rem}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
+.stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:var(--r-md);padding:12px 16px}
+.stat.hi{border-color:var(--blue-400);background:rgba(55,138,221,.14)}
+.stat-val{font-size:24px;font-weight:700;color:#fff}
+.stat.hi .stat-val{color:var(--blue-200)}
+.stat-lbl{font-size:12px;color:var(--blue-100);margin-top:2px}
+.card{background:var(--white);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden}
+.tabs{display:flex;border-bottom:1px solid var(--gray-100);background:var(--gray-50);overflow-x:auto}
+.tab{padding:12px 16px;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:var(--gray-600);display:flex;align-items:center;gap:5px;transition:color .15s;user-select:none;white-space:nowrap}
+.tab:hover{color:var(--blue-600)}
+.tab.active{color:var(--blue-600);border-bottom-color:var(--blue-400);background:var(--white)}
+.tab i{font-size:15px}
+.panel{display:none;padding:1.25rem}.panel.active{display:block}
+.sec-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--blue-600);margin-bottom:9px;display:flex;align-items:center;gap:5px}
 
-  /* ── PAGE ── */
-  .page{max-width:900px;margin:0 auto;padding:1.25rem}
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
-  .stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:var(--r-md);padding:12px 16px}
-  .stat.hi{border-color:var(--blue-400);background:rgba(55,138,221,.14)}
-  .stat-val{font-size:24px;font-weight:700;color:#fff}
-  .stat.hi .stat-val{color:var(--blue-200)}
-  .stat-lbl{font-size:12px;color:var(--blue-100);margin-top:2px}
-  .card{background:var(--white);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden}
-  .tabs{display:flex;border-bottom:1px solid var(--gray-100);background:var(--gray-50)}
-  .tab{padding:12px 18px;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:var(--gray-600);display:flex;align-items:center;gap:6px;transition:color .15s;user-select:none}
-  .tab:hover{color:var(--blue-600)}
-  .tab.active{color:var(--blue-600);border-bottom-color:var(--blue-400);background:var(--white)}
-  .tab i{font-size:15px}
-  .panel{display:none;padding:1.25rem}
-  .panel.active{display:block}
-  .sec-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--blue-600);margin-bottom:9px;display:flex;align-items:center;gap:5px}
+/* CAMERA */
+.cam-box{background:#000;border-radius:var(--r-md);min-height:200px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.cam-ph{text-align:center;padding:2rem}
+.cam-ph i{font-size:42px;color:var(--gray-400);display:block;margin-bottom:8px}
+.cam-ph p{font-size:13px;color:var(--gray-400)}
+video{width:100%;display:block}
+#previewImg{width:100%;max-height:240px;object-fit:cover;border-radius:var(--r-md);display:none}
+.viewfinder{position:absolute;inset:0;pointer-events:none;display:none;flex-direction:column;align-items:center;justify-content:center}
+.viewfinder.active{display:flex}
+.vf-inner{position:relative;width:86%;max-width:340px}
+.vf-card{width:100%;aspect-ratio:85.6/54;border:2px solid rgba(255,255,255,.9);border-radius:8px;position:relative}
+.vf-card::before,.vf-card::after,.vf-card .c::before,.vf-card .c::after{content:'';position:absolute;width:20px;height:20px;border-color:#378ADD;border-style:solid}
+.vf-card::before{top:-2px;left:-2px;border-width:3px 0 0 3px;border-radius:5px 0 0 0}
+.vf-card::after{top:-2px;right:-2px;border-width:3px 3px 0 0;border-radius:0 5px 0 0}
+.vf-card .c::before{bottom:-2px;left:-2px;border-width:0 0 3px 3px;border-radius:0 0 0 5px}
+.vf-card .c::after{bottom:-2px;right:-2px;border-width:0 3px 3px 0;border-radius:0 0 5px 0}
+.vf-hint{margin-top:10px;font-size:12px;font-weight:500;color:rgba(255,255,255,.85);text-align:center;text-shadow:0 1px 3px rgba(0,0,0,.6)}
 
-  /* ── CAMERA ── */
-  .cam-box{background:#000;border-radius:var(--r-md);min-height:220px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-  .cam-ph{text-align:center;padding:2rem}
-  .cam-ph i{font-size:42px;color:var(--gray-400);display:block;margin-bottom:8px}
-  .cam-ph p{font-size:13px;color:var(--gray-400)}
-  video{width:100%;display:block}
-  #previewImg{width:100%;max-height:260px;object-fit:cover;border-radius:var(--r-md);display:none}
-  .viewfinder{position:absolute;inset:0;pointer-events:none;display:none;flex-direction:column;align-items:center;justify-content:center}
-  .viewfinder.active{display:flex}
-  .vf-inner{position:relative;width:86%;max-width:340px}
-  .vf-card{width:100%;aspect-ratio:85.6/54;border:2px solid rgba(255,255,255,.9);border-radius:8px;position:relative}
-  .vf-card::before,.vf-card::after,.vf-card .c::before,.vf-card .c::after{content:'';position:absolute;width:20px;height:20px;border-color:#378ADD;border-style:solid}
-  .vf-card::before{top:-2px;left:-2px;border-width:3px 0 0 3px;border-radius:5px 0 0 0}
-  .vf-card::after{top:-2px;right:-2px;border-width:3px 3px 0 0;border-radius:0 5px 0 0}
-  .vf-card .c::before{bottom:-2px;left:-2px;border-width:0 0 3px 3px;border-radius:0 0 0 5px}
-  .vf-card .c::after{bottom:-2px;right:-2px;border-width:0 3px 3px 0;border-radius:0 0 5px 0}
-  .vf-hint{margin-top:10px;font-size:12px;font-weight:500;color:rgba(255,255,255,.85);text-align:center;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+/* MATCH CARD */
+.match-card{border-radius:var(--r-md);padding:14px 16px;margin-top:12px;border:2px solid;display:none}
+.match-card.active{display:block}
+.match-acceso{background:#EAF7F0;border-color:#A7DFBE}
+.match-llamar{background:#FEF9EC;border-color:#FAC775}
+.match-acompanar{background:#EAF0F7;border-color:#B5D4F4}
+.match-title{font-size:14px;font-weight:700;margin-bottom:4px}
+.match-body{font-size:13px;color:var(--gray-600)}
+.match-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 
-  /* ── MATCH CARD ── */
-  .match-card{border-radius:var(--r-md);padding:14px 16px;margin-top:12px;border:2px solid;display:none}
-  .match-card.active{display:block}
-  .match-acceso{background:#EAF7F0;border-color:#A7DFBE;color:#166534}
-  .match-llamar{background:#FEF9EC;border-color:#FAC775;color:#854F0B}
-  .match-acompañar{background:#EAF0F7;border-color:#B5D4F4;color:#185FA5}
-  .match-title{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px}
-  .match-body{font-size:13px;opacity:.9}
-  .match-actions{display:flex;gap:8px;margin-top:10px}
+/* COMPLETION FORM (after match) */
+.completion-form{background:var(--gray-50);border-radius:var(--r-md);padding:14px;margin-top:10px;border:1px solid var(--gray-200);display:none}
+.completion-form.active{display:block}
 
-  /* ── BUTTONS ── */
-  .btn-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
-  button{display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:var(--r-sm);border:1.5px solid var(--gray-200);background:var(--white);cursor:pointer;font-size:13px;font-weight:500;color:var(--gray-800);transition:all .15s;font-family:inherit}
-  button:hover{background:var(--gray-50);border-color:var(--gray-400)}
-  button i{font-size:15px}
-  .btn-p{background:var(--blue-600)!important;color:#fff!important;border-color:var(--blue-600)!important}
-  .btn-p:hover{background:var(--blue-800)!important}
-  .btn-ok{background:var(--success-bg)!important;color:var(--success-tx)!important;border-color:var(--success-bd)!important}
-  .btn-ok:hover{background:#D1F0E0!important}
-  .btn-warn{background:var(--warn-bg)!important;color:var(--warn-tx)!important;border-color:var(--warn-bd)!important}
-  .file-wrap{position:relative;display:inline-block}
-  .file-wrap input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
-  .file-lbl{display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:var(--r-sm);border:1.5px dashed var(--gray-200);font-size:13px;font-weight:500;color:var(--gray-600);cursor:pointer;background:var(--gray-50);transition:all .15s}
-  .file-lbl:hover{border-color:var(--blue-400);color:var(--blue-600);background:var(--blue-50)}
+/* BUTTONS */
+.btn-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+button{display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:var(--r-sm);border:1.5px solid var(--gray-200);background:var(--white);cursor:pointer;font-size:13px;font-weight:500;color:var(--gray-800);transition:all .15s;font-family:inherit}
+button:hover{background:var(--gray-50);border-color:var(--gray-400)}
+button i{font-size:15px}
+.btn-p{background:var(--blue-600)!important;color:#fff!important;border-color:var(--blue-600)!important}
+.btn-p:hover{background:var(--blue-800)!important}
+.btn-ok{background:var(--success-bg)!important;color:var(--success-tx)!important;border-color:var(--success-bd)!important}
+.btn-ok:hover{background:#D1F0E0!important}
+.btn-warn{background:var(--warn-bg)!important;color:var(--warn-tx)!important;border-color:var(--warn-bd)!important}
+.file-wrap{position:relative;display:inline-block}
+.file-wrap input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.file-lbl{display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:var(--r-sm);border:1.5px dashed var(--gray-200);font-size:13px;font-weight:500;color:var(--gray-600);cursor:pointer;background:var(--gray-50);transition:all .15s}
+.file-lbl:hover{border-color:var(--blue-400);color:var(--blue-600);background:var(--blue-50)}
 
-  /* ── ALERTS ── */
-  .alert{padding:10px 13px;border-radius:var(--r-sm);font-size:13px;margin-top:10px;border:1px solid transparent;display:flex;align-items:flex-start;gap:8px}
-  .alert i{font-size:15px;flex-shrink:0;margin-top:1px}
-  .a-info{background:var(--blue-50);color:var(--blue-800);border-color:var(--blue-100)}
-  .a-ok{background:var(--success-bg);color:var(--success-tx);border-color:var(--success-bd)}
-  .a-warn{background:var(--warn-bg);color:var(--warn-tx);border-color:var(--warn-bd)}
-  .a-err{background:var(--danger-bg);color:var(--danger-tx);border-color:var(--danger-bd)}
-  .spin{width:14px;height:14px;border:2px solid var(--blue-100);border-top-color:var(--blue-600);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
-  @keyframes spin{to{transform:rotate(360deg)}}
+/* ALERTS */
+.alert{padding:10px 13px;border-radius:var(--r-sm);font-size:13px;margin-top:10px;border:1px solid transparent;display:flex;align-items:flex-start;gap:8px}
+.alert i{font-size:15px;flex-shrink:0;margin-top:1px}
+.a-info{background:var(--blue-50);color:var(--blue-800);border-color:var(--blue-100)}
+.a-ok{background:var(--success-bg);color:var(--success-tx);border-color:var(--success-bd)}
+.a-warn{background:var(--warn-bg);color:var(--warn-tx);border-color:var(--warn-bd)}
+.a-err{background:var(--danger-bg);color:var(--danger-tx);border-color:var(--danger-bd)}
+.spin{width:14px;height:14px;border:2px solid var(--blue-100);border-top-color:var(--blue-600);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-  /* ── FORM ── */
-  .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-  .f{display:flex;flex-direction:column;gap:4px}
-  .f.full{grid-column:1/-1}
-  .f label{font-size:12px;font-weight:600;color:var(--gray-600)}
-  .f input,.f textarea,.f select{padding:8px 10px;border-radius:var(--r-sm);border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-800);font-size:13px;font-family:inherit;width:100%;transition:border-color .15s,box-shadow .15s}
-  .f input:focus,.f textarea:focus,.f select:focus{outline:none;border-color:var(--blue-400);box-shadow:0 0 0 3px rgba(55,138,221,.12)}
-  .f input[readonly]{background:var(--gray-50);color:var(--gray-500)}
-  .f textarea{resize:vertical;min-height:65px}
-  .f select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238FA8C0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
-  .divider{display:flex;align-items:center;gap:8px;margin:1.1rem 0;color:var(--gray-400);font-size:12px}
-  .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--gray-100)}
+/* FORM */
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.f{display:flex;flex-direction:column;gap:4px}
+.f.full{grid-column:1/-1}
+.f label{font-size:12px;font-weight:600;color:var(--gray-600)}
+.f input,.f textarea,.f select{padding:8px 10px;border-radius:var(--r-sm);border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-800);font-size:13px;font-family:inherit;width:100%;transition:border-color .15s,box-shadow .15s}
+.f input:focus,.f textarea:focus,.f select:focus{outline:none;border-color:var(--blue-400);box-shadow:0 0 0 3px rgba(55,138,221,.12)}
+.f input[readonly]{background:var(--gray-50);color:var(--gray-500)}
+.f textarea{resize:vertical;min-height:65px}
+.f select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238FA8C0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.divider{display:flex;align-items:center;gap:8px;margin:1.1rem 0;color:var(--gray-400);font-size:12px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--gray-100)}
 
-  /* ── TABLE ── */
-  .tw{overflow-x:auto;border-radius:var(--r-md);border:1px solid var(--gray-100)}
-  table{width:100%;border-collapse:collapse;font-size:13px}
-  th{text-align:left;padding:9px 11px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--blue-600);background:var(--blue-50);border-bottom:1px solid var(--gray-100);white-space:nowrap}
-  td{padding:10px 11px;border-bottom:1px solid var(--gray-50);color:var(--gray-800);vertical-align:middle}
-  tr:last-child td{border-bottom:none}
-  tr:hover td{background:var(--gray-50)}
-  .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
-  .b-in{background:#DCFCE7;color:#15803D}
-  .b-out{background:var(--gray-100);color:var(--gray-600)}
-  .b-pend{background:#FEF9EC;color:#854F0B}
-  .thumb{width:36px;height:36px;border-radius:var(--r-sm);object-fit:cover;border:1.5px solid var(--gray-200);display:block}
-  .tph{width:36px;height:36px;border-radius:var(--r-sm);background:var(--gray-100);display:flex;align-items:center;justify-content:center;border:1.5px solid var(--gray-200)}
-  .tph i{font-size:17px;color:var(--gray-400)}
-  .empty{text-align:center;padding:2.5rem 1rem}
-  .empty i{font-size:38px;display:block;margin-bottom:8px;color:var(--gray-200)}
-  .empty p{font-size:13px;color:var(--gray-400)}
-  .ebar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px}
-  .ebar h2{font-size:14px;font-weight:600;color:var(--gray-800)}
+/* TOGGLE */
+.toggle-group{display:flex;gap:0;border:1.5px solid var(--gray-200);border-radius:var(--r-sm);overflow:hidden;width:fit-content;margin-top:10px}
+.toggle-btn{padding:8px 18px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:var(--white);color:var(--gray-600);transition:all .15s;font-family:inherit}
+.toggle-btn:not(:last-child){border-right:1px solid var(--gray-200)}
+.toggle-btn.active{background:var(--blue-600);color:#fff}
 
-  /* ── TOAST ── */
-  #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--blue-800);color:#fff;padding:9px 18px;border-radius:30px;font-size:13px;font-weight:500;opacity:0;transition:all .25s;pointer-events:none;z-index:999;display:flex;align-items:center;gap:6px;white-space:nowrap}
-  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* TABLE */
+.tw{overflow-x:auto;border-radius:var(--r-md);border:1px solid var(--gray-100)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:9px 11px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--blue-600);background:var(--blue-50);border-bottom:1px solid var(--gray-100);white-space:nowrap}
+td{padding:10px 11px;border-bottom:1px solid var(--gray-50);color:var(--gray-800);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--gray-50)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.b-in{background:#DCFCE7;color:#15803D}
+.b-out{background:var(--gray-100);color:var(--gray-600)}
+.b-pend{background:#FEF9EC;color:#854F0B}
+.b-blue{background:var(--blue-50);color:var(--blue-600)}
+.thumb{width:36px;height:36px;border-radius:var(--r-sm);object-fit:cover;border:1.5px solid var(--gray-200);display:block}
+.tph{width:36px;height:36px;border-radius:var(--r-sm);background:var(--gray-100);display:flex;align-items:center;justify-content:center;border:1.5px solid var(--gray-200)}
+.tph i{font-size:17px;color:var(--gray-400)}
+.empty{text-align:center;padding:2.5rem 1rem}
+.empty i{font-size:38px;display:block;margin-bottom:8px;color:var(--gray-200)}
+.empty p{font-size:13px;color:var(--gray-400)}
 
-  @media(max-width:580px){
-    .page{padding:1rem}
-    .fgrid{grid-template-columns:1fr}
-    .stats{grid-template-columns:1fr 1fr}
-    .stats .stat:last-child{grid-column:1/-1}
-  }
+/* TOAST */
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--blue-800);color:#fff;padding:9px 18px;border-radius:30px;font-size:13px;font-weight:500;opacity:0;transition:all .25s;pointer-events:none;z-index:999;display:flex;align-items:center;gap:6px;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:580px){
+  .page{padding:1rem}
+  .fgrid{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr}
+  .stats .stat:last-child{grid-column:1/-1}
+}
 </style>
 </head>
 <body>
 
-<!-- ══ SCREEN: HOME ══ -->
+<!-- HOME -->
 <div class="screen active" id="screenHome">
   <div class="home-wrap">
-    <div class="home-logo">
+    <div>
       <div class="home-logo-icon"><i class="ti ti-id"></i></div>
       <div class="home-title">Bitácora de Acceso</div>
-      <div class="home-sub">Control de visitas con INE</div>
+      <div class="home-sub">Control de visitas con identificación</div>
     </div>
     <div class="home-btns">
       <button class="home-btn home-btn-guard" onclick="irAGuardia()">
         <i class="ti ti-clipboard-list"></i>
-        <div>
-          Registro de visitas
-          <span class="home-btn-sub">Para guardias en puerta</span>
-        </div>
+        <div>Registro de visitas<span class="home-btn-sub">Para guardias en puerta</span></div>
       </button>
       <button class="home-btn home-btn-admin" onclick="irALogin()">
         <i class="ti ti-calendar-plus"></i>
-        <div>
-          Registrar invitación
-          <span class="home-btn-sub">Requiere usuario y contraseña</span>
-        </div>
+        <div>Registrar invitación<span class="home-btn-sub">Requiere usuario y contraseña</span></div>
       </button>
     </div>
   </div>
 </div>
 
-<!-- ══ SCREEN: LOGIN ══ -->
+<!-- LOGIN -->
 <div class="screen" id="screenLogin">
   <div class="login-wrap">
     <div class="login-card">
-      <div class="login-logo">
-        <div class="login-logo-icon"><i class="ti ti-lock"></i></div>
-        <div>
-          <div class="login-title">Acceso administrativo</div>
-          <div class="login-sub">Ingresa tus credenciales</div>
-        </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.5rem">
+        <div style="width:38px;height:38px;background:var(--blue-600);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center"><i class="ti ti-lock" style="font-size:18px;color:#fff"></i></div>
+        <div><div style="font-size:17px;font-weight:600;color:var(--gray-800)">Acceso administrativo</div><div style="font-size:12px;color:var(--gray-400)">Ingresa tus credenciales</div></div>
       </div>
-      <div class="f" style="margin-bottom:10px">
-        <label>Correo electrónico</label>
-        <input type="email" id="loginEmail" placeholder="tu@correo.com" autocomplete="email">
-      </div>
-      <div class="f" style="margin-bottom:14px">
-        <label>Contraseña</label>
-        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
-      </div>
-      <button class="btn-p" onclick="hacerLogin()" style="width:100%;justify-content:center">
-        <i class="ti ti-login"></i>Entrar
-      </button>
+      <div class="f" style="margin-bottom:10px"><label>Correo electrónico</label><input type="email" id="loginEmail" placeholder="tu@correo.com"></div>
+      <div class="f" style="margin-bottom:14px"><label>Contraseña</label><input type="password" id="loginPassword" placeholder="••••••••"></div>
+      <button class="btn-p" onclick="hacerLogin()" style="width:100%;justify-content:center"><i class="ti ti-login"></i>Entrar</button>
       <div id="loginErr"></div>
-      <button onclick="irAHome()" style="width:100%;justify-content:center;margin-top:10px;color:var(--gray-600)">
-        <i class="ti ti-arrow-left"></i>Volver
-      </button>
+      <button onclick="irAHome()" style="width:100%;justify-content:center;margin-top:10px;color:var(--gray-600)"><i class="ti ti-arrow-left"></i>Volver</button>
     </div>
   </div>
 </div>
 
-<!-- ══ SCREEN: GUARDIA ══ -->
+<!-- GUARDIA -->
 <div class="screen" id="screenGuardia">
   <div class="topbar">
-    <div class="brand">
-      <div class="brand-icon"><i class="ti ti-id"></i></div>
-      <div>
-        <div class="brand-name">Bitácora de Acceso</div>
-        <div class="brand-sub">Registro de visitas</div>
-      </div>
-    </div>
-    <div class="topbar-right">
-      <div class="topbar-time" id="clock"></div>
-      <button class="btn-salir" onclick="irAHome()"><i class="ti ti-home"></i>Inicio</button>
-    </div>
+    <div class="brand"><div class="brand-icon"><i class="ti ti-id"></i></div><div><div class="brand-name">Bitácora de Acceso</div><div class="brand-sub">Registro de visitas</div></div></div>
+    <div class="topbar-right"><div class="topbar-time" id="clock"></div><button class="btn-nav" onclick="irAHome()"><i class="ti ti-home"></i>Inicio</button></div>
   </div>
   <div class="page">
     <div class="stats">
@@ -259,7 +230,7 @@
     <div class="card">
       <div class="tabs">
         <div class="tab active" onclick="goTab('registro',this)"><i class="ti ti-user-plus"></i>Nuevo registro</div>
-        <div class="tab" onclick="goTab('bitacora',this)"><i class="ti ti-list-details"></i>Bitácora del día</div>
+        <div class="tab" onclick="goTab('bitacora',this)"><i class="ti ti-list-details"></i>Bitácora</div>
       </div>
 
       <!-- PANEL REGISTRO -->
@@ -277,55 +248,65 @@
         <div class="btn-row">
           <button onclick="startCam()"><i class="ti ti-camera"></i>Activar cámara</button>
           <button id="btnSnap" onclick="snapPhoto()" class="btn-p" style="display:none"><i class="ti ti-camera-selfie"></i>Tomar foto</button>
-          <div class="file-wrap">
-            <div class="file-lbl"><i class="ti ti-upload"></i>Subir imagen</div>
-            <input type="file" id="fileIn" accept="image/*" onchange="loadFile(event)">
-          </div>
+          <div class="file-wrap"><div class="file-lbl"><i class="ti ti-upload"></i>Subir imagen</div><input type="file" id="fileIn" accept="image/*" onchange="loadFile(event)"></div>
           <button id="btnRetake" onclick="retake()" style="display:none"><i class="ti ti-refresh"></i>Retomar</button>
         </div>
         <div id="exStatus"></div>
 
-        <!-- MATCH CARD -->
+        <!-- MATCH CARD — shown when pre-registered visitor detected -->
         <div class="match-card" id="matchCard">
           <div class="match-title" id="matchTitle"></div>
           <div class="match-body" id="matchBody"></div>
+          <!-- Completion fields for matched visitor -->
+          <div class="completion-form" id="completionForm">
+            <div class="fgrid" style="margin-top:0">
+              <div class="f"><label>Número de gafete</label><input type="text" id="mGafete" placeholder="Ej. G-001"></div>
+              <div class="f"><label>Puerta de ingreso</label>
+                <select id="mLugar">
+                  <option value="">— Selecciona —</option>
+                  <option>Puerta 1</option><option>Puerta 2</option><option>Puerta 3</option><option>Estacionamiento</option>
+                </select>
+              </div>
+            </div>
+          </div>
           <div class="match-actions" id="matchActions"></div>
         </div>
 
-        <div class="divider">Datos del visitante</div>
-        <div class="sec-lbl"><i class="ti ti-forms"></i>Paso 2 — Completar información</div>
-        <div class="fgrid">
-          <div class="f full"><label>Nombre completo</label><input type="text" id="fNombre" placeholder="Extraído automáticamente…"></div>
-          <div class="f"><label>CURP</label><input type="text" id="fCurp" placeholder="Extraído automáticamente…"></div>
-          <div class="f"><label>A quién visita</label><input type="text" id="fVisita" placeholder="Nombre del colaborador…"></div>
-          <div class="f"><label>Área / Departamento</label><input type="text" id="fArea" placeholder="Ej. Recursos Humanos…"></div>
-          <div class="f full">
-            <label>Motivo de la visita</label>
-            <select id="fMotivoSel" onchange="toggleMotivo(this)">
-              <option value="">— Selecciona el motivo —</option>
-              <option>Clase</option><option>Compra</option><option>Consulta</option>
-              <option>Entrega de documentos</option><option>Entrevista</option>
-              <option>Exposición / presentación</option><option>Mantenimiento / servicio técnico</option>
-              <option>Pago</option><option>Reunión</option><option>Trámite</option>
-              <option>Visita de auditoría</option><option>Otro</option>
-            </select>
-            <input type="text" id="fMotivoOtro" placeholder="Especifica el motivo…" style="display:none;margin-top:6px">
+        <!-- MANUAL FORM — shown when no pre-registration found -->
+        <div id="manualForm" style="display:none">
+          <div class="divider">Datos del visitante</div>
+          <div class="sec-lbl"><i class="ti ti-forms"></i>Paso 2 — Completar información</div>
+          <div class="fgrid">
+            <div class="f full"><label>Nombre completo</label><input type="text" id="fNombre" placeholder="Extraído automáticamente…"></div>
+            <div class="f"><label>CURP</label><input type="text" id="fCurp" placeholder="Extraído automáticamente…"></div>
+            <div class="f"><label>A quién visita</label><input type="text" id="fVisita" placeholder="Nombre del colaborador…"></div>
+            <div class="f"><label>Área / Departamento</label><input type="text" id="fArea" placeholder="Ej. Recursos Humanos…"></div>
+            <div class="f full">
+              <label>Motivo de la visita</label>
+              <select id="fMotivoSel" onchange="toggleMotivo(this)">
+                <option value="">— Selecciona el motivo —</option>
+                <option>Clase</option><option>Compra</option><option>Consulta</option>
+                <option>Entrega de documentos</option><option>Entrevista</option>
+                <option>Exposición / presentación</option><option>Mantenimiento / servicio técnico</option>
+                <option>Pago</option><option>Reunión</option><option>Trámite</option>
+                <option>Visita de auditoría</option><option>Otro</option>
+              </select>
+              <input type="text" id="fMotivoOtro" placeholder="Especifica el motivo…" style="display:none;margin-top:6px">
+            </div>
+            <div class="f"><label>Número de gafete</label><input type="text" id="fGafete" placeholder="Ej. G-001"></div>
+            <div class="f"><label>Puerta de ingreso</label>
+              <select id="fLugar">
+                <option value="">— Selecciona —</option>
+                <option>Puerta 1</option><option>Puerta 2</option><option>Puerta 3</option><option>Estacionamiento</option>
+              </select>
+            </div>
           </div>
-          <div class="f"><label>Número de gafete</label><input type="text" id="fGafete" placeholder="Ej. G-001"></div>
-          <div class="f">
-            <label>Lugar de ingreso</label>
-            <select id="fLugar">
-              <option value="">— Selecciona —</option>
-              <option>Puerta 1</option><option>Puerta 2</option>
-              <option>Puerta 3</option><option>Estacionamiento</option>
-            </select>
+          <div class="btn-row" style="margin-top:16px">
+            <button class="btn-p" onclick="registrarManual()"><i class="ti ti-check"></i>Registrar entrada</button>
+            <button onclick="limpiar()"><i class="ti ti-trash"></i>Limpiar</button>
           </div>
+          <div id="formErr"></div>
         </div>
-        <div class="btn-row" style="margin-top:16px">
-          <button class="btn-p" onclick="registrar()"><i class="ti ti-check"></i>Registrar entrada</button>
-          <button onclick="limpiar()"><i class="ti ti-trash"></i>Limpiar</button>
-        </div>
-        <div id="formErr"></div>
       </div>
 
       <!-- PANEL BITÁCORA -->
@@ -334,8 +315,7 @@
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
             <input type="date" id="fechaPicker" onchange="cargarFecha(this.value)" style="padding:7px 10px;border-radius:6px;border:1.5px solid var(--gray-200);font-size:13px;font-family:inherit;color:var(--gray-800)">
             <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--gray-600);cursor:pointer;font-weight:500">
-              <input type="checkbox" id="sinSalidaCheck" onchange="toggleSinSalida()" style="width:15px;height:15px;accent-color:var(--blue-600)">
-              Sin salida anteriores
+              <input type="checkbox" id="sinSalidaCheck" onchange="toggleSinSalida()" style="width:15px;height:15px;accent-color:var(--blue-600)">Sin salida anteriores
             </label>
           </div>
           <button onclick="exportCSV()"><i class="ti ti-download"></i>Exportar CSV</button>
@@ -345,15 +325,13 @@
             <i class="ti ti-search" style="position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--gray-400);pointer-events:none"></i>
             <input type="text" id="searchInput" oninput="filtrarTabla()" placeholder="Buscar por nombre o gafete…" style="padding:7px 10px 7px 32px;border-radius:6px;border:1.5px solid var(--gray-200);font-size:13px;font-family:inherit;color:var(--gray-800);width:100%">
           </div>
-          <button id="btnSoloEnSitio" onclick="toggleEnSitio(this)" style="font-size:12px;padding:6px 12px">
-            <i class="ti ti-circle-filled" style="font-size:9px;color:#15803D"></i>En sitio
-          </button>
+          <button id="btnSoloEnSitio" onclick="toggleEnSitio(this)" style="font-size:12px;padding:6px 12px"><i class="ti ti-circle-filled" style="font-size:9px;color:#15803D"></i>En sitio</button>
           <button onclick="limpiarFiltros()" style="font-size:12px;padding:6px 12px"><i class="ti ti-x" style="font-size:13px"></i>Limpiar</button>
         </div>
         <div id="bitacoraLabel" style="font-size:12px;color:var(--gray-400);margin-bottom:8px"></div>
         <div class="tw">
           <table>
-            <thead><tr><th>Foto</th><th>Visitante</th><th>Gafete</th><th>Ingreso</th><th>Visita a</th><th>Motivo</th><th>Entrada</th><th>Salida</th><th>Estado</th><th></th></tr></thead>
+            <thead><tr><th>Foto</th><th>Visitante</th><th>Gafete</th><th>Puerta</th><th>Visita a</th><th>Motivo</th><th>Entrada</th><th>Salida</th><th>Estado</th><th></th></tr></thead>
             <tbody id="logBody"><tr><td colspan="10"><div class="empty"><i class="ti ti-clipboard-list"></i><p>Sin registros aún.</p></div></td></tr></tbody>
           </table>
         </div>
@@ -362,60 +340,68 @@
   </div>
 </div>
 
-<!-- ══ SCREEN: ADMIN ══ -->
+<!-- ADMIN -->
 <div class="screen" id="screenAdmin">
   <div class="topbar">
-    <div class="brand">
-      <div class="brand-icon"><i class="ti ti-calendar"></i></div>
-      <div>
-        <div class="brand-name">Administración</div>
-        <div class="brand-sub" id="adminNombre"></div>
-      </div>
-    </div>
-    <div class="topbar-right">
-      <div class="topbar-time" id="clockAdmin"></div>
-      <button class="btn-salir" onclick="cerrarSesion()"><i class="ti ti-logout"></i>Salir</button>
-    </div>
+    <div class="brand"><div class="brand-icon"><i class="ti ti-calendar"></i></div><div><div class="brand-name">Administración</div><div class="brand-sub" id="adminNombre"></div></div></div>
+    <div class="topbar-right"><div class="topbar-time" id="clockAdmin"></div><button class="btn-nav" onclick="cerrarSesion()"><i class="ti ti-logout"></i>Salir</button></div>
   </div>
   <div class="page">
     <div class="card">
       <div class="tabs">
-        <div class="tab active" onclick="goTabAdmin('esperadas',this)"><i class="ti ti-calendar-plus"></i>Visitas esperadas</div>
+        <div class="tab active" onclick="goTabAdmin('esperadas',this)"><i class="ti ti-calendar-check"></i>Visitas esperadas</div>
         <div class="tab" onclick="goTabAdmin('nuevaVisita',this)"><i class="ti ti-plus"></i>Nueva invitación</div>
         <div class="tab" onclick="goTabAdmin('usuarios',this)"><i class="ti ti-users"></i>Usuarios</div>
       </div>
 
-      <!-- PANEL VISITAS ESPERADAS -->
+      <!-- VISITAS ESPERADAS -->
       <div class="panel active" id="tab-esperadas">
-        <div class="ebar">
-          <h2>Visitas programadas</h2>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px">
+          <h2 style="font-size:14px;font-weight:600;color:var(--gray-800)">Visitas programadas</h2>
           <input type="date" id="fechaAdminPicker" onchange="cargarVisitasEsperadas(this.value)" style="padding:7px 10px;border-radius:6px;border:1.5px solid var(--gray-200);font-size:13px;font-family:inherit;color:var(--gray-800)">
         </div>
         <div class="tw">
           <table>
-            <thead><tr><th>Nombre esperado</th><th>Hora aprox.</th><th>Instrucción</th><th>Notas</th><th>Estado</th><th></th></tr></thead>
-            <tbody id="esperadasBody"><tr><td colspan="6"><div class="empty"><i class="ti ti-calendar"></i><p>Sin visitas programadas.</p></div></td></tr></tbody>
+            <thead><tr><th>Nombre esperado</th><th>Visita a</th><th>Instrucción</th><th>Notas</th><th>Tipo</th><th>Estado</th><th></th></tr></thead>
+            <tbody id="esperadasBody"><tr><td colspan="7"><div class="empty"><i class="ti ti-calendar"></i><p>Sin visitas programadas.</p></div></td></tr></tbody>
           </table>
         </div>
       </div>
 
-      <!-- PANEL NUEVA INVITACIÓN -->
+      <!-- NUEVA INVITACIÓN -->
       <div class="panel" id="tab-nuevaVisita">
-        <div class="sec-lbl"><i class="ti ti-calendar-plus"></i>Programar visita esperada</div>
+        <div class="sec-lbl"><i class="ti ti-calendar-plus"></i>Programar visita</div>
+
+        <!-- Tipo de visita toggle -->
+        <div style="margin-bottom:14px">
+          <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:6px">Tipo de visita</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="tipoUnica" onclick="setTipoVisita('unica')">Visita única</button>
+            <button class="toggle-btn" id="tipoRecurrente" onclick="setTipoVisita('recurrente')">Visita recurrente</button>
+          </div>
+        </div>
+
         <div class="fgrid">
           <div class="f full"><label>Nombre del visitante esperado</label><input type="text" id="vNombre" placeholder="Ej. Daniel Ornelas García"></div>
-          <div class="f"><label>Fecha</label><input type="date" id="vFecha"></div>
-          <div class="f"><label>Hora aproximada</label><input type="time" id="vHora"></div>
+          <div class="f full"><label>A quién visita</label><input type="text" id="vVisitaA" placeholder="Nombre del colaborador que recibirá la visita"></div>
+
+          <!-- Fecha única -->
+          <div class="f full" id="fechaUnicaWrap"><label>Fecha</label><input type="date" id="vFecha"></div>
+
+          <!-- Rango de fechas para recurrente -->
+          <div class="f" id="fechaDesdeWrap" style="display:none"><label>Fecha inicio</label><input type="date" id="vFechaDesde"></div>
+          <div class="f" id="fechaHastaWrap" style="display:none"><label>Fecha fin</label><input type="date" id="vFechaHasta"></div>
+
           <div class="f full">
             <label>Instrucción para el guardia</label>
             <select id="vInstruccion">
               <option value="">— Selecciona —</option>
               <option value="acceso">✅ Dar acceso — notificación automática por SMS</option>
-              <option value="llamar">📞 Llamar para autorizar — guardia debe llamar antes de dejar pasar</option>
-              <option value="acompañar">🚶 Acompañar — dejar pasar y escoltarlo al destino</option>
+              <option value="llamar">📞 Llamar para autorizar</option>
+              <option value="acompanar">🚶 Acompañar al destino</option>
             </select>
           </div>
-          <div class="f full"><label>Notas para el guardia</label><textarea id="vNotas" placeholder="Ej. Va a reunión en sala 3, piso 2. Traer gafete de visitante especial."></textarea></div>
+          <div class="f full"><label>Notas para el guardia (opcional)</label><textarea id="vNotas" placeholder="Ej. Va a sala 3, piso 2. Traer gafete especial."></textarea></div>
         </div>
         <div class="btn-row" style="margin-top:16px">
           <button class="btn-p" onclick="guardarVisitaEsperada()"><i class="ti ti-check"></i>Guardar invitación</button>
@@ -424,21 +410,23 @@
         <div id="adminFormErr"></div>
       </div>
 
-      <!-- PANEL USUARIOS -->
+      <!-- USUARIOS -->
       <div class="panel" id="tab-usuarios">
-        <div class="ebar"><h2>Usuarios del sistema</h2></div>
-        <div class="tw" style="margin-bottom:1.5rem">
-          <table>
-            <thead><tr><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Rol</th></tr></thead>
-            <tbody id="usuariosBody"><tr><td colspan="4"><div class="empty"><i class="ti ti-users"></i><p>Cargando…</p></div></td></tr></tbody>
-          </table>
+        <div style="margin-bottom:1.25rem">
+          <h2 style="font-size:14px;font-weight:600;color:var(--gray-800);margin-bottom:12px">Usuarios del sistema</h2>
+          <div class="tw">
+            <table>
+              <thead><tr><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Rol</th></tr></thead>
+              <tbody id="usuariosBody"><tr><td colspan="4"><div class="empty"><i class="ti ti-users"></i><p>Cargando…</p></div></td></tr></tbody>
+            </table>
+          </div>
         </div>
         <div class="sec-lbl"><i class="ti ti-user-plus"></i>Nuevo usuario</div>
         <div class="fgrid">
           <div class="f"><label>Nombre</label><input type="text" id="uNombre" placeholder="Nombre completo"></div>
           <div class="f"><label>Email</label><input type="email" id="uEmail" placeholder="correo@ejemplo.com"></div>
           <div class="f"><label>Contraseña</label><input type="password" id="uPassword" placeholder="Mínimo 6 caracteres"></div>
-          <div class="f"><label>Teléfono (para SMS)</label><input type="text" id="uTelefono" placeholder="+521234567890"></div>
+          <div class="f"><label>Teléfono para SMS</label><input type="text" id="uTelefono" placeholder="+521234567890"></div>
         </div>
         <div class="btn-row" style="margin-top:12px">
           <button class="btn-p" onclick="crearUsuario()"><i class="ti ti-user-plus"></i>Crear usuario</button>
@@ -455,68 +443,58 @@
 const SB_URL='https://sdldzetnbmrbaniajjfi.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkbGR6ZXRuYm1yYmFuaWFqamZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNjMyNTksImV4cCI6MjA5NzgzOTI1OX0.YrwFHELhR5N7u6bO32j3X9mOaitw1m-ozraiUchcTi0';
 
-// ── NAVIGATION ──────────────────────────────────────────
-let usuarioActual = null;
+// ── STATE ────────────────────────────────────────────────
+let usuarioActual=null, records=[], stream=null, captured=null, matchActual=null;
+let visitasEsperadasCache=[], soloEnSitio=false, tipoVisita='unica';
 
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
+// ── CLOCK ────────────────────────────────────────────────
+setInterval(()=>{
+  const t=new Date().toLocaleTimeString('es-MX');
+  ['clock','clockAdmin'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t;});
+},1000);
 
-function irAHome() { showScreen('screenHome'); }
-function irALogin() { showScreen('screenLogin'); }
-
-function irAGuardia() {
+// ── NAVIGATION ───────────────────────────────────────────
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function irAHome(){showScreen('screenHome');}
+function irALogin(){showScreen('screenLogin');}
+function irAGuardia(){
   showScreen('screenGuardia');
-  document.getElementById('fechaPicker').value = new Date().toISOString().split('T')[0];
+  document.getElementById('fechaPicker').value=new Date().toISOString().split('T')[0];
   cargarRegistrosHoy();
+  cargarVisitasEsperadasHoy();
 }
+function cerrarSesion(){usuarioActual=null;sessionStorage.removeItem('usuario');irAHome();}
 
-function cerrarSesion() {
-  usuarioActual = null;
-  sessionStorage.removeItem('usuario');
-  irAHome();
-}
-
-// Restore session
-window.addEventListener('load', () => {
-  const saved = sessionStorage.getItem('usuario');
-  if (saved) { usuarioActual = JSON.parse(saved); }
-  initFields();
-  setInterval(()=>{
-    const t=new Date().toLocaleTimeString('es-MX');
-    document.getElementById('clock').textContent=t;
-    const ca=document.getElementById('clockAdmin');
-    if(ca)ca.textContent=t;
-  },1000);
+window.addEventListener('load',()=>{
+  const saved=sessionStorage.getItem('usuario');
+  if(saved)usuarioActual=JSON.parse(saved);
 });
 
 // ── LOGIN ────────────────────────────────────────────────
-document.getElementById('loginPassword').addEventListener('keydown', e=>{ if(e.key==='Enter') hacerLogin(); });
-
-async function hacerLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value;
-  if (!email||!password) { setAlert('loginErr','Ingresa email y contraseña.','a-err'); return; }
+document.getElementById('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')hacerLogin();});
+async function hacerLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const password=document.getElementById('loginPassword').value;
+  if(!email||!password){setAlert('loginErr','Ingresa email y contraseña.','a-err');return;}
   setAlert('loginErr','<div class="spin"></div>Verificando…','a-info');
-  try {
-    const res = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email,password}) });
-    const data = await res.json();
-    if (!res.ok) { setAlert('loginErr', data.error||'Error al iniciar sesión.', 'a-err'); return; }
-    usuarioActual = data;
-    sessionStorage.setItem('usuario', JSON.stringify(data));
-    document.getElementById('adminNombre').textContent = data.nombre;
+  try{
+    const res=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+    const data=await res.json();
+    if(!res.ok){setAlert('loginErr',data.error||'Error al iniciar sesión.','a-err');return;}
+    usuarioActual=data;
+    sessionStorage.setItem('usuario',JSON.stringify(data));
+    document.getElementById('adminNombre').textContent=data.nombre;
     document.getElementById('loginErr').innerHTML='';
     document.getElementById('loginPassword').value='';
     showScreen('screenAdmin');
-    document.getElementById('fechaAdminPicker').value = new Date().toISOString().split('T')[0];
+    document.getElementById('fechaAdminPicker').value=new Date().toISOString().split('T')[0];
     cargarVisitasEsperadas(new Date().toISOString().split('T')[0]);
     cargarUsuarios();
-  } catch(e) { setAlert('loginErr','Error de conexión.','a-err'); }
+  }catch(e){setAlert('loginErr','Error de conexión.','a-err');}
 }
 
-// ── SUPABASE HELPERS ─────────────────────────────────────
-async function sbFetch(path, method='GET', body=null) {
+// ── SUPABASE ─────────────────────────────────────────────
+async function sbFetch(path,method='GET',body=null){
   const opts={method,headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':method==='POST'?'return=representation':''}};
   if(body)opts.body=JSON.stringify(body);
   const res=await fetch(SB_URL+'/rest/v1'+path,opts);
@@ -525,114 +503,179 @@ async function sbFetch(path, method='GET', body=null) {
 }
 
 // ── VISITAS ESPERADAS ────────────────────────────────────
-let visitasEsperadasHoy = [];
-
-async function cargarVisitasEsperadas(fecha) {
-  try {
-    const data = await sbFetch('/visitas_esperadas?fecha=eq.'+fecha+'&order=hora_aprox.asc');
-    visitasEsperadasHoy = data;
-    renderEsperadas(data);
-  } catch(e) { console.error('Error cargando esperadas:', e); }
+async function cargarVisitasEsperadasHoy(){
+  try{
+    const hoy=new Date().toISOString().split('T')[0];
+    const data=await sbFetch('/visitas_esperadas?fecha=eq.'+hoy+'&llego=eq.false&order=nombre.asc');
+    visitasEsperadasCache=data;
+  }catch(e){visitasEsperadasCache=[];}
 }
 
-function renderEsperadas(data) {
-  const tb = document.getElementById('esperadasBody');
-  if (!data.length) { tb.innerHTML='<tr><td colspan="6"><div class="empty"><i class="ti ti-calendar"></i><p>Sin visitas programadas.</p></div></td></tr>'; return; }
-  const instrLabels = { acceso:'✅ Dar acceso', llamar:'📞 Llamar para autorizar', 'acompañar':'🚶 Acompañar' };
-  tb.innerHTML = data.map(v=>`
+async function cargarVisitasEsperadas(fecha){
+  try{
+    const data=await sbFetch('/visitas_esperadas?fecha=eq.'+fecha+'&order=nombre.asc');
+    renderEsperadas(data);
+  }catch(e){console.error(e);}
+}
+
+const instrLabels={acceso:'✅ Dar acceso',llamar:'📞 Llamar para autorizar',acompanar:'🚶 Acompañar'};
+
+function renderEsperadas(data){
+  const tb=document.getElementById('esperadasBody');
+  if(!data.length){tb.innerHTML='<tr><td colspan="7"><div class="empty"><i class="ti ti-calendar"></i><p>Sin visitas programadas.</p></div></td></tr>';return;}
+  tb.innerHTML=data.map(v=>`
     <tr>
       <td style="font-weight:500">${v.nombre}</td>
-      <td>${v.hora_aprox?.slice(0,5)||'—'}</td>
-      <td><span class="badge ${v.instruccion==='acceso'?'b-in':v.instruccion==='llamar'?'b-pend':'b-out'}">${instrLabels[v.instruccion]||v.instruccion}</span></td>
-      <td style="font-size:12px;color:var(--gray-600);max-width:180px">${v.notas||'—'}</td>
-      <td>${v.llegó?'<span class="badge b-out">Llegó</span>':'<span class="badge b-in">Esperado</span>'}</td>
-      <td><button onclick="eliminarEsperada(${v.id})" style="font-size:12px;padding:4px 9px;color:var(--danger-tx);border-color:var(--danger-bd)"><i class="ti ti-trash" style="font-size:13px"></i></button></td>
+      <td style="font-size:12px;color:var(--gray-600)">${v.visita_a||'—'}</td>
+      <td><span class="badge ${v.instruccion==='acceso'?'b-in':v.instruccion==='llamar'?'b-pend':'b-blue'}">${instrLabels[v.instruccion]||v.instruccion}</span></td>
+      <td style="font-size:12px;color:var(--gray-600);max-width:160px">${v.notas||'—'}</td>
+      <td><span class="badge b-out">${v.recurrente?'Recurrente':'Única'}</span></td>
+      <td>${v.llego?'<span class="badge b-out">Llegó</span>':'<span class="badge b-in">Esperado</span>'}</td>
+      <td style="display:flex;gap:6px">
+        ${!v.llego?`<button onclick="editarEsperada(${v.id})" style="font-size:12px;padding:4px 9px"><i class="ti ti-pencil" style="font-size:13px"></i></button>`:''}
+        <button onclick="eliminarEsperada(${v.id})" style="font-size:12px;padding:4px 9px;color:var(--danger-tx);border-color:var(--danger-bd)"><i class="ti ti-trash" style="font-size:13px"></i></button>
+      </td>
     </tr>`).join('');
 }
 
-async function guardarVisitaEsperada() {
-  const nombre = document.getElementById('vNombre').value.trim();
-  const fecha  = document.getElementById('vFecha').value;
-  const instruccion = document.getElementById('vInstruccion').value;
-  if (!nombre) { setAlert('adminFormErr','Ingresa el nombre del visitante.','a-err'); return; }
-  if (!fecha)  { setAlert('adminFormErr','Selecciona la fecha.','a-err'); return; }
-  if (!instruccion) { setAlert('adminFormErr','Selecciona la instrucción.','a-err'); return; }
-  try {
-    await sbFetch('/visitas_esperadas','POST',{
-      nombre, fecha,
-      hora_aprox: document.getElementById('vHora').value||null,
-      instruccion,
-      notas: document.getElementById('vNotas').value.trim()||null,
-      creado_por: usuarioActual?.id||null,
-      telefono_notif: usuarioActual?.telefono||null
-    });
-    toast('✅ Invitación guardada para '+nombre);
+function setTipoVisita(tipo){
+  tipoVisita=tipo;
+  document.getElementById('tipoUnica').classList.toggle('active',tipo==='unica');
+  document.getElementById('tipoRecurrente').classList.toggle('active',tipo==='recurrente');
+  document.getElementById('fechaUnicaWrap').style.display=tipo==='unica'?'':'none';
+  document.getElementById('fechaDesdeWrap').style.display=tipo==='recurrente'?'':'none';
+  document.getElementById('fechaHastaWrap').style.display=tipo==='recurrente'?'':'none';
+}
+
+async function guardarVisitaEsperada(){
+  const nombre=document.getElementById('vNombre').value.trim();
+  const visitaA=document.getElementById('vVisitaA').value.trim();
+  const instruccion=document.getElementById('vInstruccion').value;
+  if(!nombre){setAlert('adminFormErr','Ingresa el nombre del visitante.','a-err');return;}
+  if(!instruccion){setAlert('adminFormErr','Selecciona la instrucción.','a-err');return;}
+
+  let fechas=[];
+  if(tipoVisita==='unica'){
+    const f=document.getElementById('vFecha').value;
+    if(!f){setAlert('adminFormErr','Selecciona la fecha.','a-err');return;}
+    fechas=[f];
+  } else {
+    const desde=document.getElementById('vFechaDesde').value;
+    const hasta=document.getElementById('vFechaHasta').value;
+    if(!desde||!hasta){setAlert('adminFormErr','Selecciona el rango de fechas.','a-err');return;}
+    if(desde>hasta){setAlert('adminFormErr','La fecha de inicio debe ser antes de la fecha fin.','a-err');return;}
+    // Generate all dates in range
+    let cur=new Date(desde+'T12:00:00');
+    const end=new Date(hasta+'T12:00:00');
+    while(cur<=end){
+      fechas.push(cur.toISOString().split('T')[0]);
+      cur.setDate(cur.getDate()+1);
+    }
+    if(fechas.length>90){setAlert('adminFormErr','El rango no puede ser mayor a 90 días.','a-err');return;}
+  }
+
+  const base={nombre,visita_a:visitaA||null,instruccion,notas:document.getElementById('vNotas').value.trim()||null,creado_por:usuarioActual?.id||null,telefono_notif:usuarioActual?.telefono||null,llego:false,recurrente:tipoVisita==='recurrente'};
+
+  try{
+    setAlert('adminFormErr','<div class="spin"></div>Guardando…','a-info');
+    for(const fecha of fechas){
+      await sbFetch('/visitas_esperadas','POST',{...base,fecha});
+    }
+    toast(`✅ ${fechas.length===1?'Invitación guardada':''+fechas.length+' invitaciones guardadas'} para ${nombre}`);
     limpiarFormAdmin();
-    cargarVisitasEsperadas(fecha);
-    goTabAdmin('esperadas', document.querySelector('#screenAdmin .tab'));
-  } catch(e) { setAlert('adminFormErr','Error al guardar.','a-err'); }
+    document.getElementById('adminFormErr').innerHTML='';
+    cargarVisitasEsperadas(document.getElementById('fechaAdminPicker').value);
+    goTabAdmin('esperadas',document.querySelector('#screenAdmin .tab'));
+  }catch(e){setAlert('adminFormErr','Error al guardar.','a-err');}
 }
 
-async function eliminarEsperada(id) {
-  if (!confirm('¿Eliminar esta visita programada?')) return;
-  try {
-    await fetch(SB_URL+'/rest/v1/visitas_esperadas?id=eq.'+id, {
-      method:'DELETE', headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+async function editarEsperada(id){
+  try{
+    const data=await sbFetch('/visitas_esperadas?id=eq.'+id);
+    if(!data.length)return;
+    const v=data[0];
+    goTabAdmin('nuevaVisita',document.querySelectorAll('#screenAdmin .tab')[1]);
+    document.getElementById('vNombre').value=v.nombre||'';
+    document.getElementById('vVisitaA').value=v.visita_a||'';
+    document.getElementById('vInstruccion').value=v.instruccion||'';
+    document.getElementById('vNotas').value=v.notas||'';
+    document.getElementById('vFecha').value=v.fecha||'';
+    setTipoVisita('unica');
+    // Change save button to update
+    document.querySelector('#tab-nuevaVisita .btn-p').onclick=()=>actualizarEsperada(id);
+    document.querySelector('#tab-nuevaVisita .btn-p').innerHTML='<i class="ti ti-check"></i>Actualizar invitación';
+  }catch(e){toast('Error al cargar visita');}
+}
+
+async function actualizarEsperada(id){
+  const nombre=document.getElementById('vNombre').value.trim();
+  const instruccion=document.getElementById('vInstruccion').value;
+  if(!nombre||!instruccion){setAlert('adminFormErr','Completa nombre e instrucción.','a-err');return;}
+  try{
+    await fetch(SB_URL+'/rest/v1/visitas_esperadas?id=eq.'+id,{
+      method:'PATCH',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({nombre,visita_a:document.getElementById('vVisitaA').value.trim()||null,instruccion,notas:document.getElementById('vNotas').value.trim()||null,fecha:document.getElementById('vFecha').value})
     });
-    const fecha = document.getElementById('fechaAdminPicker').value;
-    cargarVisitasEsperadas(fecha);
-    toast('Visita eliminada');
-  } catch(e) { toast('Error al eliminar'); }
+    toast('✅ Invitación actualizada');
+    limpiarFormAdmin();
+    cargarVisitasEsperadas(document.getElementById('fechaAdminPicker').value);
+    goTabAdmin('esperadas',document.querySelector('#screenAdmin .tab'));
+  }catch(e){setAlert('adminFormErr','Error al actualizar.','a-err');}
 }
 
-function limpiarFormAdmin() {
-  ['vNombre','vFecha','vHora','vNotas'].forEach(id=>document.getElementById(id).value='');
+async function eliminarEsperada(id){
+  if(!confirm('¿Eliminar esta visita programada?'))return;
+  try{
+    await fetch(SB_URL+'/rest/v1/visitas_esperadas?id=eq.'+id,{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
+    toast('Visita eliminada');
+    cargarVisitasEsperadas(document.getElementById('fechaAdminPicker').value);
+  }catch(e){toast('Error al eliminar');}
+}
+
+function limpiarFormAdmin(){
+  ['vNombre','vVisitaA','vFecha','vFechaDesde','vFechaHasta','vNotas'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('vInstruccion').value='';
   document.getElementById('adminFormErr').innerHTML='';
+  setTipoVisita('unica');
+  // Reset save button
+  const btn=document.querySelector('#tab-nuevaVisita .btn-p');
+  btn.onclick=guardarVisitaEsperada;
+  btn.innerHTML='<i class="ti ti-check"></i>Guardar invitación';
 }
 
 // ── USUARIOS ─────────────────────────────────────────────
-async function cargarUsuarios() {
-  try {
-    const data = await sbFetch('/usuarios?select=id,nombre,email,telefono,rol&activo=eq.true');
-    const tb = document.getElementById('usuariosBody');
-    if (!data.length) { tb.innerHTML='<tr><td colspan="4"><div class="empty"><i class="ti ti-users"></i><p>Sin usuarios.</p></div></td></tr>'; return; }
-    tb.innerHTML = data.map(u=>`
-      <tr>
-        <td style="font-weight:500">${u.nombre}</td>
-        <td style="font-size:12px;color:var(--gray-600)">${u.email}</td>
-        <td style="font-size:12px;color:var(--gray-600)">${u.telefono||'—'}</td>
-        <td><span class="badge b-in">${u.rol}</span></td>
-      </tr>`).join('');
-  } catch(e) { console.error('Error cargando usuarios:', e); }
+async function cargarUsuarios(){
+  try{
+    const data=await sbFetch('/usuarios?select=id,nombre,email,telefono,rol&activo=eq.true');
+    const tb=document.getElementById('usuariosBody');
+    if(!data.length){tb.innerHTML='<tr><td colspan="4"><div class="empty"><i class="ti ti-users"></i><p>Sin usuarios.</p></div></td></tr>';return;}
+    tb.innerHTML=data.map(u=>`<tr><td style="font-weight:500">${u.nombre}</td><td style="font-size:12px;color:var(--gray-600)">${u.email}</td><td style="font-size:12px;color:var(--gray-600)">${u.telefono||'—'}</td><td><span class="badge b-in">${u.rol}</span></td></tr>`).join('');
+  }catch(e){console.error(e);}
 }
 
-async function crearUsuario() {
-  const nombre   = document.getElementById('uNombre').value.trim();
-  const email    = document.getElementById('uEmail').value.trim();
-  const password = document.getElementById('uPassword').value;
-  const telefono = document.getElementById('uTelefono').value.trim();
-  if (!nombre||!email||!password) { setAlert('usuarioErr','Nombre, email y contraseña son obligatorios.','a-err'); return; }
-  if (password.length < 6) { setAlert('usuarioErr','La contraseña debe tener al menos 6 caracteres.','a-err'); return; }
-  try {
-    const res = await fetch('/api/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre,email,password,telefono})});
-    const data = await res.json();
-    if (!res.ok) { setAlert('usuarioErr',data.error||'Error al crear usuario.','a-err'); return; }
+async function crearUsuario(){
+  const nombre=document.getElementById('uNombre').value.trim();
+  const email=document.getElementById('uEmail').value.trim();
+  const password=document.getElementById('uPassword').value;
+  const telefono=document.getElementById('uTelefono').value.trim();
+  if(!nombre||!email||!password){setAlert('usuarioErr','Nombre, email y contraseña son obligatorios.','a-err');return;}
+  if(password.length<6){setAlert('usuarioErr','La contraseña debe tener al menos 6 caracteres.','a-err');return;}
+  try{
+    const res=await fetch('/api/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre,email,password,telefono})});
+    const data=await res.json();
+    if(!res.ok){setAlert('usuarioErr',data.error||'Error al crear usuario.','a-err');return;}
     toast('✅ Usuario '+nombre+' creado');
     ['uNombre','uEmail','uPassword','uTelefono'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('usuarioErr').innerHTML='';
     cargarUsuarios();
-  } catch(e) { setAlert('usuarioErr','Error de conexión.','a-err'); }
+  }catch(e){setAlert('usuarioErr','Error de conexión.','a-err');}
 }
 
-// ── CAMERA & EXTRACTION ──────────────────────────────────
-let stream=null, captured=null, records=[], matchActual=null;
-
-async function startCam() {
-  if (!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) {
-    setAlert('exStatus','Tu navegador no soporta cámara. Usa "Subir imagen".','a-err'); return;
-  }
-  try {
+// ── CAMERA ───────────────────────────────────────────────
+async function startCam(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){setAlert('exStatus','Tu navegador no soporta cámara. Usa "Subir imagen".','a-err');return;}
+  try{
     stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}}});
     document.getElementById('video').srcObject=stream;
     document.getElementById('video').style.display='block';
@@ -641,13 +684,13 @@ async function startCam() {
     document.getElementById('btnSnap').style.display='inline-flex';
     document.getElementById('btnRetake').style.display='none';
     document.getElementById('viewfinder').classList.add('active');
-  } catch(e) {
-    const msg=e.name==='NotAllowedError'?'Permiso de cámara denegado. Actívalo en Ajustes.':e.name==='NotFoundError'?'No se encontró cámara.':'No se pudo acceder: '+e.message;
+  }catch(e){
+    const msg=e.name==='NotAllowedError'?'Permiso de cámara denegado.':e.name==='NotFoundError'?'No se encontró cámara.':'Error: '+e.message;
     setAlert('exStatus',msg,'a-err');
   }
 }
 
-function snapPhoto() {
+function snapPhoto(){
   const v=document.getElementById('video'),c=document.getElementById('snap');
   c.width=v.videoWidth;c.height=v.videoHeight;
   c.getContext('2d').drawImage(v,0,0);
@@ -655,14 +698,14 @@ function snapPhoto() {
   showPreview(captured);stopCam();extractINE(captured);
 }
 
-function loadFile(e) {
+function loadFile(e){
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
   r.onload=ev=>{captured=ev.target.result;showPreview(captured);stopCam();extractINE(captured);};
   r.readAsDataURL(f);
 }
 
-function stopCam() {
+function stopCam(){
   if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
   document.getElementById('video').style.display='none';
   document.getElementById('btnSnap').style.display='none';
@@ -670,131 +713,190 @@ function stopCam() {
   document.getElementById('viewfinder').classList.remove('active');
 }
 
-function retake() {
+function retake(){
   document.getElementById('previewImg').style.display='none';
   document.getElementById('camPh').style.display='block';
   document.getElementById('btnRetake').style.display='none';
   document.getElementById('exStatus').innerHTML='';
   document.getElementById('matchCard').classList.remove('active');
+  document.getElementById('matchCard').className='match-card';
+  document.getElementById('completionForm').classList.remove('active');
+  document.getElementById('manualForm').style.display='none';
   document.getElementById('fileIn').value='';
   captured=null;matchActual=null;startCam();
 }
 
-function showPreview(src) {
+function showPreview(src){
   const img=document.getElementById('previewImg');
   img.src=src;img.style.display='block';
   document.getElementById('camPh').style.display='none';
 }
 
-async function extractINE(img) {
+// ── EXTRACT + MATCH ──────────────────────────────────────
+async function extractINE(img){
   setAlert('exStatus','<div class="spin"></div>Analizando identificación con IA…','a-info');
   const base64=img.split(',')[1];
   const mt=img.startsWith('data:image/png')?'image/png':'image/jpeg';
-  try {
+  try{
     const res=await fetch('/api/extract',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:base64,mediaType:mt})});
-    if(res.status===401){setAlert('exStatus','Error de autenticación.','a-err');return;}
     const data=await res.json();
-    if(data.error){setAlert('exStatus',data.error,'a-err');return;}
-    if(!data.esINE){setAlert('exStatus',`No se detectó una identificación válida. ${data.observaciones||''} Puedes ingresar los datos manualmente.`,'a-warn');return;}
+    if(!res.ok||data.error){setAlert('exStatus',data.error||'Error al procesar.','a-err');mostrarFormularioManual();return;}
+    if(!data.esINE){setAlert('exStatus','No se detectó una identificación válida. Puedes ingresar los datos manualmente.','a-warn');mostrarFormularioManual();return;}
+
+    // Fill manual form fields in background
     document.getElementById('fNombre').value=data.nombre||'';
     document.getElementById('fCurp').value=data.curp||'';
-    const tipos={'INE':'INE / IFE','Licencia':'Licencia de conducir','Pasaporte':'Pasaporte','Otra':'Identificación oficial'};
-    const leidos=[];
-    if(data.nombre)leidos.push('nombre');
-    if(data.curp)leidos.push('CURP');
-    let msg='✓ '+(tipos[data.tipoDoc]||'Identificación')+' detectada';
-    if(leidos.length)msg+='. Datos leídos: '+leidos.join(', ')+'.';
-    setAlert('exStatus',msg+' Completa los campos restantes.','a-ok');
-    // Check for match with expected visitors
-    if(data.nombre) buscarMatch(data.nombre);
-  } catch(e){setAlert('exStatus','Error de conexión al servidor.','a-err');}
+
+    const tipos={INE:'INE/IFE',Licencia:'Licencia de conducir',Pasaporte:'Pasaporte',Otra:'Identificación'};
+    setAlert('exStatus','✓ '+(tipos[data.tipoDoc]||'Identificación')+' detectada — '+(data.nombre||''),'a-ok');
+
+    // Try to find a match with expected visitors
+    if(data.nombre&&visitasEsperadasCache.length){
+      await buscarMatch(data.nombre);
+    } else {
+      mostrarFormularioManual();
+    }
+  }catch(e){setAlert('exStatus','Error de conexión al servidor.','a-err');mostrarFormularioManual();}
 }
 
-async function buscarMatch(nombre) {
-  const hoy=new Date().toISOString().split('T')[0];
-  if(!visitasEsperadasHoy.length) {
-    // load today's expected visits if not loaded
-    try {
-      const data=await sbFetch('/visitas_esperadas?fecha=eq.'+hoy+'&llegó=eq.false');
-      visitasEsperadasHoy=data;
-    } catch(e){return;}
-  }
-  const pendientes=visitasEsperadasHoy.filter(v=>!v.llegó);
-  if(!pendientes.length)return;
-  try {
-    const res=await fetch('/api/match',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombreDetectado:nombre,visitasEsperadas:pendientes})});
+async function buscarMatch(nombre){
+  if(!visitasEsperadasCache.length){mostrarFormularioManual();return;}
+  try{
+    const res=await fetch('/api/match',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombreDetectado:nombre,visitasEsperadas:visitasEsperadasCache})});
     const data=await res.json();
-    if(data.match&&data.visita) mostrarMatch(data.visita,data.confianza);
-  } catch(e){console.warn('Error en match:',e);}
+    if(data.match&&data.visita){
+      mostrarMatch(data.visita,data.confianza);
+    } else {
+      mostrarFormularioManual();
+    }
+  }catch(e){mostrarFormularioManual();}
 }
 
-function mostrarMatch(visita, confianza) {
+function mostrarMatch(visita,confianza){
   matchActual=visita;
   const card=document.getElementById('matchCard');
-  const title=document.getElementById('matchTitle');
-  const body=document.getElementById('matchBody');
-  const actions=document.getElementById('matchActions');
-
-  const configs={
-    acceso:{ cls:'match-acceso', icon:'✅', tit:'Visita autorizada — Dar acceso', msg:`${visita.nombre} tiene acceso autorizado.${visita.notas?' Nota: '+visita.notas:''}` },
-    llamar:{ cls:'match-llamar', icon:'📞', tit:'Llamar para autorizar', msg:`Comunícate con el anfitrión antes de dejar pasar a ${visita.nombre}.${visita.notas?' Nota: '+visita.notas:''}` },
-    'acompañar':{ cls:'match-acompañar', icon:'🚶', tit:'Acompañar al visitante', msg:`Deja pasar a ${visita.nombre} y acompáñalo a su destino.${visita.notas?' Nota: '+visita.notas:''}` },
+  const cfgs={
+    acceso:{cls:'match-acceso',icon:'✅',tit:'Visita autorizada — Dar acceso'},
+    llamar:{cls:'match-llamar',icon:'📞',tit:'Llamar para autorizar'},
+    acompanar:{cls:'match-acompanar',icon:'🚶',tit:'Acompañar al visitante'},
   };
-  const cfg=configs[visita.instruccion]||configs.acceso;
+  const cfg=cfgs[visita.instruccion]||cfgs.acceso;
   card.className='match-card active '+cfg.cls;
-  title.innerHTML=`${cfg.icon} ${cfg.tit}`;
-  body.textContent=cfg.msg;
-  if(confianza==='media') body.textContent+=' (Confirma que sea la misma persona)';
-  actions.innerHTML=`<button class="btn-p" onclick="confirmarLlegada()"><i class="ti ti-check"></i>Confirmar llegada y registrar</button>`;
+  document.getElementById('matchTitle').innerHTML=`${cfg.icon} ${cfg.tit}`;
+  let bodyText=`Visitante: <strong>${visita.nombre}</strong>`;
+  if(visita.visita_a)bodyText+=` · Visita a: <strong>${visita.visita_a}</strong>`;
+  if(visita.notas)bodyText+=`<br><span style="font-size:12px">Nota: ${visita.notas}</span>`;
+  if(confianza==='media')bodyText+=`<br><span style="font-size:12px;color:var(--warn-tx)">⚠️ Confirma que sea la misma persona</span>`;
+  document.getElementById('matchBody').innerHTML=bodyText;
+  document.getElementById('completionForm').classList.add('active');
+  document.getElementById('manualForm').style.display='none';
+
+  const actions=document.getElementById('matchActions');
+  actions.innerHTML=`
+    <button class="btn-p" onclick="confirmarLlegadaMatch()"><i class="ti ti-check"></i>Confirmar llegada y registrar</button>
+    <button onclick="mostrarFormularioManual()"><i class="ti ti-forms"></i>No es pre-registro</button>`;
 }
 
-async function confirmarLlegada() {
+function mostrarFormularioManual(){
+  document.getElementById('matchCard').className='match-card';
+  document.getElementById('manualForm').style.display='block';
+  matchActual=null;
+}
+
+async function confirmarLlegadaMatch(){
   if(!matchActual)return;
-  try {
-    // Mark as arrived
+  const gafete=document.getElementById('mGafete').value.trim();
+  const lugar=document.getElementById('mLugar').value;
+  if(!lugar){toast('Selecciona la puerta de ingreso');return;}
+
+  const now=new Date();
+  const horaEntrada=now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  const nombre=document.getElementById('fNombre').value||matchActual.nombre;
+  const curp=document.getElementById('fCurp').value||'';
+
+  // Build record from pre-registration data
+  const record={
+    id:Date.now(),sbId:null,
+    gafete,lugar,nombre,curp,
+    visita:matchActual.visita_a||'—',
+    area:'',
+    motivo:instrLabels[matchActual.instruccion]||matchActual.instruccion,
+    entrada:horaEntrada,salida:null,foto:captured,
+    fecha:now.toLocaleDateString('es-MX'),fechaISO:now.toISOString().split('T')[0],status:'active'
+  };
+  records.push(record);
+  renderLog();updateStatsFromRecords();
+
+  // Mark as arrived in DB
+  try{
     await fetch(SB_URL+'/rest/v1/visitas_esperadas?id=eq.'+matchActual.id,{
       method:'PATCH',
       headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},
-      body:JSON.stringify({llegó:true})
+      body:JSON.stringify({llego:true})
     });
-    // Send SMS if instruccion is acceso or acompañar
-    if(matchActual.instruccion!=='llamar'&&matchActual.telefono_notif) {
-      const hora=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
-      await fetch('/api/notificar',{
-        method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          telefono:matchActual.telefono_notif,
-          nombreVisitante:document.getElementById('fNombre').value||matchActual.nombre,
-          instruccion:matchActual.instruccion,
-          lugar:document.getElementById('fLugar').value||'recepción',
-          hora
-        })
-      });
-    }
-    // update expected visits list
-    visitasEsperadasHoy=visitasEsperadasHoy.map(v=>v.id===matchActual.id?{...v,llegó:true}:v);
-    document.getElementById('matchCard').classList.remove('active');
-    matchActual=null;
-    toast('✅ Llegada confirmada'+( matchActual?.instruccion!=='llamar'?' — SMS enviado':''));
-  } catch(e){toast('Error al confirmar llegada');}
+    visitasEsperadasCache=visitasEsperadasCache.filter(v=>v.id!==matchActual.id);
+  }catch(e){console.warn('Error marcando llegada:',e);}
+
+  // Save to DB + upload photo
+  guardarVisitaDB(record).then(id=>{record.sbId=id;});
+
+  // Send SMS if needed
+  if(matchActual.instruccion!=='llamar'&&matchActual.telefono_notif){
+    fetch('/api/notificar',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({telefono:matchActual.telefono_notif,nombreVisitante:nombre,instruccion:matchActual.instruccion,lugar,hora:horaEntrada})
+    }).catch(()=>{});
+  }
+
+  toast('✅ Llegada confirmada'+(matchActual.instruccion!=='llamar'&&matchActual.telefono_notif?' — SMS enviado':''));
+  matchActual=null;
+  limpiar();
 }
 
-// ── FORM ─────────────────────────────────────────────────
-function toggleMotivo(sel) {
+// ── MANUAL REGISTRATION ──────────────────────────────────
+function toggleMotivo(sel){
   const otro=document.getElementById('fMotivoOtro');
   otro.style.display=sel.value==='Otro'?'block':'none';
   if(sel.value!=='Otro')otro.value='';
 }
-function getMotivo() {
+function getMotivo(){
   const sel=document.getElementById('fMotivoSel').value;
   if(!sel)return'';
   if(sel==='Otro')return document.getElementById('fMotivoOtro').value.trim();
   return sel;
 }
 
-async function subirFoto(id,dataUrl) {
+async function registrarManual(){
+  const nombre=document.getElementById('fNombre').value.trim();
+  const visita=document.getElementById('fVisita').value.trim();
+  const motivo=getMotivo();
+  const lugar=document.getElementById('fLugar').value;
+  if(!nombre){setAlert('formErr','Ingresa el nombre del visitante.','a-err');return;}
+  if(!visita){setAlert('formErr','Especifica a quién visita.','a-err');return;}
+  if(!motivo){setAlert('formErr','Selecciona el motivo de la visita.','a-err');return;}
+  if(!lugar){setAlert('formErr','Selecciona la puerta de ingreso.','a-err');return;}
+
+  const now=new Date();
+  const horaEntrada=now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  const record={
+    id:Date.now(),sbId:null,
+    gafete:document.getElementById('fGafete').value.trim(),
+    lugar,nombre,curp:document.getElementById('fCurp').value,
+    visita,area:document.getElementById('fArea').value,motivo,
+    entrada:horaEntrada,salida:null,foto:captured,
+    fecha:now.toLocaleDateString('es-MX'),fechaISO:now.toISOString().split('T')[0],status:'active'
+  };
+  records.push(record);
+  renderLog();updateStatsFromRecords();
+  toast('✓ Entrada registrada'+(record.gafete?' — Gafete '+record.gafete:''));
+  guardarVisitaDB(record).then(id=>{record.sbId=id;});
+  setTimeout(limpiar,1400);
+}
+
+// ── DB HELPERS ───────────────────────────────────────────
+async function subirFoto(id,dataUrl){
   if(!dataUrl)return null;
-  try {
+  try{
     const blob=await(await fetch(dataUrl)).blob();
     const path='visitas/'+id+'.jpg';
     const res=await fetch(SB_URL+'/storage/v1/object/Fotos/'+path,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'image/jpeg','x-upsert':'true'},body:blob});
@@ -803,9 +905,9 @@ async function subirFoto(id,dataUrl) {
   }catch(e){return null;}
 }
 
-async function fotoUrl(path) {
+async function fotoUrl(path){
   if(!path)return null;
-  try {
+  try{
     const res=await fetch(SB_URL+'/storage/v1/object/sign/Fotos/'+path,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({expiresIn:3600})});
     if(!res.ok)return null;
     const data=await res.json();
@@ -813,40 +915,23 @@ async function fotoUrl(path) {
   }catch(e){return null;}
 }
 
-async function guardarVisita(r) {
-  try {
+async function guardarVisitaDB(r){
+  try{
     const row={fecha:new Date().toISOString().split('T')[0],hora_entrada:r.entrada+':00',nombre:r.nombre,curp:r.curp||null,gafete:r.gafete||null,lugar:r.lugar||null,visita_a:r.visita,area:r.area||null,motivo:r.motivo,status:'active'};
     const data=await sbFetch('/visitas','POST',row);
     const sbId=data[0]?.id||null;
     if(sbId&&r.foto){const url=await subirFoto(sbId,r.foto);if(url)await sbFetch('/visitas?id=eq.'+sbId,'PATCH',{foto_url:url});}
     return sbId;
-  }catch(e){console.error('Error SB:',e);return null;}
+  }catch(e){console.error('Error guardando:',e);return null;}
 }
 
-async function registrarSalidaSB(sbId) {
+async function registrarSalidaSB(sbId){
   if(!sbId)return;
   try{const hora=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})+':00';await sbFetch('/visitas?id=eq.'+sbId,'PATCH',{hora_salida:hora,status:'out'});}
-  catch(e){console.error('Error salida:',e);}
+  catch(e){console.error(e);}
 }
 
-function registrar() {
-  const nombre=document.getElementById('fNombre').value.trim();
-  const visita=document.getElementById('fVisita').value.trim();
-  const motivo=getMotivo();
-  if(!nombre){setAlert('formErr','Ingresa el nombre del visitante.','a-err');return;}
-  if(!visita){setAlert('formErr','Especifica a quién visita.','a-err');return;}
-  if(!motivo){setAlert('formErr','Selecciona el motivo de la visita.','a-err');return;}
-  const now=new Date();
-  const horaEntrada=now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
-  const record={id:Date.now(),sbId:null,gafete:document.getElementById('fGafete').value.trim(),lugar:document.getElementById('fLugar').value,nombre,curp:document.getElementById('fCurp').value,visita,area:document.getElementById('fArea').value,motivo,entrada:horaEntrada,salida:null,foto:captured,fecha:now.toLocaleDateString('es-MX'),fechaISO:now.toISOString().split('T')[0],status:'active'};
-  records.push(record);
-  renderLog();updateStatsFromRecords();
-  toast('✓ Entrada registrada'+(record.gafete?' — Gafete '+record.gafete:''));
-  guardarVisita(record).then(id=>{record.sbId=id;});
-  setTimeout(limpiar,1400);
-}
-
-function salida(id) {
+function salida(id){
   const r=records.find(x=>x.id===id);
   if(!r||r.status!=='active')return;
   r.salida=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
@@ -856,10 +941,11 @@ function salida(id) {
   registrarSalidaSB(r.sbId);
 }
 
-function limpiar() {
-  ['fNombre','fCurp','fVisita','fArea','fGafete','fMotivoOtro'].forEach(id=>document.getElementById(id).value='');
+function limpiar(){
+  ['fNombre','fCurp','fVisita','fArea','fGafete','fMotivoOtro','mGafete'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('fMotivoSel').value='';
   document.getElementById('fLugar').value='';
+  document.getElementById('mLugar').value='';
   document.getElementById('fMotivoOtro').style.display='none';
   document.getElementById('previewImg').style.display='none';
   document.getElementById('camPh').style.display='block';
@@ -868,56 +954,52 @@ function limpiar() {
   document.getElementById('btnRetake').style.display='none';
   document.getElementById('exStatus').innerHTML='';
   document.getElementById('formErr').innerHTML='';
-  document.getElementById('matchCard').classList.remove('active');
+  document.getElementById('matchCard').className='match-card';
+  document.getElementById('completionForm').classList.remove('active');
+  document.getElementById('manualForm').style.display='none';
   document.getElementById('fileIn').value='';
   captured=null;matchActual=null;
   if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
 }
 
-function initFields() { /* nothing to init */ }
-
 // ── BITÁCORA ─────────────────────────────────────────────
-let soloEnSitio=false;
-
 function mapRow(r){return{id:r.id,sbId:r.id,gafete:r.gafete||'',lugar:r.lugar||'',nombre:r.nombre,curp:r.curp||'',visita:r.visita_a,area:r.area||'',motivo:r.motivo,entrada:r.hora_entrada?.slice(0,5)||'',salida:r.hora_salida?.slice(0,5)||null,foto_url:r.foto_url||null,foto:null,fecha:new Date(r.fecha+'T12:00:00').toLocaleDateString('es-MX'),fechaISO:r.fecha,status:r.status};}
 
-async function cargarRegistrosHoy() {
+async function cargarRegistrosHoy(){
   const hoy=new Date().toISOString().split('T')[0];
   document.getElementById('fechaPicker').value=hoy;
-  try {
+  try{
     const [dataHoy,dataPend]=await Promise.all([
       sbFetch('/visitas?fecha=eq.'+hoy+'&order=hora_entrada.asc'),
       sbFetch('/visitas?fecha=lt.'+hoy+'&status=eq.active&order=fecha.asc,hora_entrada.asc')
     ]);
     records=[...dataPend.map(mapRow),...dataHoy.map(mapRow)];
     renderLog();cargarFotosAsync(records);updateStatsFromRecords();updateBitacoraLabel();
-  }catch(e){console.error('Error cargar:',e);}
+  }catch(e){console.error(e);}
 }
 
-async function cargarFecha(fecha) {
+async function cargarFecha(fecha){
   if(!fecha)return;
-  try {
+  try{
     const data=await sbFetch('/visitas?fecha=eq.'+fecha+'&order=hora_entrada.asc');
-    records=data.map(mapRow);
-    renderLog();cargarFotosAsync(records);updateBitacoraLabel();
-  }catch(e){console.error('Error fecha:',e);}
+    records=data.map(mapRow);renderLog();cargarFotosAsync(records);updateBitacoraLabel();
+  }catch(e){console.error(e);}
 }
 
-async function toggleSinSalida() {
+async function toggleSinSalida(){
   const checked=document.getElementById('sinSalidaCheck').checked;
   if(checked){
     try{const hoy=new Date().toISOString().split('T')[0];const data=await sbFetch('/visitas?fecha=lt.'+hoy+'&status=eq.active&order=fecha.asc,hora_entrada.asc');records=data.map(mapRow);renderLog();cargarFotosAsync(records);updateBitacoraLabel();}
     catch(e){console.error(e);}
-  } else {cargarRegistrosHoy();}
+  }else{cargarRegistrosHoy();}
 }
 
-function updateBitacoraLabel() {
+function updateBitacoraLabel(){
   const el=document.getElementById('bitacoraLabel');if(!el)return;
-  const sinSalida=document.getElementById('sinSalidaCheck')?.checked;
-  el.textContent=sinSalida?records.length+' visitante(s) sin salida de días anteriores':records.length+' registro(s)';
+  el.textContent=records.length+' registro(s)';
 }
 
-function updateStatsFromRecords() {
+function updateStatsFromRecords(){
   const hoy=new Date().toISOString().split('T')[0];
   const h=records.filter(r=>r.fechaISO===hoy);
   document.getElementById('sTotal').textContent=h.length;
@@ -925,7 +1007,7 @@ function updateStatsFromRecords() {
   document.getElementById('sSalidos').textContent=h.filter(r=>r.status==='out').length;
 }
 
-function filtrarTabla() {
+function filtrarTabla(){
   const q=document.getElementById('searchInput').value.toLowerCase().trim();
   const filas=document.querySelectorAll('#logBody tr[data-id]');
   let vis=0;
@@ -935,10 +1017,10 @@ function filtrarTabla() {
     tr.style.display=(matchQ&&matchS)?'':'none';
     if(matchQ&&matchS)vis++;
   });
-  document.getElementById('bitacoraLabel').textContent=vis+' de '+records.length+' registro(s) mostrados';
+  document.getElementById('bitacoraLabel').textContent=vis+' de '+records.length+' registro(s)';
 }
 
-function toggleEnSitio(btn) {
+function toggleEnSitio(btn){
   soloEnSitio=!soloEnSitio;
   btn.style.background=soloEnSitio?'var(--success-bg)':'';
   btn.style.borderColor=soloEnSitio?'var(--success-bd)':'';
@@ -946,7 +1028,7 @@ function toggleEnSitio(btn) {
   filtrarTabla();
 }
 
-function limpiarFiltros() {
+function limpiarFiltros(){
   document.getElementById('searchInput').value='';
   soloEnSitio=false;
   const btn=document.getElementById('btnSoloEnSitio');
@@ -954,7 +1036,7 @@ function limpiarFiltros() {
   filtrarTabla();
 }
 
-function cargarFotosAsync(recs) {
+function cargarFotosAsync(recs){
   recs.forEach(async r=>{
     if(r.foto||!r.foto_url)return;
     const url=await fotoUrl(r.foto_url);
@@ -964,7 +1046,7 @@ function cargarFotosAsync(recs) {
   });
 }
 
-function renderLog() {
+function renderLog(){
   const tb=document.getElementById('logBody');
   if(!records.length){tb.innerHTML='<tr><td colspan="10"><div class="empty"><i class="ti ti-clipboard-list"></i><p>Sin registros aún.</p></div></td></tr>';return;}
   tb.innerHTML=records.slice().reverse().map(r=>`
@@ -973,8 +1055,8 @@ function renderLog() {
       <td><div style="font-weight:500">${r.nombre}</div><div style="font-size:11px;color:var(--gray-400)">${r.curp||''}</div></td>
       <td style="font-weight:500;white-space:nowrap">${r.gafete||'—'}</td>
       <td style="font-size:12px;color:var(--gray-600);white-space:nowrap">${r.lugar||'—'}</td>
-      <td><div style="font-weight:500">${r.visita}</div>${r.area?`<div style="font-size:11px;color:var(--gray-400)">${r.area}</div>`:''}</td>
-      <td style="max-width:130px;color:var(--gray-600);font-size:12px">${r.motivo}</td>
+      <td><div style="font-weight:500">${r.visita||'—'}</div>${r.area?`<div style="font-size:11px;color:var(--gray-400)">${r.area}</div>`:''}</td>
+      <td style="max-width:130px;color:var(--gray-600);font-size:12px">${r.motivo||'—'}</td>
       <td style="font-variant-numeric:tabular-nums;white-space:nowrap">${r.entrada}</td>
       <td style="font-variant-numeric:tabular-nums;white-space:nowrap">${r.salida||'—'}</td>
       <td>${r.status==='active'?'<span class="badge b-in"><i class="ti ti-circle-filled" style="font-size:8px"></i>En sitio</span>':'<span class="badge b-out"><i class="ti ti-check" style="font-size:11px"></i>Salió</span>'}</td>
@@ -983,9 +1065,9 @@ function renderLog() {
   filtrarTabla();
 }
 
-function exportCSV() {
+function exportCSV(){
   if(!records.length){toast('Sin registros');return;}
-  const cols=['Gafete','Ingreso','Nombre','CURP','Visita a','Área','Motivo','Entrada','Salida','Estado','Fecha'];
+  const cols=['Gafete','Puerta','Nombre','CURP','Visita a','Área','Motivo','Entrada','Salida','Estado','Fecha'];
   const rows=records.map(r=>[r.gafete,r.lugar,r.nombre,r.curp,r.visita,r.area,r.motivo,r.entrada,r.salida||'',r.status==='active'?'En sitio':'Salió',r.fecha].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(','));
   const blob=new Blob(['\uFEFF'+[cols.join(','),...rows].join('\n')],{type:'text/csv;charset=utf-8;'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
@@ -994,14 +1076,13 @@ function exportCSV() {
 }
 
 // ── TABS ─────────────────────────────────────────────────
-function goTab(id,el) {
+function goTab(id,el){
   document.querySelectorAll('#screenGuardia .tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('#screenGuardia .panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   el.classList.add('active');
 }
-
-function goTabAdmin(id,el) {
+function goTabAdmin(id,el){
   document.querySelectorAll('#screenAdmin .tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('#screenAdmin .panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
@@ -1014,7 +1095,6 @@ function setAlert(id,msg,cls){
   const icons={'a-info':'ti-info-circle','a-ok':'ti-circle-check','a-warn':'ti-alert-triangle','a-err':'ti-alert-circle'};
   document.getElementById(id).innerHTML=`<div class="alert ${cls}"><i class="ti ${icons[cls]||'ti-info-circle'}"></i><span>${msg}</span></div>`;
 }
-
 function toast(msg){
   const t=document.getElementById('toast');
   t.innerHTML=`<i class="ti ti-check" style="font-size:14px"></i>${msg}`;
