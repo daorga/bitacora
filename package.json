@@ -1,7 +1,4 @@
 {
   "name": "bitacora-acceso",
-  "version": "1.0.0",
-  "dependencies": {
-    "bcryptjs": "^2.4.3"
-  }
+  "version": "1.0.0"
 }
