@@ -807,6 +807,7 @@ async function confirmarLlegadaMatch(){
   if(!matchActual)return;
   const gafete=document.getElementById('mGafete').value.trim();
   const lugar=document.getElementById('mLugar').value;
+  if(!gafete){toast('Ingresa el número de gafete');return;}
   if(!lugar){toast('Selecciona la puerta de ingreso');return;}
 
   const now=new Date();
@@ -870,10 +871,12 @@ async function registrarManual(){
   const nombre=document.getElementById('fNombre').value.trim();
   const visita=document.getElementById('fVisita').value.trim();
   const motivo=getMotivo();
+  const gafeteManual=document.getElementById('fGafete').value.trim();
   const lugar=document.getElementById('fLugar').value;
   if(!nombre){setAlert('formErr','Ingresa el nombre del visitante.','a-err');return;}
   if(!visita){setAlert('formErr','Especifica a quién visita.','a-err');return;}
   if(!motivo){setAlert('formErr','Selecciona el motivo de la visita.','a-err');return;}
+  if(!gafeteManual){setAlert('formErr','Ingresa el número de gafete.','a-err');return;}
   if(!lugar){setAlert('formErr','Selecciona la puerta de ingreso.','a-err');return;}
 
   const now=new Date();
