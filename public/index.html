@@ -250,6 +250,7 @@ tr:hover td{background:var(--gray-50)}
           <button id="btnSnap" onclick="snapPhoto()" class="btn-p" style="display:none"><i class="ti ti-camera-selfie"></i>Tomar foto</button>
           <div class="file-wrap"><div class="file-lbl"><i class="ti ti-upload"></i>Subir imagen</div><input type="file" id="fileIn" accept="image/*" onchange="loadFile(event)"></div>
           <button id="btnRetake" onclick="retake()" style="display:none"><i class="ti ti-refresh"></i>Retomar</button>
+          <button id="btnManual" onclick="mostrarFormularioManual()" style="display:none;color:var(--gray-600)"><i class="ti ti-forms"></i>Ingresar manualmente</button>
         </div>
         <div id="exStatus"></div>
 
@@ -710,6 +711,7 @@ function stopCam(){
   document.getElementById('video').style.display='none';
   document.getElementById('btnSnap').style.display='none';
   document.getElementById('btnRetake').style.display='inline-flex';
+  document.getElementById('btnManual').style.display='inline-flex';
   document.getElementById('viewfinder').classList.remove('active');
 }
 
@@ -717,6 +719,7 @@ function retake(){
   document.getElementById('previewImg').style.display='none';
   document.getElementById('camPh').style.display='block';
   document.getElementById('btnRetake').style.display='none';
+  document.getElementById('btnManual').style.display='none';
   document.getElementById('exStatus').innerHTML='';
   document.getElementById('matchCard').classList.remove('active');
   document.getElementById('matchCard').className='match-card';
@@ -955,6 +958,8 @@ function limpiar(){
   document.getElementById('video').style.display='none';
   document.getElementById('btnSnap').style.display='none';
   document.getElementById('btnRetake').style.display='none';
+  document.getElementById('btnManual').style.display='none';
+  document.getElementById('btnManual').style.display='none';
   document.getElementById('exStatus').innerHTML='';
   document.getElementById('formErr').innerHTML='';
   document.getElementById('matchCard').className='match-card';
