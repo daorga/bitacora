@@ -48,7 +48,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .brand-sub{font-size:11px;color:var(--gray-400)}
 .topbar-right{display:flex;align-items:center;gap:10px}
 .topbar-time{font-size:13px;color:var(--blue-100);font-variant-numeric:tabular-nums}
-.btn-nav{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:var(--r-sm);border:1px solid rgba(255,255,255,.12);background:transparent;color:var(--blue-100);font-size:12px;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn-nav{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:var(--r-sm);border:1px solid rgba(255,255,255,.12);background:transparent;color:var(--blue-100);font-size:12px;cursor:pointer;font-family:inherit}
 .btn-nav:hover{background:rgba(255,255,255,.07)}
 
 /* PAGE */
@@ -86,7 +86,7 @@ video{width:100%;display:block}
 .vf-card .c::after{bottom:-2px;right:-2px;border-width:0 3px 3px 0;border-radius:0 0 5px 0}
 .vf-hint{margin-top:10px;font-size:12px;font-weight:500;color:rgba(255,255,255,.85);text-align:center;text-shadow:0 1px 3px rgba(0,0,0,.6)}
 
-/* MATCH CARD */
+/* MATCH */
 .match-card{border-radius:var(--r-md);padding:14px 16px;margin-top:12px;border:2px solid;display:none}
 .match-card.active{display:block}
 .match-acceso{background:#EAF7F0;border-color:#A7DFBE}
@@ -95,10 +95,15 @@ video{width:100%;display:block}
 .match-title{font-size:14px;font-weight:700;margin-bottom:4px}
 .match-body{font-size:13px;color:var(--gray-600)}
 .match-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-
-/* COMPLETION FORM (after match) */
 .completion-form{background:var(--gray-50);border-radius:var(--r-md);padding:14px;margin-top:10px;border:1px solid var(--gray-200);display:none}
 .completion-form.active{display:block}
+
+/* GROUP MEMBERS */
+.member-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--r-sm);margin-bottom:6px}
+.member-row .member-name{flex:1;font-size:13px;font-weight:500;color:var(--gray-800)}
+.member-row .member-status{font-size:11px;color:var(--gray-400)}
+.member-row.arrived .member-name{color:var(--success-tx)}
+.member-row.arrived .member-status{color:var(--success-tx)}
 
 /* BUTTONS */
 .btn-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
@@ -109,7 +114,7 @@ button i{font-size:15px}
 .btn-p:hover{background:var(--blue-800)!important}
 .btn-ok{background:var(--success-bg)!important;color:var(--success-tx)!important;border-color:var(--success-bd)!important}
 .btn-ok:hover{background:#D1F0E0!important}
-.btn-warn{background:var(--warn-bg)!important;color:var(--warn-tx)!important;border-color:var(--warn-bd)!important}
+.btn-sm{padding:5px 10px!important;font-size:12px!important}
 .file-wrap{position:relative;display:inline-block}
 .file-wrap input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
 .file-lbl{display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:var(--r-sm);border:1.5px dashed var(--gray-200);font-size:13px;font-weight:500;color:var(--gray-600);cursor:pointer;background:var(--gray-50);transition:all .15s}
@@ -139,7 +144,7 @@ button i{font-size:15px}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--gray-100)}
 
 /* TOGGLE */
-.toggle-group{display:flex;gap:0;border:1.5px solid var(--gray-200);border-radius:var(--r-sm);overflow:hidden;width:fit-content;margin-top:10px}
+.toggle-group{display:flex;gap:0;border:1.5px solid var(--gray-200);border-radius:var(--r-sm);overflow:hidden;width:fit-content;margin-top:8px}
 .toggle-btn{padding:8px 18px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:var(--white);color:var(--gray-600);transition:all .15s;font-family:inherit}
 .toggle-btn:not(:last-child){border-right:1px solid var(--gray-200)}
 .toggle-btn.active{background:var(--blue-600);color:#fff}
@@ -233,16 +238,16 @@ tr:hover td{background:var(--gray-50)}
         <div class="tab" onclick="goTab('bitacora',this)"><i class="ti ti-list-details"></i>Bitácora</div>
       </div>
 
-      <!-- PANEL REGISTRO -->
+      <!-- REGISTRO -->
       <div class="panel active" id="tab-registro">
         <div class="sec-lbl"><i class="ti ti-camera"></i>Paso 1 — Capturar identificación</div>
         <div class="cam-box" id="camBox">
-          <div class="cam-ph" id="camPh"><i class="ti ti-id"></i><p>Activa la cámara o sube una foto de la identificación</p></div>
+          <div class="cam-ph" id="camPh"><i class="ti ti-id"></i><p>Activa la cámara o sube una foto</p></div>
           <video id="video" autoplay playsinline style="display:none"></video>
           <canvas id="snap" style="display:none"></canvas>
           <img id="previewImg" alt="Vista previa">
           <div class="viewfinder" id="viewfinder">
-            <div class="vf-inner"><div class="vf-card"><div class="c"></div></div><div class="vf-hint">Centra la identificación dentro del recuadro</div></div>
+            <div class="vf-inner"><div class="vf-card"><div class="c"></div></div><div class="vf-hint">Centra la identificación en el recuadro y toma la foto</div></div>
           </div>
         </div>
         <div class="btn-row">
@@ -250,30 +255,31 @@ tr:hover td{background:var(--gray-50)}
           <button id="btnSnap" onclick="snapPhoto()" class="btn-p" style="display:none"><i class="ti ti-camera-selfie"></i>Tomar foto</button>
           <div class="file-wrap"><div class="file-lbl"><i class="ti ti-upload"></i>Subir imagen</div><input type="file" id="fileIn" accept="image/*" onchange="loadFile(event)"></div>
           <button id="btnRetake" onclick="retake()" style="display:none"><i class="ti ti-refresh"></i>Retomar</button>
-          <button id="btnManual" onclick="mostrarFormularioManual()" style="display:none;color:var(--gray-600)"><i class="ti ti-forms"></i>Ingresar manualmente</button>
+          <button id="btnManual" onclick="mostrarFormularioManual()" style="display:none;color:var(--gray-600)"><i class="ti ti-forms"></i>Sin identificación</button>
         </div>
         <div id="exStatus"></div>
 
-        <!-- MATCH CARD — shown when pre-registered visitor detected -->
+        <!-- MATCH CARD -->
         <div class="match-card" id="matchCard">
           <div class="match-title" id="matchTitle"></div>
           <div class="match-body" id="matchBody"></div>
-          <!-- Completion fields for matched visitor -->
+          <!-- Group pending members -->
+          <div id="groupPending" style="display:none;margin-top:10px">
+            <div style="font-size:12px;font-weight:600;color:var(--gray-600);margin-bottom:6px">Miembros del grupo:</div>
+            <div id="groupMembersList"></div>
+          </div>
           <div class="completion-form" id="completionForm">
             <div class="fgrid" style="margin-top:0">
               <div class="f"><label>Número de gafete</label><input type="text" id="mGafete" placeholder="Ej. G-001"></div>
               <div class="f"><label>Puerta de ingreso</label>
-                <select id="mLugar">
-                  <option value="">— Selecciona —</option>
-                  <option>Puerta 1</option><option>Puerta 2</option><option>Puerta 3</option><option>Estacionamiento</option>
-                </select>
+                <select id="mLugar"><option value="">— Selecciona —</option><option>Puerta 1</option><option>Puerta 2</option><option>Puerta 3</option><option>Estacionamiento</option></select>
               </div>
             </div>
           </div>
           <div class="match-actions" id="matchActions"></div>
         </div>
 
-        <!-- MANUAL FORM — shown when no pre-registration found -->
+        <!-- MANUAL FORM -->
         <div id="manualForm" style="display:none">
           <div class="divider">Datos del visitante</div>
           <div class="sec-lbl"><i class="ti ti-forms"></i>Paso 2 — Completar información</div>
@@ -285,7 +291,7 @@ tr:hover td{background:var(--gray-50)}
             <div class="f full">
               <label>Motivo de la visita</label>
               <select id="fMotivoSel" onchange="toggleMotivo(this)">
-                <option value="">— Selecciona el motivo —</option>
+                <option value="">— Selecciona —</option>
                 <option>Clase</option><option>Compra</option><option>Consulta</option>
                 <option>Entrega de documentos</option><option>Entrevista</option>
                 <option>Exposición / presentación</option><option>Mantenimiento / servicio técnico</option>
@@ -296,10 +302,7 @@ tr:hover td{background:var(--gray-50)}
             </div>
             <div class="f"><label>Número de gafete</label><input type="text" id="fGafete" placeholder="Ej. G-001"></div>
             <div class="f"><label>Puerta de ingreso</label>
-              <select id="fLugar">
-                <option value="">— Selecciona —</option>
-                <option>Puerta 1</option><option>Puerta 2</option><option>Puerta 3</option><option>Estacionamiento</option>
-              </select>
+              <select id="fLugar"><option value="">— Selecciona —</option><option>Puerta 1</option><option>Puerta 2</option><option>Puerta 3</option><option>Estacionamiento</option></select>
             </div>
           </div>
           <div class="btn-row" style="margin-top:16px">
@@ -310,7 +313,7 @@ tr:hover td{background:var(--gray-50)}
         </div>
       </div>
 
-      <!-- PANEL BITÁCORA -->
+      <!-- BITÁCORA -->
       <div class="panel" id="tab-bitacora">
         <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;align-items:center;justify-content:space-between">
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -363,7 +366,7 @@ tr:hover td{background:var(--gray-50)}
         </div>
         <div class="tw">
           <table>
-            <thead><tr><th>Nombre esperado</th><th>Visita a</th><th>Instrucción</th><th>Notas</th><th>Tipo</th><th>Estado</th><th></th></tr></thead>
+            <thead><tr><th>Grupo / Visitante(s)</th><th>Visita a</th><th>Instrucción</th><th>Notas</th><th>Tipo</th><th>Estado</th><th></th></tr></thead>
             <tbody id="esperadasBody"><tr><td colspan="7"><div class="empty"><i class="ti ti-calendar"></i><p>Sin visitas programadas.</p></div></td></tr></tbody>
           </table>
         </div>
@@ -372,8 +375,6 @@ tr:hover td{background:var(--gray-50)}
       <!-- NUEVA INVITACIÓN -->
       <div class="panel" id="tab-nuevaVisita">
         <div class="sec-lbl"><i class="ti ti-calendar-plus"></i>Programar visita</div>
-
-        <!-- Tipo de visita toggle -->
         <div style="margin-bottom:14px">
           <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:6px">Tipo de visita</label>
           <div class="toggle-group">
@@ -381,18 +382,11 @@ tr:hover td{background:var(--gray-50)}
             <button class="toggle-btn" id="tipoRecurrente" onclick="setTipoVisita('recurrente')">Visita recurrente</button>
           </div>
         </div>
-
         <div class="fgrid">
-          <div class="f full"><label>Nombre del visitante esperado</label><input type="text" id="vNombre" placeholder="Ej. Daniel Ornelas García"></div>
           <div class="f full"><label>A quién visita</label><input type="text" id="vVisitaA" placeholder="Nombre del colaborador que recibirá la visita"></div>
-
-          <!-- Fecha única -->
           <div class="f full" id="fechaUnicaWrap"><label>Fecha</label><input type="date" id="vFecha"></div>
-
-          <!-- Rango de fechas para recurrente -->
           <div class="f" id="fechaDesdeWrap" style="display:none"><label>Fecha inicio</label><input type="date" id="vFechaDesde"></div>
           <div class="f" id="fechaHastaWrap" style="display:none"><label>Fecha fin</label><input type="date" id="vFechaHasta"></div>
-
           <div class="f full">
             <label>Instrucción para el guardia</label>
             <select id="vInstruccion">
@@ -402,10 +396,21 @@ tr:hover td{background:var(--gray-50)}
               <option value="acompanar">🚶 Acompañar al destino</option>
             </select>
           </div>
-          <div class="f full"><label>Notas para el guardia (opcional)</label><textarea id="vNotas" placeholder="Ej. Va a sala 3, piso 2. Traer gafete especial."></textarea></div>
+          <div class="f full"><label>Notas para el guardia (opcional)</label><textarea id="vNotas" placeholder="Ej. Van a sala 3, piso 2."></textarea></div>
         </div>
+
+        <!-- MIEMBROS DEL GRUPO -->
+        <div style="margin-top:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <label style="font-size:12px;font-weight:600;color:var(--gray-600)">Visitantes <span style="color:var(--danger-tx)">*</span></label>
+            <button onclick="agregarMiembro()" class="btn-sm"><i class="ti ti-user-plus"></i>Agregar persona</button>
+          </div>
+          <div id="miembrosLista"></div>
+          <div id="miembrosErr" style="font-size:12px;color:var(--danger-tx);margin-top:4px"></div>
+        </div>
+
         <div class="btn-row" style="margin-top:16px">
-          <button class="btn-p" onclick="guardarVisitaEsperada()"><i class="ti ti-check"></i>Guardar invitación</button>
+          <button class="btn-p" id="btnGuardarInv" onclick="guardarVisitaEsperada()"><i class="ti ti-check"></i>Guardar invitación</button>
           <button onclick="limpiarFormAdmin()"><i class="ti ti-trash"></i>Limpiar</button>
         </div>
         <div id="adminFormErr"></div>
@@ -415,12 +420,7 @@ tr:hover td{background:var(--gray-50)}
       <div class="panel" id="tab-usuarios">
         <div style="margin-bottom:1.25rem">
           <h2 style="font-size:14px;font-weight:600;color:var(--gray-800);margin-bottom:12px">Usuarios del sistema</h2>
-          <div class="tw">
-            <table>
-              <thead><tr><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Rol</th></tr></thead>
-              <tbody id="usuariosBody"><tr><td colspan="4"><div class="empty"><i class="ti ti-users"></i><p>Cargando…</p></div></td></tr></tbody>
-            </table>
-          </div>
+          <div class="tw"><table><thead><tr><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Rol</th></tr></thead><tbody id="usuariosBody"></tbody></table></div>
         </div>
         <div class="sec-lbl"><i class="ti ti-user-plus"></i>Nuevo usuario</div>
         <div class="fgrid">
@@ -429,9 +429,7 @@ tr:hover td{background:var(--gray-50)}
           <div class="f"><label>Contraseña</label><input type="password" id="uPassword" placeholder="Mínimo 6 caracteres"></div>
           <div class="f"><label>Teléfono para SMS</label><input type="text" id="uTelefono" placeholder="+521234567890"></div>
         </div>
-        <div class="btn-row" style="margin-top:12px">
-          <button class="btn-p" onclick="crearUsuario()"><i class="ti ti-user-plus"></i>Crear usuario</button>
-        </div>
+        <div class="btn-row" style="margin-top:12px"><button class="btn-p" onclick="crearUsuario()"><i class="ti ti-user-plus"></i>Crear usuario</button></div>
         <div id="usuarioErr"></div>
       </div>
     </div>
@@ -444,32 +442,21 @@ tr:hover td{background:var(--gray-50)}
 const SB_URL='https://sdldzetnbmrbaniajjfi.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkbGR6ZXRuYm1yYmFuaWFqamZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNjMyNTksImV4cCI6MjA5NzgzOTI1OX0.YrwFHELhR5N7u6bO32j3X9mOaitw1m-ozraiUchcTi0';
 
-// ── STATE ────────────────────────────────────────────────
-let usuarioActual=null, records=[], stream=null, captured=null, matchActual=null;
-let visitasEsperadasCache=[], soloEnSitio=false, tipoVisita='unica';
+let usuarioActual=null,records=[],stream=null,captured=null,matchActual=null;
+let visitasEsperadasCache=[],soloEnSitio=false,tipoVisita='unica';
+let miembros=[]; // group members for admin form
+let smsSentForGroup=false; // track if SMS already sent for group
 
 // ── CLOCK ────────────────────────────────────────────────
-setInterval(()=>{
-  const t=new Date().toLocaleTimeString('es-MX');
-  ['clock','clockAdmin'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t;});
-},1000);
+setInterval(()=>{const t=new Date().toLocaleTimeString('es-MX');['clock','clockAdmin'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t;});},1000);
 
 // ── NAVIGATION ───────────────────────────────────────────
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 function irAHome(){showScreen('screenHome');}
 function irALogin(){showScreen('screenLogin');}
-function irAGuardia(){
-  showScreen('screenGuardia');
-  document.getElementById('fechaPicker').value=new Date().toISOString().split('T')[0];
-  cargarRegistrosHoy();
-  cargarVisitasEsperadasHoy();
-}
+function irAGuardia(){showScreen('screenGuardia');document.getElementById('fechaPicker').value=new Date().toISOString().split('T')[0];cargarRegistrosHoy();cargarVisitasEsperadasHoy();}
 function cerrarSesion(){usuarioActual=null;sessionStorage.removeItem('usuario');irAHome();}
-
-window.addEventListener('load',()=>{
-  const saved=sessionStorage.getItem('usuario');
-  if(saved)usuarioActual=JSON.parse(saved);
-});
+window.addEventListener('load',()=>{const s=sessionStorage.getItem('usuario');if(s)usuarioActual=JSON.parse(s);agregarMiembro();});
 
 // ── LOGIN ────────────────────────────────────────────────
 document.getElementById('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')hacerLogin();});
@@ -481,16 +468,13 @@ async function hacerLogin(){
   try{
     const res=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
     const data=await res.json();
-    if(!res.ok){setAlert('loginErr',data.error||'Error al iniciar sesión.','a-err');return;}
-    usuarioActual=data;
-    sessionStorage.setItem('usuario',JSON.stringify(data));
+    if(!res.ok){setAlert('loginErr',data.error||'Error.','a-err');return;}
+    usuarioActual=data;sessionStorage.setItem('usuario',JSON.stringify(data));
     document.getElementById('adminNombre').textContent=data.nombre;
-    document.getElementById('loginErr').innerHTML='';
-    document.getElementById('loginPassword').value='';
+    document.getElementById('loginErr').innerHTML='';document.getElementById('loginPassword').value='';
     showScreen('screenAdmin');
     document.getElementById('fechaAdminPicker').value=new Date().toISOString().split('T')[0];
-    cargarVisitasEsperadas(new Date().toISOString().split('T')[0]);
-    cargarUsuarios();
+    cargarVisitasEsperadas(new Date().toISOString().split('T')[0]);cargarUsuarios();
   }catch(e){setAlert('loginErr','Error de conexión.','a-err');}
 }
 
@@ -503,18 +487,37 @@ async function sbFetch(path,method='GET',body=null){
   return res.json();
 }
 
+// ── MIEMBROS (admin form) ────────────────────────────────
+function agregarMiembro(){
+  miembros.push({id:Date.now(),nombre:''});
+  renderMiembros();
+}
+function eliminarMiembro(id){
+  if(miembros.length<=1){toast('Debe haber al menos un visitante');return;}
+  miembros=miembros.filter(m=>m.id!==id);renderMiembros();
+}
+function renderMiembros(){
+  const lista=document.getElementById('miembrosLista');
+  lista.innerHTML=miembros.map((m,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <div style="width:24px;height:24px;background:var(--blue-600);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:700;color:#fff">${i+1}</div>
+      <input type="text" value="${m.nombre}" oninput="miembros[${i}].nombre=this.value" placeholder="Nombre completo del visitante" style="flex:1;padding:8px 10px;border-radius:var(--r-sm);border:1.5px solid var(--gray-200);font-size:13px;font-family:inherit">
+      ${miembros.length>1?`<button onclick="eliminarMiembro(${m.id})" style="padding:6px 8px;color:var(--danger-tx);border-color:var(--danger-bd);flex-shrink:0"><i class="ti ti-x" style="font-size:13px"></i></button>`:''}
+    </div>`).join('');
+}
+
 // ── VISITAS ESPERADAS ────────────────────────────────────
 async function cargarVisitasEsperadasHoy(){
   try{
     const hoy=new Date().toISOString().split('T')[0];
-    const data=await sbFetch('/visitas_esperadas?fecha=eq.'+hoy+'&llego=eq.false&order=nombre.asc');
+    const data=await sbFetch('/visitas_esperadas?fecha=eq.'+hoy+'&llego=eq.false&order=visita_a.asc');
     visitasEsperadasCache=data;
   }catch(e){visitasEsperadasCache=[];}
 }
 
 async function cargarVisitasEsperadas(fecha){
   try{
-    const data=await sbFetch('/visitas_esperadas?fecha=eq.'+fecha+'&order=nombre.asc');
+    const data=await sbFetch('/visitas_esperadas?fecha=eq.'+fecha+'&order=grupo_id.asc,nombre.asc');
     renderEsperadas(data);
   }catch(e){console.error(e);}
 }
@@ -524,19 +527,33 @@ const instrLabels={acceso:'✅ Dar acceso',llamar:'📞 Llamar para autorizar',a
 function renderEsperadas(data){
   const tb=document.getElementById('esperadasBody');
   if(!data.length){tb.innerHTML='<tr><td colspan="7"><div class="empty"><i class="ti ti-calendar"></i><p>Sin visitas programadas.</p></div></td></tr>';return;}
-  tb.innerHTML=data.map(v=>`
-    <tr>
-      <td style="font-weight:500">${v.nombre}</td>
-      <td style="font-size:12px;color:var(--gray-600)">${v.visita_a||'—'}</td>
-      <td><span class="badge ${v.instruccion==='acceso'?'b-in':v.instruccion==='llamar'?'b-pend':'b-blue'}">${instrLabels[v.instruccion]||v.instruccion}</span></td>
-      <td style="font-size:12px;color:var(--gray-600);max-width:160px">${v.notas||'—'}</td>
-      <td><span class="badge b-out">${v.recurrente?'Recurrente':'Única'}</span></td>
-      <td>${v.llego?'<span class="badge b-out">Llegó</span>':'<span class="badge b-in">Esperado</span>'}</td>
+
+  // Group by grupo_id
+  const grupos={};
+  data.forEach(v=>{
+    const key=v.grupo_id||v.id;
+    if(!grupos[key])grupos[key]=[];
+    grupos[key].push(v);
+  });
+
+  tb.innerHTML=Object.values(grupos).map(grupo=>{
+    const first=grupo[0];
+    const nombres=grupo.map(v=>`<div style="font-size:12px">${v.nombre}${v.llego?' <span style="color:var(--success-tx)">✓</span>':''}</div>`).join('');
+    const todosLlegaron=grupo.every(v=>v.llego);
+    const algunoLlego=grupo.some(v=>v.llego);
+    return `<tr>
+      <td>${nombres}</td>
+      <td style="font-size:12px;color:var(--gray-600)">${first.visita_a||'—'}</td>
+      <td><span class="badge ${first.instruccion==='acceso'?'b-in':first.instruccion==='llamar'?'b-pend':'b-blue'}">${instrLabels[first.instruccion]||first.instruccion}</span></td>
+      <td style="font-size:12px;color:var(--gray-600);max-width:150px">${first.notas||'—'}</td>
+      <td><span class="badge b-out">${first.recurrente?'Recurrente':'Única'}${grupo.length>1?' · '+grupo.length+' personas':''}</span></td>
+      <td>${todosLlegaron?'<span class="badge b-out">Llegaron todos</span>':algunoLlego?'<span class="badge b-pend">Parcial</span>':'<span class="badge b-in">Esperados</span>'}</td>
       <td style="display:flex;gap:6px">
-        ${!v.llego?`<button onclick="editarEsperada(${v.id})" style="font-size:12px;padding:4px 9px"><i class="ti ti-pencil" style="font-size:13px"></i></button>`:''}
-        <button onclick="eliminarEsperada(${v.id})" style="font-size:12px;padding:4px 9px;color:var(--danger-tx);border-color:var(--danger-bd)"><i class="ti ti-trash" style="font-size:13px"></i></button>
+        ${!todosLlegaron?`<button onclick="editarEsperada(${first.grupo_id||first.id})" style="font-size:12px;padding:4px 9px"><i class="ti ti-pencil" style="font-size:13px"></i></button>`:''}
+        <button onclick="eliminarGrupo(${first.grupo_id||first.id})" style="font-size:12px;padding:4px 9px;color:var(--danger-tx);border-color:var(--danger-bd)"><i class="ti ti-trash" style="font-size:13px"></i></button>
       </td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 }
 
 function setTipoVisita(tipo){
@@ -549,10 +566,13 @@ function setTipoVisita(tipo){
 }
 
 async function guardarVisitaEsperada(){
-  const nombre=document.getElementById('vNombre').value.trim();
+  // Validate members
+  const nombresValidos=miembros.filter(m=>m.nombre.trim());
+  if(!nombresValidos.length){document.getElementById('miembrosErr').textContent='Agrega al menos un visitante';return;}
+  document.getElementById('miembrosErr').textContent='';
+
   const visitaA=document.getElementById('vVisitaA').value.trim();
   const instruccion=document.getElementById('vInstruccion').value;
-  if(!nombre){setAlert('adminFormErr','Ingresa el nombre del visitante.','a-err');return;}
   if(!instruccion){setAlert('adminFormErr','Selecciona la instrucción.','a-err');return;}
 
   let fechas=[];
@@ -560,89 +580,57 @@ async function guardarVisitaEsperada(){
     const f=document.getElementById('vFecha').value;
     if(!f){setAlert('adminFormErr','Selecciona la fecha.','a-err');return;}
     fechas=[f];
-  } else {
+  }else{
     const desde=document.getElementById('vFechaDesde').value;
     const hasta=document.getElementById('vFechaHasta').value;
     if(!desde||!hasta){setAlert('adminFormErr','Selecciona el rango de fechas.','a-err');return;}
-    if(desde>hasta){setAlert('adminFormErr','La fecha de inicio debe ser antes de la fecha fin.','a-err');return;}
-    // Generate all dates in range
+    if(desde>hasta){setAlert('adminFormErr','La fecha inicio debe ser antes de la fecha fin.','a-err');return;}
     let cur=new Date(desde+'T12:00:00');
     const end=new Date(hasta+'T12:00:00');
-    while(cur<=end){
-      fechas.push(cur.toISOString().split('T')[0]);
-      cur.setDate(cur.getDate()+1);
-    }
+    while(cur<=end){fechas.push(cur.toISOString().split('T')[0]);cur.setDate(cur.getDate()+1);}
     if(fechas.length>90){setAlert('adminFormErr','El rango no puede ser mayor a 90 días.','a-err');return;}
   }
 
-  const base={nombre,visita_a:visitaA||null,instruccion,notas:document.getElementById('vNotas').value.trim()||null,creado_por:usuarioActual?.id||null,telefono_notif:usuarioActual?.telefono||null,llego:false,recurrente:tipoVisita==='recurrente'};
+  const grupoId=Date.now(); // unique group ID
+  const base={visita_a:visitaA||null,instruccion,notas:document.getElementById('vNotas').value.trim()||null,creado_por:usuarioActual?.id||null,telefono_notif:usuarioActual?.telefono||null,llego:false,recurrente:tipoVisita==='recurrente',grupo_id:String(grupoId),sms_enviado:false};
 
   try{
     setAlert('adminFormErr','<div class="spin"></div>Guardando…','a-info');
     for(const fecha of fechas){
-      await sbFetch('/visitas_esperadas','POST',{...base,fecha});
+      for(const m of nombresValidos){
+        await sbFetch('/visitas_esperadas','POST',{...base,nombre:m.nombre.trim(),fecha});
+      }
     }
-    toast(`✅ ${fechas.length===1?'Invitación guardada':''+fechas.length+' invitaciones guardadas'} para ${nombre}`);
+    const total=fechas.length*nombresValidos.length;
+    toast(`✅ ${total===1?'Invitación guardada':total+' invitaciones guardadas'}`);
     limpiarFormAdmin();
     document.getElementById('adminFormErr').innerHTML='';
     cargarVisitasEsperadas(document.getElementById('fechaAdminPicker').value);
     goTabAdmin('esperadas',document.querySelector('#screenAdmin .tab'));
-  }catch(e){setAlert('adminFormErr','Error al guardar.','a-err');}
+  }catch(e){setAlert('adminFormErr','Error al guardar: '+e.message,'a-err');}
 }
 
-async function editarEsperada(id){
-  try{
-    const data=await sbFetch('/visitas_esperadas?id=eq.'+id);
-    if(!data.length)return;
-    const v=data[0];
-    goTabAdmin('nuevaVisita',document.querySelectorAll('#screenAdmin .tab')[1]);
-    document.getElementById('vNombre').value=v.nombre||'';
-    document.getElementById('vVisitaA').value=v.visita_a||'';
-    document.getElementById('vInstruccion').value=v.instruccion||'';
-    document.getElementById('vNotas').value=v.notas||'';
-    document.getElementById('vFecha').value=v.fecha||'';
-    setTipoVisita('unica');
-    // Change save button to update
-    document.querySelector('#tab-nuevaVisita .btn-p').onclick=()=>actualizarEsperada(id);
-    document.querySelector('#tab-nuevaVisita .btn-p').innerHTML='<i class="ti ti-check"></i>Actualizar invitación';
-  }catch(e){toast('Error al cargar visita');}
+async function editarEsperada(grupoId){
+  toast('Edición de grupos próximamente');
 }
 
-async function actualizarEsperada(id){
-  const nombre=document.getElementById('vNombre').value.trim();
-  const instruccion=document.getElementById('vInstruccion').value;
-  if(!nombre||!instruccion){setAlert('adminFormErr','Completa nombre e instrucción.','a-err');return;}
+async function eliminarGrupo(grupoId){
+  if(!confirm('¿Eliminar esta invitación?'))return;
   try{
-    await fetch(SB_URL+'/rest/v1/visitas_esperadas?id=eq.'+id,{
-      method:'PATCH',
-      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},
-      body:JSON.stringify({nombre,visita_a:document.getElementById('vVisitaA').value.trim()||null,instruccion,notas:document.getElementById('vNotas').value.trim()||null,fecha:document.getElementById('vFecha').value})
-    });
-    toast('✅ Invitación actualizada');
-    limpiarFormAdmin();
-    cargarVisitasEsperadas(document.getElementById('fechaAdminPicker').value);
-    goTabAdmin('esperadas',document.querySelector('#screenAdmin .tab'));
-  }catch(e){setAlert('adminFormErr','Error al actualizar.','a-err');}
-}
-
-async function eliminarEsperada(id){
-  if(!confirm('¿Eliminar esta visita programada?'))return;
-  try{
-    await fetch(SB_URL+'/rest/v1/visitas_esperadas?id=eq.'+id,{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
-    toast('Visita eliminada');
+    // Delete all members of the group
+    await fetch(SB_URL+'/rest/v1/visitas_esperadas?grupo_id=eq.'+grupoId,{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
+    toast('Invitación eliminada');
     cargarVisitasEsperadas(document.getElementById('fechaAdminPicker').value);
   }catch(e){toast('Error al eliminar');}
 }
 
 function limpiarFormAdmin(){
-  ['vNombre','vVisitaA','vFecha','vFechaDesde','vFechaHasta','vNotas'].forEach(id=>document.getElementById(id).value='');
+  ['vVisitaA','vFecha','vFechaDesde','vFechaHasta','vNotas'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('vInstruccion').value='';
   document.getElementById('adminFormErr').innerHTML='';
+  miembros=[{id:Date.now(),nombre:''}];
+  renderMiembros();
   setTipoVisita('unica');
-  // Reset save button
-  const btn=document.querySelector('#tab-nuevaVisita .btn-p');
-  btn.onclick=guardarVisitaEsperada;
-  btn.innerHTML='<i class="ti ti-check"></i>Guardar invitación';
 }
 
 // ── USUARIOS ─────────────────────────────────────────────
@@ -654,7 +642,6 @@ async function cargarUsuarios(){
     tb.innerHTML=data.map(u=>`<tr><td style="font-weight:500">${u.nombre}</td><td style="font-size:12px;color:var(--gray-600)">${u.email}</td><td style="font-size:12px;color:var(--gray-600)">${u.telefono||'—'}</td><td><span class="badge b-in">${u.rol}</span></td></tr>`).join('');
   }catch(e){console.error(e);}
 }
-
 async function crearUsuario(){
   const nombre=document.getElementById('uNombre').value.trim();
   const email=document.getElementById('uEmail').value.trim();
@@ -665,37 +652,26 @@ async function crearUsuario(){
   try{
     const res=await fetch('/api/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre,email,password,telefono})});
     const data=await res.json();
-    if(!res.ok){setAlert('usuarioErr',data.error||'Error al crear usuario.','a-err');return;}
+    if(!res.ok){setAlert('usuarioErr',data.error||'Error.','a-err');return;}
     toast('✅ Usuario '+nombre+' creado');
     ['uNombre','uEmail','uPassword','uTelefono'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('usuarioErr').innerHTML='';
-    cargarUsuarios();
+    document.getElementById('usuarioErr').innerHTML='';cargarUsuarios();
   }catch(e){setAlert('usuarioErr','Error de conexión.','a-err');}
 }
 
 // ── CAMERA ───────────────────────────────────────────────
 async function startCam(){
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){setAlert('exStatus','Tu navegador no soporta cámara. Usa "Subir imagen".','a-err');return;}
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){setAlert('exStatus','Tu navegador no soporta cámara.','a-err');return;}
   try{
-    const constraints = {
-      video: {
-        facingMode: { ideal: 'environment' },
-        width:  { ideal: 3840, min: 1280 },
-        height: { ideal: 2160, min: 720 },
-        focusMode: 'continuous',
-        zoom: 1
-      }
-    };
-    stream=await navigator.mediaDevices.getUserMedia(constraints);
-    // Apply highest available resolution track settings
-    const track = stream.getVideoTracks()[0];
-    const caps = track.getCapabilities?.();
-    if (caps) {
-      const applyConstraints = {};
-      if (caps.width)  applyConstraints.width  = caps.width.max;
-      if (caps.height) applyConstraints.height = caps.height.max;
-      if (caps.focusMode && caps.focusMode.includes('continuous')) applyConstraints.focusMode = 'continuous';
-      if (Object.keys(applyConstraints).length) await track.applyConstraints(applyConstraints).catch(()=>{});
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:3840,min:1280},height:{ideal:2160,min:720}}});
+    const track=stream.getVideoTracks()[0];
+    const caps=track.getCapabilities?.();
+    if(caps){
+      const apply={};
+      if(caps.width)apply.width=caps.width.max;
+      if(caps.height)apply.height=caps.height.max;
+      if(caps.focusMode?.includes('continuous'))apply.focusMode='continuous';
+      if(Object.keys(apply).length)await track.applyConstraints(apply).catch(()=>{});
     }
     document.getElementById('video').srcObject=stream;
     document.getElementById('video').style.display='block';
@@ -703,6 +679,7 @@ async function startCam(){
     document.getElementById('previewImg').style.display='none';
     document.getElementById('btnSnap').style.display='inline-flex';
     document.getElementById('btnRetake').style.display='none';
+    document.getElementById('btnManual').style.display='none';
     document.getElementById('viewfinder').classList.add('active');
   }catch(e){
     const msg=e.name==='NotAllowedError'?'Permiso de cámara denegado.':e.name==='NotFoundError'?'No se encontró cámara.':'Error: '+e.message;
@@ -740,7 +717,6 @@ function retake(){
   document.getElementById('btnRetake').style.display='none';
   document.getElementById('btnManual').style.display='none';
   document.getElementById('exStatus').innerHTML='';
-  document.getElementById('matchCard').classList.remove('active');
   document.getElementById('matchCard').className='match-card';
   document.getElementById('completionForm').classList.remove('active');
   document.getElementById('manualForm').style.display='none';
@@ -764,20 +740,12 @@ async function extractINE(img){
     const data=await res.json();
     if(!res.ok||data.error){setAlert('exStatus',data.error||'Error al procesar.','a-err');mostrarFormularioManual();return;}
     if(!data.esINE){setAlert('exStatus','No se detectó una identificación válida. Puedes ingresar los datos manualmente.','a-warn');mostrarFormularioManual();return;}
-
-    // Fill manual form fields in background
     document.getElementById('fNombre').value=data.nombre||'';
     document.getElementById('fCurp').value=data.curp||'';
-
     const tipos={INE:'INE/IFE',Licencia:'Licencia de conducir',Pasaporte:'Pasaporte',Otra:'Identificación'};
     setAlert('exStatus','✓ '+(tipos[data.tipoDoc]||'Identificación')+' detectada — '+(data.nombre||''),'a-ok');
-
-    // Try to find a match with expected visitors
-    if(data.nombre&&visitasEsperadasCache.length){
-      await buscarMatch(data.nombre);
-    } else {
-      mostrarFormularioManual();
-    }
+    if(data.nombre&&visitasEsperadasCache.length)await buscarMatch(data.nombre);
+    else mostrarFormularioManual();
   }catch(e){setAlert('exStatus','Error de conexión al servidor.','a-err');mostrarFormularioManual();}
 }
 
@@ -786,23 +754,20 @@ async function buscarMatch(nombre){
   try{
     const res=await fetch('/api/match',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombreDetectado:nombre,visitasEsperadas:visitasEsperadasCache})});
     const data=await res.json();
-    if(data.match&&data.visita){
-      mostrarMatch(data.visita,data.confianza);
-    } else {
-      mostrarFormularioManual();
-    }
+    if(data.match&&data.visita)mostrarMatch(data.visita,data.confianza);
+    else mostrarFormularioManual();
   }catch(e){mostrarFormularioManual();}
 }
 
 function mostrarMatch(visita,confianza){
   matchActual=visita;
-  const card=document.getElementById('matchCard');
   const cfgs={
     acceso:{cls:'match-acceso',icon:'✅',tit:'Visita autorizada — Dar acceso'},
     llamar:{cls:'match-llamar',icon:'📞',tit:'Llamar para autorizar'},
     acompanar:{cls:'match-acompanar',icon:'🚶',tit:'Acompañar al visitante'},
   };
   const cfg=cfgs[visita.instruccion]||cfgs.acceso;
+  const card=document.getElementById('matchCard');
   card.className='match-card active '+cfg.cls;
   document.getElementById('matchTitle').innerHTML=`${cfg.icon} ${cfg.tit}`;
   let bodyText=`Visitante: <strong>${visita.nombre}</strong>`;
@@ -810,11 +775,30 @@ function mostrarMatch(visita,confianza){
   if(visita.notas)bodyText+=`<br><span style="font-size:12px">Nota: ${visita.notas}</span>`;
   if(confianza==='media')bodyText+=`<br><span style="font-size:12px;color:var(--warn-tx)">⚠️ Confirma que sea la misma persona</span>`;
   document.getElementById('matchBody').innerHTML=bodyText;
+
+  // Check for group members
+  const grupoId=visita.grupo_id;
+  if(grupoId){
+    const grupoMembers=visitasEsperadasCache.filter(v=>v.grupo_id===grupoId&&!v.llego&&v.id!==visita.id);
+    if(grupoMembers.length>0){
+      document.getElementById('groupPending').style.display='block';
+      document.getElementById('groupMembersList').innerHTML=
+        `<div class="member-row arrived"><i class="ti ti-check" style="color:var(--success-tx);font-size:14px"></i><span class="member-name">${visita.nombre}</span><span class="member-status">Registrando ahora</span></div>`+
+        grupoMembers.map(m=>`<div class="member-row"><i class="ti ti-clock" style="color:var(--gray-400);font-size:14px"></i><span class="member-name">${m.nombre}</span><span class="member-status">Pendiente</span></div>`).join('');
+    }else{
+      document.getElementById('groupPending').style.display='none';
+    }
+  }else{
+    document.getElementById('groupPending').style.display='none';
+  }
+
   document.getElementById('completionForm').classList.add('active');
   document.getElementById('manualForm').style.display='none';
 
-  const actions=document.getElementById('matchActions');
-  actions.innerHTML=`
+  // Check if SMS already sent for this group
+  smsSentForGroup=visita.sms_enviado||false;
+
+  document.getElementById('matchActions').innerHTML=`
     <button class="btn-p" onclick="confirmarLlegadaMatch()"><i class="ti ti-check"></i>Confirmar llegada y registrar</button>
     <button onclick="mostrarFormularioManual()"><i class="ti ti-forms"></i>No es pre-registro</button>`;
 }
@@ -837,20 +821,16 @@ async function confirmarLlegadaMatch(){
   const nombre=document.getElementById('fNombre').value||matchActual.nombre;
   const curp=document.getElementById('fCurp').value||'';
 
-  // Build record from pre-registration data
   const record={
-    id:Date.now(),sbId:null,
-    gafete,lugar,nombre,curp,
-    visita:matchActual.visita_a||'—',
-    area:'',
+    id:Date.now(),sbId:null,gafete,lugar,nombre,curp,
+    visita:matchActual.visita_a||'—',area:'',
     motivo:instrLabels[matchActual.instruccion]||matchActual.instruccion,
     entrada:horaEntrada,salida:null,foto:captured,
     fecha:now.toLocaleDateString('es-MX'),fechaISO:now.toISOString().split('T')[0],status:'active'
   };
-  records.push(record);
-  renderLog();updateStatsFromRecords();
+  records.push(record);renderLog();updateStatsFromRecords();
 
-  // Mark as arrived in DB
+  // Mark this person as arrived
   try{
     await fetch(SB_URL+'/rest/v1/visitas_esperadas?id=eq.'+matchActual.id,{
       method:'PATCH',
@@ -858,131 +838,92 @@ async function confirmarLlegadaMatch(){
       body:JSON.stringify({llego:true})
     });
     visitasEsperadasCache=visitasEsperadasCache.filter(v=>v.id!==matchActual.id);
-  }catch(e){console.warn('Error marcando llegada:',e);}
+  }catch(e){console.warn(e);}
 
-  // Save to DB + upload photo
   guardarVisitaDB(record).then(id=>{record.sbId=id;});
 
-  // Send SMS if needed
-  if(matchActual.instruccion!=='llamar'&&matchActual.telefono_notif){
-    fetch('/api/notificar',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({telefono:matchActual.telefono_notif,nombreVisitante:nombre,instruccion:matchActual.instruccion,lugar,hora:horaEntrada})
+  // Send SMS only for first arrival of group
+  const esGrupo=matchActual.grupo_id;
+  const yaEnvioSms=matchActual.sms_enviado;
+  if(!yaEnvioSms&&matchActual.instruccion!=='llamar'&&matchActual.telefono_notif){
+    fetch('/api/notificar',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({telefono:matchActual.telefono_notif,nombreVisitante:nombre+(esGrupo?' (y grupo)':''),instruccion:matchActual.instruccion,lugar,hora:horaEntrada})
     }).catch(()=>{});
+    // Mark SMS as sent for all members of this group
+    if(esGrupo){
+      fetch(SB_URL+'/rest/v1/visitas_esperadas?grupo_id=eq.'+matchActual.grupo_id,{
+        method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},
+        body:JSON.stringify({sms_enviado:true})
+      }).catch(()=>{});
+    }
+    toast('✅ Llegada confirmada — SMS enviado');
+  }else{
+    toast('✅ Llegada confirmada');
   }
 
-  toast('✅ Llegada confirmada'+(matchActual.instruccion!=='llamar'&&matchActual.telefono_notif?' — SMS enviado':''));
-  matchActual=null;
-  limpiar();
+  matchActual=null;limpiar();
 }
 
-// ── MANUAL REGISTRATION ──────────────────────────────────
-function toggleMotivo(sel){
-  const otro=document.getElementById('fMotivoOtro');
-  otro.style.display=sel.value==='Otro'?'block':'none';
-  if(sel.value!=='Otro')otro.value='';
-}
-function getMotivo(){
-  const sel=document.getElementById('fMotivoSel').value;
-  if(!sel)return'';
-  if(sel==='Otro')return document.getElementById('fMotivoOtro').value.trim();
-  return sel;
-}
+// ── MANUAL ───────────────────────────────────────────────
+function toggleMotivo(sel){const otro=document.getElementById('fMotivoOtro');otro.style.display=sel.value==='Otro'?'block':'none';if(sel.value!=='Otro')otro.value='';}
+function getMotivo(){const sel=document.getElementById('fMotivoSel').value;if(!sel)return'';if(sel==='Otro')return document.getElementById('fMotivoOtro').value.trim();return sel;}
 
 async function registrarManual(){
   const nombre=document.getElementById('fNombre').value.trim();
   const visita=document.getElementById('fVisita').value.trim();
   const motivo=getMotivo();
-  const gafeteManual=document.getElementById('fGafete').value.trim();
+  const gafete=document.getElementById('fGafete').value.trim();
   const lugar=document.getElementById('fLugar').value;
   if(!nombre){setAlert('formErr','Ingresa el nombre del visitante.','a-err');return;}
   if(!visita){setAlert('formErr','Especifica a quién visita.','a-err');return;}
   if(!motivo){setAlert('formErr','Selecciona el motivo de la visita.','a-err');return;}
-  if(!gafeteManual){setAlert('formErr','Ingresa el número de gafete.','a-err');return;}
+  if(!gafete){setAlert('formErr','Ingresa el número de gafete.','a-err');return;}
   if(!lugar){setAlert('formErr','Selecciona la puerta de ingreso.','a-err');return;}
 
   const now=new Date();
   const horaEntrada=now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
-  const record={
-    id:Date.now(),sbId:null,
-    gafete:document.getElementById('fGafete').value.trim(),
-    lugar,nombre,curp:document.getElementById('fCurp').value,
-    visita,area:document.getElementById('fArea').value,motivo,
-    entrada:horaEntrada,salida:null,foto:captured,
-    fecha:now.toLocaleDateString('es-MX'),fechaISO:now.toISOString().split('T')[0],status:'active'
-  };
-  records.push(record);
-  renderLog();updateStatsFromRecords();
-  toast('✓ Entrada registrada'+(record.gafete?' — Gafete '+record.gafete:''));
+  const record={id:Date.now(),sbId:null,gafete,lugar,nombre,curp:document.getElementById('fCurp').value,visita,area:document.getElementById('fArea').value,motivo,entrada:horaEntrada,salida:null,foto:captured,fecha:now.toLocaleDateString('es-MX'),fechaISO:now.toISOString().split('T')[0],status:'active'};
+  records.push(record);renderLog();updateStatsFromRecords();
+  toast('✓ Entrada registrada — Gafete '+gafete);
   guardarVisitaDB(record).then(id=>{record.sbId=id;});
   setTimeout(limpiar,1400);
 }
 
-// ── DB HELPERS ───────────────────────────────────────────
+// ── DB ───────────────────────────────────────────────────
 async function subirFoto(id,dataUrl){
   if(!dataUrl)return null;
-  try{
-    const blob=await(await fetch(dataUrl)).blob();
-    const path='visitas/'+id+'.jpg';
-    const res=await fetch(SB_URL+'/storage/v1/object/Fotos/'+path,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'image/jpeg','x-upsert':'true'},body:blob});
-    if(!res.ok)return null;
-    return path;
-  }catch(e){return null;}
+  try{const blob=await(await fetch(dataUrl)).blob();const path='visitas/'+id+'.jpg';const res=await fetch(SB_URL+'/storage/v1/object/Fotos/'+path,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'image/jpeg','x-upsert':'true'},body:blob});if(!res.ok)return null;return path;}catch(e){return null;}
 }
-
 async function fotoUrl(path){
   if(!path)return null;
-  try{
-    const res=await fetch(SB_URL+'/storage/v1/object/sign/Fotos/'+path,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({expiresIn:3600})});
-    if(!res.ok)return null;
-    const data=await res.json();
-    return SB_URL+'/storage/v1'+data.signedURL;
-  }catch(e){return null;}
+  try{const res=await fetch(SB_URL+'/storage/v1/object/sign/Fotos/'+path,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({expiresIn:3600})});if(!res.ok)return null;const data=await res.json();return SB_URL+'/storage/v1'+data.signedURL;}catch(e){return null;}
 }
-
 async function guardarVisitaDB(r){
-  try{
-    const row={fecha:new Date().toISOString().split('T')[0],hora_entrada:r.entrada+':00',nombre:r.nombre,curp:r.curp||null,gafete:r.gafete||null,lugar:r.lugar||null,visita_a:r.visita,area:r.area||null,motivo:r.motivo,status:'active'};
-    const data=await sbFetch('/visitas','POST',row);
-    const sbId=data[0]?.id||null;
-    if(sbId&&r.foto){const url=await subirFoto(sbId,r.foto);if(url)await sbFetch('/visitas?id=eq.'+sbId,'PATCH',{foto_url:url});}
-    return sbId;
-  }catch(e){console.error('Error guardando:',e);return null;}
+  try{const row={fecha:new Date().toISOString().split('T')[0],hora_entrada:r.entrada+':00',nombre:r.nombre,curp:r.curp||null,gafete:r.gafete||null,lugar:r.lugar||null,visita_a:r.visita,area:r.area||null,motivo:r.motivo,status:'active'};const data=await sbFetch('/visitas','POST',row);const sbId=data[0]?.id||null;if(sbId&&r.foto){const url=await subirFoto(sbId,r.foto);if(url)await sbFetch('/visitas?id=eq.'+sbId,'PATCH',{foto_url:url});}return sbId;}catch(e){console.error(e);return null;}
 }
-
 async function registrarSalidaSB(sbId){
   if(!sbId)return;
-  try{const hora=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})+':00';await sbFetch('/visitas?id=eq.'+sbId,'PATCH',{hora_salida:hora,status:'out'});}
-  catch(e){console.error(e);}
+  try{const hora=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})+':00';await sbFetch('/visitas?id=eq.'+sbId,'PATCH',{hora_salida:hora,status:'out'});}catch(e){}
 }
 
 function salida(id){
-  const r=records.find(x=>x.id===id);
-  if(!r||r.status!=='active')return;
+  const r=records.find(x=>x.id===id);if(!r||r.status!=='active')return;
   r.salida=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
-  r.status='out';
-  renderLog();updateStatsFromRecords();
-  toast('✓ Salida — '+r.nombre);
-  registrarSalidaSB(r.sbId);
+  r.status='out';renderLog();updateStatsFromRecords();
+  toast('✓ Salida — '+r.nombre);registrarSalidaSB(r.sbId);
 }
 
 function limpiar(){
   ['fNombre','fCurp','fVisita','fArea','fGafete','fMotivoOtro','mGafete'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('fMotivoSel').value='';
-  document.getElementById('fLugar').value='';
-  document.getElementById('mLugar').value='';
+  document.getElementById('fMotivoSel').value='';document.getElementById('fLugar').value='';document.getElementById('mLugar').value='';
   document.getElementById('fMotivoOtro').style.display='none';
-  document.getElementById('previewImg').style.display='none';
-  document.getElementById('camPh').style.display='block';
-  document.getElementById('video').style.display='none';
-  document.getElementById('btnSnap').style.display='none';
-  document.getElementById('btnRetake').style.display='none';
-  document.getElementById('btnManual').style.display='none';
-  document.getElementById('btnManual').style.display='none';
-  document.getElementById('exStatus').innerHTML='';
-  document.getElementById('formErr').innerHTML='';
+  document.getElementById('previewImg').style.display='none';document.getElementById('camPh').style.display='block';
+  document.getElementById('video').style.display='none';document.getElementById('btnSnap').style.display='none';
+  document.getElementById('btnRetake').style.display='none';document.getElementById('btnManual').style.display='none';
+  document.getElementById('exStatus').innerHTML='';document.getElementById('formErr').innerHTML='';
   document.getElementById('matchCard').className='match-card';
   document.getElementById('completionForm').classList.remove('active');
+  document.getElementById('groupPending').style.display='none';
   document.getElementById('manualForm').style.display='none';
   document.getElementById('fileIn').value='';
   captured=null;matchActual=null;
@@ -996,36 +937,21 @@ async function cargarRegistrosHoy(){
   const hoy=new Date().toISOString().split('T')[0];
   document.getElementById('fechaPicker').value=hoy;
   try{
-    const [dataHoy,dataPend]=await Promise.all([
-      sbFetch('/visitas?fecha=eq.'+hoy+'&order=hora_entrada.asc'),
-      sbFetch('/visitas?fecha=lt.'+hoy+'&status=eq.active&order=fecha.asc,hora_entrada.asc')
-    ]);
+    const [dataHoy,dataPend]=await Promise.all([sbFetch('/visitas?fecha=eq.'+hoy+'&order=hora_entrada.asc'),sbFetch('/visitas?fecha=lt.'+hoy+'&status=eq.active&order=fecha.asc,hora_entrada.asc')]);
     records=[...dataPend.map(mapRow),...dataHoy.map(mapRow)];
-    renderLog();cargarFotosAsync(records);updateStatsFromRecords();updateBitacoraLabel();
+    renderLog();cargarFotosAsync(records);updateStatsFromRecords();
+    document.getElementById('bitacoraLabel').textContent=records.length+' registro(s)';
   }catch(e){console.error(e);}
 }
-
 async function cargarFecha(fecha){
   if(!fecha)return;
-  try{
-    const data=await sbFetch('/visitas?fecha=eq.'+fecha+'&order=hora_entrada.asc');
-    records=data.map(mapRow);renderLog();cargarFotosAsync(records);updateBitacoraLabel();
-  }catch(e){console.error(e);}
+  try{const data=await sbFetch('/visitas?fecha=eq.'+fecha+'&order=hora_entrada.asc');records=data.map(mapRow);renderLog();cargarFotosAsync(records);document.getElementById('bitacoraLabel').textContent=records.length+' registro(s)';}catch(e){}
 }
-
 async function toggleSinSalida(){
   const checked=document.getElementById('sinSalidaCheck').checked;
-  if(checked){
-    try{const hoy=new Date().toISOString().split('T')[0];const data=await sbFetch('/visitas?fecha=lt.'+hoy+'&status=eq.active&order=fecha.asc,hora_entrada.asc');records=data.map(mapRow);renderLog();cargarFotosAsync(records);updateBitacoraLabel();}
-    catch(e){console.error(e);}
-  }else{cargarRegistrosHoy();}
+  if(checked){try{const hoy=new Date().toISOString().split('T')[0];const data=await sbFetch('/visitas?fecha=lt.'+hoy+'&status=eq.active&order=fecha.asc');records=data.map(mapRow);renderLog();cargarFotosAsync(records);}catch(e){}}
+  else cargarRegistrosHoy();
 }
-
-function updateBitacoraLabel(){
-  const el=document.getElementById('bitacoraLabel');if(!el)return;
-  el.textContent=records.length+' registro(s)';
-}
-
 function updateStatsFromRecords(){
   const hoy=new Date().toISOString().split('T')[0];
   const h=records.filter(r=>r.fechaISO===hoy);
@@ -1033,7 +959,6 @@ function updateStatsFromRecords(){
   document.getElementById('sActivos').textContent=records.filter(r=>r.status==='active').length;
   document.getElementById('sSalidos').textContent=h.filter(r=>r.status==='out').length;
 }
-
 function filtrarTabla(){
   const q=document.getElementById('searchInput').value.toLowerCase().trim();
   const filas=document.querySelectorAll('#logBody tr[data-id]');
@@ -1046,33 +971,9 @@ function filtrarTabla(){
   });
   document.getElementById('bitacoraLabel').textContent=vis+' de '+records.length+' registro(s)';
 }
-
-function toggleEnSitio(btn){
-  soloEnSitio=!soloEnSitio;
-  btn.style.background=soloEnSitio?'var(--success-bg)':'';
-  btn.style.borderColor=soloEnSitio?'var(--success-bd)':'';
-  btn.style.color=soloEnSitio?'var(--success-tx)':'';
-  filtrarTabla();
-}
-
-function limpiarFiltros(){
-  document.getElementById('searchInput').value='';
-  soloEnSitio=false;
-  const btn=document.getElementById('btnSoloEnSitio');
-  btn.style.background='';btn.style.borderColor='';btn.style.color='';
-  filtrarTabla();
-}
-
-function cargarFotosAsync(recs){
-  recs.forEach(async r=>{
-    if(r.foto||!r.foto_url)return;
-    const url=await fotoUrl(r.foto_url);
-    if(!url)return;
-    const el=document.getElementById('foto-'+r.id);
-    if(el)el.innerHTML=`<img src="${url}" class="thumb" alt="foto">`;
-  });
-}
-
+function toggleEnSitio(btn){soloEnSitio=!soloEnSitio;btn.style.background=soloEnSitio?'var(--success-bg)':'';btn.style.borderColor=soloEnSitio?'var(--success-bd)':'';btn.style.color=soloEnSitio?'var(--success-tx)':'';filtrarTabla();}
+function limpiarFiltros(){document.getElementById('searchInput').value='';soloEnSitio=false;const btn=document.getElementById('btnSoloEnSitio');btn.style.background='';btn.style.borderColor='';btn.style.color='';filtrarTabla();}
+function cargarFotosAsync(recs){recs.forEach(async r=>{if(r.foto||!r.foto_url)return;const url=await fotoUrl(r.foto_url);if(!url)return;const el=document.getElementById('foto-'+r.id);if(el)el.innerHTML=`<img src="${url}" class="thumb" alt="foto">`;});}
 function renderLog(){
   const tb=document.getElementById('logBody');
   if(!records.length){tb.innerHTML='<tr><td colspan="10"><div class="empty"><i class="ti ti-clipboard-list"></i><p>Sin registros aún.</p></div></td></tr>';return;}
@@ -1091,42 +992,21 @@ function renderLog(){
     </tr>`).join('');
   filtrarTabla();
 }
-
 function exportCSV(){
   if(!records.length){toast('Sin registros');return;}
   const cols=['Gafete','Puerta','Nombre','CURP','Visita a','Área','Motivo','Entrada','Salida','Estado','Fecha'];
   const rows=records.map(r=>[r.gafete,r.lugar,r.nombre,r.curp,r.visita,r.area,r.motivo,r.entrada,r.salida||'',r.status==='active'?'En sitio':'Salió',r.fecha].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(','));
   const blob=new Blob(['\uFEFF'+[cols.join(','),...rows].join('\n')],{type:'text/csv;charset=utf-8;'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='bitacora_'+new Date().toLocaleDateString('es-MX').replace(/\//g,'-')+'.csv';
-  a.click();toast('✓ CSV exportado');
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bitacora_'+new Date().toLocaleDateString('es-MX').replace(/\//g,'-')+'.csv';a.click();toast('✓ CSV exportado');
 }
 
 // ── TABS ─────────────────────────────────────────────────
-function goTab(id,el){
-  document.querySelectorAll('#screenGuardia .tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('#screenGuardia .panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  el.classList.add('active');
-}
-function goTabAdmin(id,el){
-  document.querySelectorAll('#screenAdmin .tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('#screenAdmin .panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  el.classList.add('active');
-  if(id==='usuarios')cargarUsuarios();
-}
+function goTab(id,el){document.querySelectorAll('#screenGuardia .tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('#screenGuardia .panel').forEach(p=>p.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');el.classList.add('active');}
+function goTabAdmin(id,el){document.querySelectorAll('#screenAdmin .tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('#screenAdmin .panel').forEach(p=>p.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');el.classList.add('active');if(id==='usuarios')cargarUsuarios();}
 
 // ── HELPERS ──────────────────────────────────────────────
-function setAlert(id,msg,cls){
-  const icons={'a-info':'ti-info-circle','a-ok':'ti-circle-check','a-warn':'ti-alert-triangle','a-err':'ti-alert-circle'};
-  document.getElementById(id).innerHTML=`<div class="alert ${cls}"><i class="ti ${icons[cls]||'ti-info-circle'}"></i><span>${msg}</span></div>`;
-}
-function toast(msg){
-  const t=document.getElementById('toast');
-  t.innerHTML=`<i class="ti ti-check" style="font-size:14px"></i>${msg}`;
-  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
-}
+function setAlert(id,msg,cls){const icons={'a-info':'ti-info-circle','a-ok':'ti-circle-check','a-warn':'ti-alert-triangle','a-err':'ti-alert-circle'};document.getElementById(id).innerHTML=`<div class="alert ${cls}"><i class="ti ${icons[cls]||'ti-info-circle'}"></i><span>${msg}</span></div>`;}
+function toast(msg){const t=document.getElementById('toast');t.innerHTML=`<i class="ti ti-check" style="font-size:14px"></i>${msg}`;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 </script>
 </body>
 </html>
