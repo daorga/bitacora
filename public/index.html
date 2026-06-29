@@ -169,6 +169,9 @@ tr:hover td{background:var(--gray-50)}
 .empty p{font-size:13px;color:var(--gray-400)}
 
 /* TOAST */
+.gafete-status{font-size:11px;margin-top:4px;font-weight:500;display:none}
+.gafete-status.ok{color:var(--success-tx);display:block}
+.gafete-status.busy{color:var(--danger-tx);display:block}
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--blue-800);color:#fff;padding:9px 18px;border-radius:30px;font-size:13px;font-weight:500;opacity:0;transition:all .25s;pointer-events:none;z-index:999;display:flex;align-items:center;gap:6px;white-space:nowrap}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
@@ -270,7 +273,7 @@ tr:hover td{background:var(--gray-50)}
           </div>
           <div class="completion-form" id="completionForm">
             <div class="fgrid" style="margin-top:0">
-              <div class="f"><label>Número de gafete</label><input type="text" id="mGafete" placeholder="Ej. G-001"></div>
+              <div class="f"><label>Número de gafete</label><input type="text" id="mGafete" placeholder="Ej. G-001" oninput="verificarGafete(this.value,'mGafeteStatus')"><div id="mGafeteStatus" class="gafete-status"></div></div>
               <div class="f"><label>Puerta de ingreso</label>
                 <select id="mLugar"><option value="">— Selecciona —</option><option>Puerta 1</option><option>Puerta 2</option><option>Puerta 3</option><option>Estacionamiento</option></select>
               </div>
@@ -300,7 +303,7 @@ tr:hover td{background:var(--gray-50)}
               </select>
               <input type="text" id="fMotivoOtro" placeholder="Especifica el motivo…" style="display:none;margin-top:6px">
             </div>
-            <div class="f"><label>Número de gafete</label><input type="text" id="fGafete" placeholder="Ej. G-001"></div>
+            <div class="f"><label>Número de gafete</label><input type="text" id="fGafete" placeholder="Ej. G-001" oninput="verificarGafete(this.value,'fGafeteStatus')"><div id="fGafeteStatus" class="gafete-status"></div></div>
             <div class="f"><label>Puerta de ingreso</label>
               <select id="fLugar"><option value="">— Selecciona —</option><option>Puerta 1</option><option>Puerta 2</option><option>Puerta 3</option><option>Estacionamiento</option></select>
             </div>
@@ -420,7 +423,7 @@ tr:hover td{background:var(--gray-50)}
       <div class="panel" id="tab-usuarios">
         <div style="margin-bottom:1.25rem">
           <h2 style="font-size:14px;font-weight:600;color:var(--gray-800);margin-bottom:12px">Usuarios del sistema</h2>
-          <div class="tw"><table><thead><tr><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Rol</th></tr></thead><tbody id="usuariosBody"></tbody></table></div>
+          <div class="tw"><table><thead><tr><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Rol</th><th></th></tr></thead><tbody id="usuariosBody"></tbody></table></div>
         </div>
         <div class="sec-lbl"><i class="ti ti-user-plus"></i>Nuevo usuario</div>
         <div class="fgrid">
@@ -428,6 +431,12 @@ tr:hover td{background:var(--gray-50)}
           <div class="f"><label>Email</label><input type="email" id="uEmail" placeholder="correo@ejemplo.com"></div>
           <div class="f"><label>Contraseña</label><input type="password" id="uPassword" placeholder="Mínimo 6 caracteres"></div>
           <div class="f"><label>Teléfono para SMS</label><input type="text" id="uTelefono" placeholder="+521234567890"></div>
+          <div class="f" id="uRolWrap" style="display:none"><label>Rol</label>
+            <select id="uRol">
+              <option value="admin">Admin</option>
+              <option value="superadmin">Superadmin</option>
+            </select>
+          </div>
         </div>
         <div class="btn-row" style="margin-top:12px"><button class="btn-p" onclick="crearUsuario()"><i class="ti ti-user-plus"></i>Crear usuario</button></div>
         <div id="usuarioErr"></div>
@@ -639,9 +648,36 @@ async function cargarUsuarios(){
     const data=await sbFetch('/usuarios?select=id,nombre,email,telefono,rol&activo=eq.true');
     const tb=document.getElementById('usuariosBody');
     if(!data.length){tb.innerHTML='<tr><td colspan="4"><div class="empty"><i class="ti ti-users"></i><p>Sin usuarios.</p></div></td></tr>';return;}
-    tb.innerHTML=data.map(u=>`<tr><td style="font-weight:500">${u.nombre}</td><td style="font-size:12px;color:var(--gray-600)">${u.email}</td><td style="font-size:12px;color:var(--gray-600)">${u.telefono||'—'}</td><td><span class="badge b-in">${u.rol}</span></td></tr>`).join('');
+    const esSuperAdmin=usuarioActual?.rol==='superadmin';
+    tb.innerHTML=data.map(u=>`<tr>
+      <td style="font-weight:500">${u.nombre}${u.id===usuarioActual?.id?' <span style="font-size:11px;color:var(--gray-400)">(tú)</span>':''}</td>
+      <td style="font-size:12px;color:var(--gray-600)">${u.email}</td>
+      <td style="font-size:12px;color:var(--gray-600)">${u.telefono||'—'}</td>
+      <td><span class="badge ${u.rol==='superadmin'?'b-pend':'b-in'}">${u.rol}</span></td>
+      <td>${esSuperAdmin&&u.id!==usuarioActual?.id?`<button onclick="eliminarUsuario(${u.id},'${u.nombre}')" style="font-size:12px;padding:4px 9px;color:var(--danger-tx);border-color:var(--danger-bd)"><i class="ti ti-trash" style="font-size:13px"></i></button>`:''}</td>
+    </tr>`).join('');
   }catch(e){console.error(e);}
 }
+async function eliminarUsuario(id, nombre){
+  if(!confirm(`¿Seguro que deseas eliminar al usuario "${nombre}"?\n\nEsta acción no se puede deshacer.`))return;
+  // Ask for superadmin password confirmation
+  const pass=prompt(`Para confirmar, ingresa tu contraseña:`);
+  if(!pass)return;
+  try{
+    // Verify password
+    const verify=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:usuarioActual.email,password:pass})});
+    if(!verify.ok){toast('⚠ Contraseña incorrecta — usuario no eliminado');return;}
+    // Deactivate user (soft delete)
+    await fetch(SB_URL+'/rest/v1/usuarios?id=eq.'+id,{
+      method:'PATCH',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({activo:false})
+    });
+    toast('✅ Usuario '+nombre+' eliminado');
+    cargarUsuarios();
+  }catch(e){toast('Error al eliminar usuario');}
+}
+
 async function crearUsuario(){
   const nombre=document.getElementById('uNombre').value.trim();
   const email=document.getElementById('uEmail').value.trim();
@@ -649,8 +685,9 @@ async function crearUsuario(){
   const telefono=document.getElementById('uTelefono').value.trim();
   if(!nombre||!email||!password){setAlert('usuarioErr','Nombre, email y contraseña son obligatorios.','a-err');return;}
   if(password.length<6){setAlert('usuarioErr','La contraseña debe tener al menos 6 caracteres.','a-err');return;}
+  const rolNuevo=usuarioActual?.rol==='superadmin'?(document.getElementById('uRol')?.value||'admin'):'admin';
   try{
-    const res=await fetch('/api/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre,email,password,telefono})});
+    const res=await fetch('/api/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre,email,password,telefono,rol:rolNuevo})});
     const data=await res.json();
     if(!res.ok){setAlert('usuarioErr',data.error||'Error.','a-err');return;}
     toast('✅ Usuario '+nombre+' creado');
@@ -814,6 +851,7 @@ async function confirmarLlegadaMatch(){
   const gafete=document.getElementById('mGafete').value.trim();
   const lugar=document.getElementById('mLugar').value;
   if(!gafete){toast('Ingresa el número de gafete');return;}
+  if(gafeteEnUso(gafete)){toast('⚠ Ese gafete ya está en uso');return;}
   if(!lugar){toast('Selecciona la puerta de ingreso');return;}
 
   const now=new Date();
@@ -878,6 +916,7 @@ async function registrarManual(){
   if(!visita){setAlert('formErr','Especifica a quién visita.','a-err');return;}
   if(!motivo){setAlert('formErr','Selecciona el motivo de la visita.','a-err');return;}
   if(!gafete){setAlert('formErr','Ingresa el número de gafete.','a-err');return;}
+  if(gafeteEnUso(gafete)){setAlert('formErr','⚠ Ese gafete ya está en uso por otro visitante en sitio.','a-err');return;}
   if(!lugar){setAlert('formErr','Selecciona la puerta de ingreso.','a-err');return;}
 
   const now=new Date();
@@ -906,6 +945,42 @@ async function registrarSalidaSB(sbId){
   try{const hora=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})+':00';await sbFetch('/visitas?id=eq.'+sbId,'PATCH',{hora_salida:hora,status:'out'});}catch(e){}
 }
 
+// ── GAFETE VALIDATION ───────────────────────────────────
+let gafeteTimer=null;
+async function verificarGafete(val,statusId){
+  const el=document.getElementById(statusId);
+  if(!val.trim()){el.className='gafete-status';return;}
+  clearTimeout(gafeteTimer);
+  el.className='gafete-status';el.textContent='Verificando…';el.style.color='var(--gray-400)';el.style.display='block';
+  gafeteTimer=setTimeout(async()=>{
+    // Check if gafete is in use locally first
+    const enUso=records.find(r=>r.gafete===val.trim()&&r.status==='active');
+    if(enUso){
+      el.className='gafete-status busy';
+      el.textContent='⚠ En uso — '+enUso.nombre;
+    } else {
+      // Also check in DB for today
+      try{
+        const hoy=new Date().toISOString().split('T')[0];
+        const data=await sbFetch('/visitas?gafete=eq.'+encodeURIComponent(val.trim())+'&status=eq.active&fecha=eq.'+hoy);
+        if(data.length>0){
+          el.className='gafete-status busy';
+          el.textContent='⚠ En uso — '+data[0].nombre;
+        } else {
+          el.className='gafete-status ok';
+          el.textContent='✓ Disponible';
+        }
+      }catch(e){el.className='gafete-status';el.style.display='none';}
+    }
+  },500);
+}
+
+function gafeteEnUso(val){
+  if(!val)return false;
+  const local=records.find(r=>r.gafete===val&&r.status==='active');
+  return !!local;
+}
+
 function salida(id){
   const r=records.find(x=>x.id===id);if(!r||r.status!=='active')return;
   r.salida=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
@@ -915,6 +990,7 @@ function salida(id){
 
 function limpiar(){
   ['fNombre','fCurp','fVisita','fArea','fGafete','fMotivoOtro','mGafete'].forEach(id=>document.getElementById(id).value='');
+  ['mGafeteStatus','fGafeteStatus'].forEach(id=>{const el=document.getElementById(id);if(el){el.className='gafete-status';}});
   document.getElementById('fMotivoSel').value='';document.getElementById('fLugar').value='';document.getElementById('mLugar').value='';
   document.getElementById('fMotivoOtro').style.display='none';
   document.getElementById('previewImg').style.display='none';document.getElementById('camPh').style.display='block';
@@ -1002,7 +1078,16 @@ function exportCSV(){
 
 // ── TABS ─────────────────────────────────────────────────
 function goTab(id,el){document.querySelectorAll('#screenGuardia .tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('#screenGuardia .panel').forEach(p=>p.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');el.classList.add('active');}
-function goTabAdmin(id,el){document.querySelectorAll('#screenAdmin .tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('#screenAdmin .panel').forEach(p=>p.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');el.classList.add('active');if(id==='usuarios')cargarUsuarios();}
+function goTabAdmin(id,el){
+  document.querySelectorAll('#screenAdmin .tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#screenAdmin .panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');el.classList.add('active');
+  if(id==='usuarios'){
+    cargarUsuarios();
+    const rolWrap=document.getElementById('uRolWrap');
+    if(rolWrap)rolWrap.style.display=usuarioActual?.rol==='superadmin'?'':'none';
+  }
+}
 
 // ── HELPERS ──────────────────────────────────────────────
 function setAlert(id,msg,cls){const icons={'a-info':'ti-info-circle','a-ok':'ti-circle-check','a-warn':'ti-alert-triangle','a-err':'ti-alert-circle'};document.getElementById(id).innerHTML=`<div class="alert ${cls}"><i class="ti ${icons[cls]||'ti-info-circle'}"></i><span>${msg}</span></div>`;}
