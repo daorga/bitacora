@@ -677,7 +677,26 @@ async function crearUsuario(){
 async function startCam(){
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){setAlert('exStatus','Tu navegador no soporta cámara. Usa "Subir imagen".','a-err');return;}
   try{
-    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}}});
+    const constraints = {
+      video: {
+        facingMode: { ideal: 'environment' },
+        width:  { ideal: 3840, min: 1280 },
+        height: { ideal: 2160, min: 720 },
+        focusMode: 'continuous',
+        zoom: 1
+      }
+    };
+    stream=await navigator.mediaDevices.getUserMedia(constraints);
+    // Apply highest available resolution track settings
+    const track = stream.getVideoTracks()[0];
+    const caps = track.getCapabilities?.();
+    if (caps) {
+      const applyConstraints = {};
+      if (caps.width)  applyConstraints.width  = caps.width.max;
+      if (caps.height) applyConstraints.height = caps.height.max;
+      if (caps.focusMode && caps.focusMode.includes('continuous')) applyConstraints.focusMode = 'continuous';
+      if (Object.keys(applyConstraints).length) await track.applyConstraints(applyConstraints).catch(()=>{});
+    }
     document.getElementById('video').srcObject=stream;
     document.getElementById('video').style.display='block';
     document.getElementById('camPh').style.display='none';
@@ -695,7 +714,7 @@ function snapPhoto(){
   const v=document.getElementById('video'),c=document.getElementById('snap');
   c.width=v.videoWidth;c.height=v.videoHeight;
   c.getContext('2d').drawImage(v,0,0);
-  captured=c.toDataURL('image/jpeg',0.85);
+  captured=c.toDataURL('image/jpeg',0.97);
   showPreview(captured);stopCam();extractINE(captured);
 }
 
