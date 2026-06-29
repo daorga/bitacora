@@ -85,6 +85,11 @@ video{width:100%;display:block}
 .vf-card .c::before{bottom:-2px;left:-2px;border-width:0 0 3px 3px;border-radius:0 0 0 5px}
 .vf-card .c::after{bottom:-2px;right:-2px;border-width:0 3px 3px 0;border-radius:0 0 5px 0}
 .vf-hint{margin-top:10px;font-size:12px;font-weight:500;color:rgba(255,255,255,.85);text-align:center;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+  .scan-line{position:absolute;left:4px;right:4px;height:2px;background:linear-gradient(90deg,transparent,#378ADD,transparent);border-radius:2px;animation:scanMove 2s ease-in-out infinite;display:none;top:10%}
+  .scan-line.active{display:block}
+  @keyframes scanMove{0%{top:10%;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:90%;opacity:0}}
+  .scan-status{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.65);color:#fff;font-size:11px;padding:4px 14px;border-radius:20px;white-space:nowrap;display:none}
+  .scan-status.active{display:block}
 
 /* MATCH CARD */
 .match-card{border-radius:var(--r-md);padding:14px 16px;margin-top:12px;border:2px solid;display:none}
@@ -242,8 +247,15 @@ tr:hover td{background:var(--gray-50)}
           <canvas id="snap" style="display:none"></canvas>
           <img id="previewImg" alt="Vista previa">
           <div class="viewfinder" id="viewfinder">
-            <div class="vf-inner"><div class="vf-card"><div class="c"></div></div><div class="vf-hint">Centra la identificación dentro del recuadro</div></div>
+            <div class="vf-inner">
+              <div class="vf-card" style="position:relative">
+                <div class="c"></div>
+                <div class="scan-line" id="scanLine"></div>
+              </div>
+              <div class="vf-hint" id="vfHint">Acerca tu identificación al recuadro</div>
+            </div>
           </div>
+          <div class="scan-status" id="scanStatus"></div>
         </div>
         <div class="btn-row">
           <button onclick="startCam()"><i class="ti ti-camera"></i>Activar cámara</button>
@@ -704,6 +716,7 @@ async function startCam(){
     document.getElementById('btnSnap').style.display='inline-flex';
     document.getElementById('btnRetake').style.display='none';
     document.getElementById('viewfinder').classList.add('active');
+    iniciarAutoScan();
   }catch(e){
     const msg=e.name==='NotAllowedError'?'Permiso de cámara denegado.':e.name==='NotFoundError'?'No se encontró cámara.':'Error: '+e.message;
     setAlert('exStatus',msg,'a-err');
@@ -726,12 +739,15 @@ function loadFile(e){
 }
 
 function stopCam(){
+  detenerAutoScan();
   if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
   document.getElementById('video').style.display='none';
   document.getElementById('btnSnap').style.display='none';
   document.getElementById('btnRetake').style.display='inline-flex';
   document.getElementById('btnManual').style.display='inline-flex';
   document.getElementById('viewfinder').classList.remove('active');
+  document.getElementById('scanLine').classList.remove('active');
+  document.getElementById('scanStatus').classList.remove('active');
 }
 
 function retake(){
@@ -755,6 +771,86 @@ function showPreview(src){
 }
 
 // ── EXTRACT + MATCH ──────────────────────────────────────
+// ── AUTO SCAN ────────────────────────────────────────────
+let scanInterval=null, scanActive=false, scanCount=0;
+
+function iniciarAutoScan(){
+  scanActive=true; scanCount=0;
+  document.getElementById('scanLine').classList.add('active');
+  setScanStatus('Buscando identificación…');
+  scanInterval=setInterval(()=>analizarFrame(),2500);
+}
+
+function detenerAutoScan(){
+  scanActive=false;
+  if(scanInterval){clearInterval(scanInterval);scanInterval=null;}
+  document.getElementById('scanLine').classList.remove('active');
+  document.getElementById('scanStatus').classList.remove('active');
+}
+
+function setScanStatus(msg){
+  const el=document.getElementById('scanStatus');
+  el.textContent=msg; el.classList.add('active');
+}
+
+async function analizarFrame(){
+  if(!scanActive||!stream)return;
+  scanCount++;
+
+  // After 20 attempts (~50s) show manual button prominently and slow down
+  if(scanCount===15){
+    setScanStatus('¿No detecta? Usa "Tomar foto" o "Ingresar manualmente"');
+    clearInterval(scanInterval);
+    scanInterval=setInterval(()=>analizarFrame(),5000);
+    return;
+  }
+
+  const video=document.getElementById('video');
+  if(!video.videoWidth)return;
+
+  // Capture current frame
+  const c=document.createElement('canvas');
+  c.width=video.videoWidth; c.height=video.videoHeight;
+  c.getContext('2d').drawImage(video,0,0);
+  const frameData=c.toDataURL('image/jpeg',0.80);
+  const base64=frameData.split(',')[1];
+
+  setScanStatus('Analizando…');
+  try{
+    const res=await fetch('/api/extract',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({image:base64,mediaType:'image/jpeg'})
+    });
+    const data=await res.json();
+    if(data.esINE&&data.nombre){
+      // Got a valid ID — capture high quality and proceed
+      detenerAutoScan();
+      setScanStatus('✓ Identificación detectada');
+      // Small delay to let user see the confirmation
+      await new Promise(r=>setTimeout(r,400));
+      // Take high quality snapshot
+      const snap=document.getElementById('snap');
+      snap.width=video.videoWidth; snap.height=video.videoHeight;
+      snap.getContext('2d').drawImage(video,0,0);
+      captured=snap.toDataURL('image/jpeg',0.97);
+      showPreview(captured);
+      stopCam();
+      // Fill fields directly without another API call
+      document.getElementById('fNombre').value=data.nombre||'';
+      document.getElementById('fCurp').value=data.curp||'';
+      const tipos={INE:'INE/IFE',Licencia:'Licencia de conducir',Pasaporte:'Pasaporte',Otra:'Identificación'};
+      setAlert('exStatus','✓ '+(tipos[data.tipoDoc]||'Identificación')+' detectada — '+(data.nombre||''),'a-ok');
+      if(data.nombre&&visitasEsperadasCache.length) await buscarMatch(data.nombre);
+      else mostrarFormularioManual();
+    } else {
+      setScanStatus('Buscando identificación…');
+    }
+  }catch(e){
+    setScanStatus('Buscando identificación…');
+  }
+}
+
 async function extractINE(img){
   setAlert('exStatus','<div class="spin"></div>Analizando identificación con IA…','a-info');
   const base64=img.split(',')[1];
