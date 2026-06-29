@@ -1,5 +1,3 @@
-const bcrypt = require('bcryptjs');
-
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -14,23 +12,21 @@ module.exports = async function handler(req, res) {
   const SB_KEY = process.env.SUPABASE_KEY;
 
   try {
-    const r = await fetch(`${SB_URL}/rest/v1/usuarios?email=eq.${encodeURIComponent(email)}&activo=eq.true`, {
+    // Hash the password the same way as register
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password + 'bitacora_salt_2026');
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const password_hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+    const r = await fetch(`${SB_URL}/rest/v1/usuarios?email=eq.${encodeURIComponent(email)}&activo=eq.true&password_hash=eq.${password_hash}`, {
       headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
     });
     const users = await r.json();
     if (!users.length) return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
 
     const user = users[0];
-    const match = await bcrypt.compare(password, user.password_hash);
-    if (!match) return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
-
-    return res.status(200).json({
-      id: user.id,
-      nombre: user.nombre,
-      email: user.email,
-      telefono: user.telefono,
-      rol: user.rol
-    });
+    return res.status(200).json({ id: user.id, nombre: user.nombre, email: user.email, telefono: user.telefono, rol: user.rol });
   } catch (e) {
     return res.status(500).json({ error: 'Error del servidor', detail: e.message });
   }
