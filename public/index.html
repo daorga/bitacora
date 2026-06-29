@@ -851,8 +851,9 @@ async function confirmarLlegadaMatch(){
   const gafete=document.getElementById('mGafete').value.trim();
   const lugar=document.getElementById('mLugar').value;
   if(!gafete){toast('Ingresa el número de gafete');return;}
-  if(gafeteEnUso(gafete)){toast('⚠ Ese gafete ya está en uso');return;}
   if(!lugar){toast('Selecciona la puerta de ingreso');return;}
+  const ocupadoMatch=await verificarGafeteOcupado(gafete);
+  if(ocupadoMatch){toast('⚠ Gafete en uso — '+ocupadoMatch);return;}
 
   const now=new Date();
   const horaEntrada=now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
@@ -916,8 +917,9 @@ async function registrarManual(){
   if(!visita){setAlert('formErr','Especifica a quién visita.','a-err');return;}
   if(!motivo){setAlert('formErr','Selecciona el motivo de la visita.','a-err');return;}
   if(!gafete){setAlert('formErr','Ingresa el número de gafete.','a-err');return;}
-  if(gafeteEnUso(gafete)){setAlert('formErr','⚠ Ese gafete ya está en uso por otro visitante en sitio.','a-err');return;}
   if(!lugar){setAlert('formErr','Selecciona la puerta de ingreso.','a-err');return;}
+  const ocupadoManual=await verificarGafeteOcupado(gafete);
+  if(ocupadoManual){setAlert('formErr','⚠ Gafete en uso — '+ocupadoManual,'a-err');return;}
 
   const now=new Date();
   const horaEntrada=now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
@@ -975,10 +977,18 @@ async function verificarGafete(val,statusId){
   },500);
 }
 
-function gafeteEnUso(val){
-  if(!val)return false;
-  const local=records.find(r=>r.gafete===val&&r.status==='active');
-  return !!local;
+async function verificarGafeteOcupado(val){
+  if(!val)return null;
+  // Check local memory first
+  const local=records.find(r=>r.gafete===val.trim()&&r.status==='active');
+  if(local)return local.nombre;
+  // Check DB
+  try{
+    const hoy=new Date().toISOString().split('T')[0];
+    const data=await sbFetch('/visitas?gafete=eq.'+encodeURIComponent(val.trim())+'&status=eq.active&fecha=eq.'+hoy);
+    if(data.length>0)return data[0].nombre;
+  }catch(e){}
+  return null;
 }
 
 function salida(id){
