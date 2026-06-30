@@ -556,7 +556,7 @@ function renderEsperadas(data){
       <td><span class="badge ${first.instruccion==='acceso'?'b-in':first.instruccion==='llamar'?'b-pend':'b-blue'}">${instrLabels[first.instruccion]||first.instruccion}</span></td>
       <td style="font-size:12px;color:var(--gray-600);max-width:150px">${first.notas||'—'}</td>
       <td><span class="badge b-out">${first.recurrente?'Recurrente':'Única'}${grupo.length>1?' · '+grupo.length+' personas':''}</span></td>
-      <td>${todosLlegaron?'<span class="badge b-out">Llegaron todos</span>':algunoLlego?'<span class="badge b-pend">Parcial</span>':'<span class="badge b-in">Esperados</span>'}</td>
+      <td>${todosLlegaron?'<span class="badge b-out">Llegaron todos</span>':algunoLlego?'<span class="badge b-pend">Parcial</span>':'<span class="badge b-in">Programado</span>'}</td>
       <td style="display:flex;gap:6px">
         ${!todosLlegaron?`<button onclick="editarEsperada(${first.grupo_id||first.id})" style="font-size:12px;padding:4px 9px"><i class="ti ti-pencil" style="font-size:13px"></i></button>`:''}
         <button onclick="eliminarGrupo(${first.grupo_id||first.id})" style="font-size:12px;padding:4px 9px;color:var(--danger-tx);border-color:var(--danger-bd)"><i class="ti ti-trash" style="font-size:13px"></i></button>
